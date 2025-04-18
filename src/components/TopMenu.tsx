@@ -8,7 +8,7 @@ export default async function TopMenu() {
     const session = await getServerSession(authOptions);
 
     return (
-        <div className="w-full h-[100px] bg-white absolute top-0 left-0 z-30">
+        <div className="w-full h-[100px] bg-transparent absolute top-0 left-0 z-30">
             <div className="flex h-full justify-between ml-[5%] mr-[5%] items-center">
                 <div>
                     <span className="text-[#F3E158] text-[28px] font-bold">UFA</span>
