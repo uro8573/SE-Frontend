@@ -3,7 +3,7 @@ import { LinearProgress } from "@mui/material";
 import { Suspense } from "react";
 
 export default async function Hotel() {
-
+    
     return (
         <main className="text-center p-5">
             <h1 className="text-2xl text-black font-medium">Select Your Hotel</h1>

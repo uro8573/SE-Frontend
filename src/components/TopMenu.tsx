@@ -16,7 +16,7 @@ export default async function TopMenu() {
                 </div>
                 <div className="flex">
                     <TopMenuItem title="Home" pageRef='/'/>
-                    <TopMenuItem title="Booking" pageRef='/booking'/>
+                    <TopMenuItem title="Search" pageRef='/search'/>
                 </div>
                 <div className='flex flex-row gap-2'>
                     <Link href={session ? "/api/auth/signout" : "/api/auth/signin"}>

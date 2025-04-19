@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-export default function Footer() {
+export default function FooterAll() {
     return (
         <div className="mt-[20%] h-[264px] w-full border-t-2 border-[#E6E6E6]">
             <div className="mt-[2%] flex justify-between">
