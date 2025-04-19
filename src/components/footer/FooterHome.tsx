@@ -4,7 +4,7 @@ import Contact from "./Contact"
 
 export default function FooterHome() {
     return (
-        <div className="w-full px-6 pb-24 text-black flex flex-col items-center gap-[3rem]">
+        <div className="w-full px-8 pb-24 text-black flex flex-col items-center gap-[3rem]">
             <div className="w-full max-w-screen-2xl flex flex-row justify-between">
                 <h2 className="text-hs-heading ">
                     Find a Stay that<br />

@@ -10,7 +10,7 @@ import getHotel from '@/libs/getHotel'
 import { useSession } from 'next-auth/react'
 import addBooking from '@/libs/addBooking'
 import { ToastContainer, toast } from 'react-toastify'
-import { HotelItem } from '../../../interfaces'
+import { HotelItem } from '../../../../interfaces'
 
 import Image from "next/image"
 import { Star, MapPin, Users, Maximize } from "lucide-react"
