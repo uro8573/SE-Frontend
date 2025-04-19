@@ -1,6 +1,6 @@
 import TopMenuItem from './TopMenuItem';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions';
+import { authOptions } from '@/app/(withnavbar)/api/auth/[...nextauth]/authOptions';
 import { Link } from '@mui/material';
 
 export default async function TopMenu() {

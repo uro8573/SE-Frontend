@@ -8,7 +8,7 @@ import getHotel from '@/libs/getHotel';
 import { useSession } from 'next-auth/react';
 import { ToastContainer, toast } from 'react-toastify'
 import addRating from '@/libs/addRating';
-import { HotelItem } from '../../../../../interfaces';
+import { HotelItem } from '../../../../../../interfaces';
 import { ArrowLeft, ChevronDown, MapPin, Star, Wifi, Bed, Bath, Maximize } from "lucide-react"
 
 
