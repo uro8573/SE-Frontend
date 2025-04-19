@@ -1,8 +1,11 @@
 import Link from "next/link"
 import { ChevronDown, Edit, Star } from "lucide-react"
+import { Suspense } from "react"
+import { LinearProgress } from "@mui/material"
 
 export default function Dashboard() {
   return (
+    
     <div className="min-h-screen flex flex-col text-black">
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-8">
