@@ -98,7 +98,7 @@ export default function ItemPage({ params }: { params: { id: number } }) {
       try {
 
         const result = await createReview(
-          params.id,
+          params.id.toString(),
           session.user.token,
           newRating,
           newReview
@@ -122,10 +122,9 @@ export default function ItemPage({ params }: { params: { id: number } }) {
   
       try {
         // alert("Session: "session.user._id,)
-        alert(guestCount, roomCount, checkInDate, checkOutDate)
 
         const result = await addBooking(
-          params.id,
+          params.id.toString(),
           session.user.token,
           guestCount,
           roomCount.toString(),

@@ -132,7 +132,7 @@ export default function Dashboard() {
                           <Calendar className="h-4 w-4 text-gray-500 mr-1" />
                           <span className="text-sm text-gray-600">{booking.checkInDate}</span>
                         </div>
-                        <Link href={`/manage/reservation/${booking._id}`} className="block py-1.5 text-black-600 font-medium">
+                        <Link href={`/manage/${booking._id}`} className="block py-1.5 text-black-600 font-medium">
                           <div className="flex items-center">
                             <Pencil className="h-4 w-4 text-gray-500 mr-1" />
                           </div>
