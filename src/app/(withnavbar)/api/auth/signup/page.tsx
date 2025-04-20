@@ -16,7 +16,7 @@ export default function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    //alert("Submitting...");
     if(password != rePassword) {
         toast.error("Your Re-Password doesn't match.");
         return;

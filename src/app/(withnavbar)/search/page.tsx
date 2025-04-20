@@ -23,12 +23,13 @@ export default function Search() {
     const searchParams = useSearchParams();
     const id = searchParams.get("id");
     
-    //const { data:session } = useSession();
+    const { data:session } = useSession();
 
     const [checkInDate, setCheckInDate] = useState<Dayjs|null>(null);
     const [checkOutDate, setCheckOutDate] = useState<Dayjs|null>(null);
     
-   /* if(!session) return ( <div className="text-black text-xl text-center">You must Login first to view this page.</div> )
+    
+    if(!session) return ( <div className="text-black text-xl text-center">You must Login first to view this page.</div> )
     
         const [item, setItem] = useState<HotelItem|null>(null);
         const [loading, setLoading] = useState(true);
@@ -75,8 +76,7 @@ export default function Search() {
                 window.location.search = '';
             } else toast.error(response.message ? response.message : `An Error has occurred while booking a hotel.`);
         } else toast.error("Invalid Date or Session.");
-    }*/
-
+    }
         const mockHotels = [
             {
               id: 1,

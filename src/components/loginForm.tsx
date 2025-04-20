@@ -6,15 +6,33 @@ import { useState } from "react";
 import Link from "next/link";
 import { EmailInput } from "@/components/emailInput";
 import { PasswordInput } from "@/components/passwordInput";
+import userLogIn from "@/libs/userLogIn";
+import { useRouter } from "next/navigation";
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     // Handle login logic here
     console.log("Login attempt with:", { email, password })
+    if( !email || !password) {
+      alert("Please fill in all fields.")
+      return
+    }
+
+    try {
+      const result = await userLogIn(email, password);
+      localStorage.setItem("token", result.token);
+      alert("Login Successfully.");
+      console.log("Login successful:", result);
+      router.push('/');
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Login failed. Please check your credentials.");
+    }
   }
 
   return (
