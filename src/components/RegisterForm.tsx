@@ -1,17 +1,18 @@
 "use client"
 
 import type React from "react";
-import { toast, ToastContainer } from 'react-toastify';
+
 import { useState } from "react";
 import Link from "next/link";
 import LoginInput from "@/components/LoginInput";
 import { PasswordInput } from "@/components/passwordInput";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 import userRegister from "@/libs/userRegister";
 
 export function RegisterForm() {
   const [email, setEmail] = useState('');
-  const [tel, setTel] = useState('');
+  const [telephone, setTelephone] = useState('');
   const [password, setPassword] = useState('');
   const [rePassword, setRePassword] = useState('');
   const [name, setName] = useState('');
@@ -25,27 +26,25 @@ export function RegisterForm() {
         return;
     }
 
-    const res = await userRegister(email, password, name, tel);
+    const res = await userRegister(email, password, name, telephone);
 
     if(res.success) {
         toast.success("Register Successfully.");
         setTimeout(() => router.push("/api/auth/signin"), 2000);
     } else toast.error(res.message ? res.message : `An Error has occurred while registering.`)
   }
-  
- 
 
   return (
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex flex-row space-x-[16px]">
-            <LoginInput id="name" label="Name" placeholder="Full Name" onChange={setName}/>
-            <LoginInput id="telephone" label="Telephone" placeholder="012-345-6789" type="tel" onChange={setTel}/>
+            <LoginInput id="name" input={name} label="Name" placeholder="Full Name" onChange={setName}/>
+            <LoginInput id="telephone" input={telephone} label="Telephone" placeholder="012-345-6789" type="tel" onChange={setTelephone}/>
         </div>
 
-        <LoginInput type="email" onChange={setEmail}/>
+        <LoginInput type="email" input={email} onChange={setEmail}/>
 
-        <PasswordInput forgotPasswordLink="#" forgotPasswordText="" onChange={setPassword} />
+        <PasswordInput forgotPasswordLink="#" forgotPasswordText="" password={password} onChange={setPassword} />
 
         <button
           type="submit"

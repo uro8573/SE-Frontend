@@ -8,39 +8,46 @@ import EmailInput from "@/components/LoginInput";
 import { PasswordInput } from "@/components/passwordInput";
 import userLogIn from "@/libs/userLogIn";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
-export function LoginForm() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+export default function LoginForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle login logic here
-    console.log("Login attempt with:", { email, password })
-    if( !email || !password) {
-      alert("Please fill in all fields.")
-      return
-    }
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
 
     try {
-      const result = await userLogIn(email, password);
-      localStorage.setItem("token", result.token);
-      alert("Login Successfully.");
-      console.log("Login successful:", result);
-      router.push('/');
-    } catch (error) {
-      console.error("Login failed:", error);
-      alert("Login failed. Please check your credentials.");
+        const result = await signIn("credentials", {
+            email,
+            password,
+            redirect: false,
+        });
+
+        if (result?.error) {
+            alert("Login Fail")
+            setError("Email or password is incorrect.");
+        } else {
+            alert("Login success");
+            router.push("/");
+            router.refresh();
+        }
+    } catch (err) {
+        alert("Please check your Email and Password");
+        console.error("Login error:", err);
+        setError("Something went wrong. Please try again.");
     }
-  }
+};
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <EmailInput onChange={setEmail} />
+      <form onSubmit={handleLogin} className="space-y-6">
+        <EmailInput input={email} onChange={setEmail} />
 
-        <PasswordInput forgotPasswordLink="#" onChange={setPassword} />
+        <PasswordInput forgotPasswordLink="#" onChange={setPassword} password={password}/>
 
         <button
           type="submit"

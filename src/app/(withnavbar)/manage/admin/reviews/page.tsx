@@ -1,9 +1,34 @@
+'use client'
 import Link from "next/link"
 import { ChevronDown, Edit, Star } from "lucide-react"
 import { Suspense } from "react"
 import { LinearProgress } from "@mui/material"
 
+import { useState } from 'react'
+import { useEffect } from 'react'
+import { Review, ReviewJson, ReviewItem } from '../../../../../../interfaces'
+import getReviewWithHotelID from '../../../../../libs/getReviewWithHotelID'
+
+
 export default function Dashboard() {
+
+  const [reviews, setReview] = useState<Review[]>([]);
+  const [reviewCount, setReviewCount] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const respond = await getReviewWithHotelID();
+        setReview(respond.data);
+        setReviewCount(respond.count);
+      } catch (err) {
+        console.error("เกิดข้อผิดพลาดในการโหลดรีวิว : ", err)
+      }
+    };
+
+    fetchReviews();
+  }, []);
+
   return (
     
     <div className="min-h-screen flex flex-col text-black">
@@ -65,7 +90,7 @@ export default function Dashboard() {
           {/* Main Content */}
           <div className="flex-1">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-medium">5 History Reviews</h2>
+              <h2 className="text-lg font-medium">{reviewCount} Reviews</h2>
               <div className="flex items-center">
                 <span className="text-sm mr-2">Sort By:</span>
                 <button className="flex items-center text-sm">
@@ -76,30 +101,20 @@ export default function Dashboard() {
             </div>
 
             <div className="space-y-4">
-              {[1, 2, 3, 4, 5].map((item) => (
-                <div key={item} className="flex gap-4 p-4 border-b">
-                  <div className="w-8 h-8 bg-gray-200 rounded-full flex-shrink-0"></div>
-                  <div className="flex-1">
-                    <div className="flex justify-between">
-                      <Link href="#" className="font-medium hover:underline">
-                        The Havencrest
-                      </Link>
-                      <button>
-                        <Edit className="h-4 w-4 text-gray-500" />
-                      </button>
-                    </div>
-                    <div className="flex my-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star key={star} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                      ))}
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      This place feels like stepping into a romantic novel. The vintage decor is gorgeous, and the staff
-                      made our anniversary weekend extra special.
-                    </p>
-                  </div>
-                </div>
-              ))}
+            {reviews.length === 0 ? (
+                      <p>กำลังโหลดข้อมูลรีวิว...</p>
+                    ) : (
+
+                      reviews.map((review) => (
+                        <div key={item} className="border rounded-lg overflow-hidden">
+                          <div className="p-4">
+                            <h3 className="font-medium text-lg">Hotel : {review.hotel.name}</h3>
+                            <h3 className="font-medium text-lg">User : {review.user.name}</h3>
+                            <h3 className="font-medium text-lg">Comment : {review.comment}</h3>
+                          </div>
+                        </div>
+                    )))
+                  }
             </div>
           </div>
         </div>

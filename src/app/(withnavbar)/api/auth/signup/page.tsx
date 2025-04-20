@@ -1,9 +1,9 @@
 import Image from "next/image"
-import { LoginForm } from "@/components/loginForm"
+import LoginForm from "@/components/loginForm"
 import LoginImage from "@/components/LoginImage"
 import { RegisterForm } from "@/components/RegisterForm"
 
-export default function SignOut() {
+export default function SignUp() {
   return (
     <div className="flex min-h-screen flex-col md:flex-row ">
         {/* Left Column - Login Form */}

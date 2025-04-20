@@ -5,21 +5,25 @@ import Link from "next/link"
 
 interface PasswordInputProps {
   id?: string
+  inputname?: string
   label?: string
   placeholder?: string
   required?: boolean
   className?: string
   forgotPasswordLink?: string
   forgotPasswordText?: string
+  password: string
   onChange?: (value: string) => void
 }
 
 export function PasswordInput({
   id = "password",
+  inputname = "",
   label = "Password",
   placeholder = "Account password",
   required = true,
   className = "",
+  password,
   forgotPasswordLink,
   forgotPasswordText = "Forgot your password?",
   onChange,
@@ -43,8 +47,10 @@ export function PasswordInput({
       <div className="relative">
         <input
           id={id}
+          name={inputname}
           type={showPassword ? "text" : "password"}
           placeholder={placeholder}
+          value={password}
           required={required}
           className={`h-12 w-full rounded-2xl border border-gray-300 bg-gray-100 px-4 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 rounded-2xl bg-[#D8D8D8] text-[#7D7E80] ${className}`}
           onChange={(e) => onChange && onChange(e.target.value)}

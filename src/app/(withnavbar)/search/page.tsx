@@ -10,7 +10,7 @@ import getHotel from '@/libs/getHotel'
 import { useSession } from 'next-auth/react'
 import addBooking from '@/libs/addBooking'
 import { ToastContainer, toast } from 'react-toastify'
-import { HotelJson, Hotel, HotelItem } from '../../../../interfaces'
+import { HotelJson, Hotel, HotelItem, Review } from '../../../../interfaces'
 
 import Image from "next/image"
 import { Star, MapPin, Users, Maximize } from "lucide-react"
@@ -18,6 +18,7 @@ import Link from "next/link";
 import { Slider } from "@/components/ui/Slider"
 import { Checkbox } from "@/components/ui/CheckBox"
 import getHotels from '@/libs/getHotels'
+import getReviewWithHotelID from "@/libs/getReviewWithHotelID"
 
 
 export default function Search() {
@@ -33,24 +34,58 @@ export default function Search() {
     const [item, setItem] = useState<HotelItem|null>(null);
     const [loading, setLoading] = useState(true);
 
-    const [hotelCount, setHotelCount] = useState<number>(0);
     const [hotels, setHotels] = useState<Hotel[]>([]);
+    const [hotelsCount, setHotelsCount] = useState<number>(0);
+
+    const [hotelRatings, setHotelRatings] = useState<{ [hotelId: string]: number }>({});
 
     useEffect(() => {
       const fetchHotels = async () => {
         try {
+          if (!session?.user.token) throw new Error("User token is undefined");
+    
           const response = await getHotels();
-          setHotelCount(response.count);
-          setHotels(response.data);
+          if (!response) throw new Error("Failed to fetch data");
+          const fetchedHotels = response.data;
+    
+    
+          const reviewPromises = fetchedHotels.map(hotel => 
+            getReviewWithHotelID(session.user.token, hotel.id)
+          );
+          const reviewResults = await Promise.all(reviewPromises);
+    
+          const updatedHotels: Hotel[] = [];
+          const ratingsMap: { [hotelId: string]: number } = {};
+    
+          fetchedHotels.forEach((hotel, index) => {
+            const reviewData = reviewResults[index].data;
+            const ratings = reviewData.map((review: Review) => review.rating);
+            const ratingSum = ratings.reduce((a: number, b: number) => a + b, 0);
+            const ratingCount = ratings.length;
+            const avg = ratingCount > 0 ? ratingSum / ratingCount : 0;
+    
+            ratingsMap[hotel.id] = parseFloat(avg.toFixed(1));
+            updatedHotels.push({
+              ...hotel,
+              userRatingCount: ratingCount,
+              ratingSum: ratingSum,
+            });
+          });
+    
+          setHotels(updatedHotels);
+          setHotelsCount(response.count);
+          setHotelRatings(ratingsMap);
+    
         } catch (error) {
           console.error("เกิดข้อผิดพลาดในการโหลดโรงแรม:", error);
         }
       };
-  
+    
       fetchHotels();
-    }, []);
+    }, [session?.user.token]);
+    
         
-        
+    console.log("hotels", hotels.length);
         
        // if(loading || !item) return (<div>is loading</div>)
             
@@ -251,7 +286,7 @@ export default function Search() {
             {/* Hotel Listings */}
             <div className="w-full lg:w-3/4 text-black">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-medium">{hotelCount} Hotels available</h3>
+                <h3 className="font-medium">{hotelsCount} Hotels available</h3>
                 <div className="flex items-center gap-2">
                   <span className="text-sm">Sort By:</span>
                   <button className="flex items-center gap-1 text-sm font-medium">
@@ -274,38 +309,39 @@ export default function Search() {
               {hotels.length === 0 ? (
                       <p>กำลังโหลดข้อมูลโรงแรม...</p>
                     ) : (
-
                       hotels.map((hotel) => (
-                        <div key={hotel._id} className="border border-gray-200 rounded-lg overflow-hidden">
+                        <Link href={`/hotel/${hotel.id}`}>
+                          <div key={hotel._id} className="border border-gray-200 rounded-lg overflow-hidden">
                             <div className="relative h-48">
-                            {/* <Image src={hotel.image} alt={hotel.name} fill className="object-cover" /> */}
-                            </div>
-                            <div className="p-4">
-                            <h3 className="font-bold text-lg mb-1 text-black">{hotel.name}</h3>
-                            {/* <p className="text-sm text-gray-600 mb-2">{hotel.description}</p> */}
-                            <div className="flex items-center gap-1 mb-2">
-                                <MapPin className="w-4 h-4 text-gray-500" />
-                                <span className="text-sm text-black">{hotel.region}, {hotel.address}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-1">
-                                    <Users className="w-4 h-4 text-gray-500" />
-                                    {/* <span className="text-xs text-black">{hotel.guests}</span> */}
+                                <Image src={hotel.picture} alt={hotel.name} fill className="object-cover" />
+                              </div>
+                              <div className="p-4">
+                                <h3 className="font-bold text-lg mb-1 text-black">{hotel.name}</h3>
+                                <p className="text-sm text-gray-600 mb-2">{hotel.description}</p>
+                                <div className="flex items-center gap-1 mb-2">
+                                    <MapPin className="w-4 h-4 text-gray-500" />
+                                    <span className="text-sm text-black">{hotel.region}, {hotel.address}</span>
                                 </div>
-                                <Link href={`/hotel/${hotel.id}`}>
+                                <div className="flex justify-between items-center">
+                                  <div className="flex items-center gap-4">
                                     <div className="flex items-center gap-1">
-                                        
-                                            <Maximize className="w-4 h-4 text-gray-500" />
-                                            {/* <span className="text-xs text-black">{hotel.size}</span> */}
-                                        
+                                      <Users className="w-4 h-4 text-gray-500" />
+                                      <span className="text-xs text-black">{hotel.guests}</span>
                                     </div>
-                                </Link>
+                                    <div className="flex items-center gap-1">
+                                      <Maximize className="w-4 h-4 text-gray-500" />
+                                      <span className="text-xs text-black">{hotel.size}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <Star className="w-4 h-4 text-yellow-400" />
+                                      <span className="text-xs text-black">{(hotel.userRatingCount == 0 ? 0 : (hotel.ratingSum / hotel.userRatingCount).toFixed(1))}</span>
+                                    </div>
                                 </div>
                                 <div className="font-bold text-lg text-black">${hotel.dailyRate}</div>
+                              </div>
                             </div>
-                            </div>
-                        </div>
+                          </div>
+                        </Link>
                     )))
                   }
               </div>
