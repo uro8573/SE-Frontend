@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { LoginForm } from "@/components/loginForm"
+import LoginImage from "@/components/LoginImage"
 
 export default function SignIn() {
   return (
@@ -32,17 +33,7 @@ export default function SignIn() {
             </div>
 
             {/* Right Column - Image */}
-            <div className="hidden w-1/2 bg-[#f5f5f3] md:block">
-                <div className="relative h-full w-full">
-                <Image
-                    src="/img/hotel.png"
-                    alt="Modern living room interior"
-                    fill
-                    className="object-cover"
-                    priority
-                />
-                </div>
-            </div>
+            <LoginImage ImgSrc="/img/hotel.png" ImgAlt="Modern living room interior"/>
         </div>
     </div>
   )

@@ -1,52 +1,39 @@
-'use client'
+import Image from "next/image"
+import { LoginForm } from "@/components/loginForm"
+import LoginImage from "@/components/LoginImage"
+import { RegisterForm } from "@/components/RegisterForm"
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import userRegister from '@/libs/userRegister';
-import { TextField } from '@mui/material';
-import { toast, ToastContainer } from 'react-toastify';
-
-export default function SignUp() {
-  const [email, setEmail] = useState('');
-  const [tel, setTel] = useState('');
-  const [password, setPassword] = useState('');
-  const [rePassword, setRePassword] = useState('');
-  const [name, setName] = useState('');
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if(password != rePassword) {
-        toast.error("Your Re-Password doesn't match.");
-        return;
-    }
-
-    const res = await userRegister(email, password, name, tel);
-
-    if(res.success) {
-        toast.success("Register Successfully.");
-        setTimeout(() => router.push("/api/auth/signin"), 2000);
-    } else toast.error(res.message ? res.message : `An Error has occurred while registering.`)
-
-  };
-
+export default function SignOut() {
   return (
-    <div>
-      <div className="text-black text-2xl font-bold ml-[3%] mb-[2%]">Sign Up</div>
-      <form onSubmit={handleSubmit} className='flex flex-col w-[50%] ml-[3%] gap-2'>
-        <TextField label="Your Name" value={name} onChange={(e) => setName(e.target.value)} required />
-        <TextField label="Your Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <TextField label="Your Telephone" type="tel" value={tel} onChange={(e) => setTel(e.target.value)} required />
-        <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <TextField label="Re-Password" type="password" value={rePassword} onChange={(e) => setRePassword(e.target.value)} required />
-        <button 
-        className="mt-[3px] w-[200px] text-center text-[14px] bg-black text-white px-[24px] py-[14px] rounded-lg hover:shadow-xl hover:bg-white hover:text-black duration-300 hover:cursor-pointer"
-        type='submit'>
-            Sign Up
-        </button>
-      </form>
-      <ToastContainer/>
+    <div className="flex min-h-screen flex-col md:flex-row ">
+        {/* Left Column - Login Form */}
+        <div className="flex w-full flex-col justify-center px-6 py-12 md:w-1/2 md:px-12 lg:px-16 xl:px-24">
+            <div className="mx-auto w-full max-w-md">
+            {/* Logo */}
+            <div className="mb-8">
+                <div className="h-10 w-10 rounded-full border-2 border-black p-1">
+                <div className="h-full w-full rounded-full bg-white">
+                    <div className="relative h-full w-full">
+                    <div className="absolute left-1/2 top-0 h-1/2 w-[2px] -translate-x-1/2 bg-black"></div>
+                    <div className="absolute left-0 top-1/2 h-[2px] w-1/2 -translate-y-1/2 bg-black"></div>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            {/* Heading */}
+            <div className="mb-8 space-y-2">
+                <h1 className="text-[40px] font-bold tracking-tight text-[#0A0C10]">Create an Account</h1>
+                <p className="text-lg text-[#0A0C10]">Register your TungTEE888 account</p>
+            </div>
+
+            {/* Login Form Component */}
+            <RegisterForm />
+            </div>
+        </div>
+
+        {/* Right Column - Image */}
+        <LoginImage ImgSrc="/img/hotel.png" ImgAlt="Modern living room interior"/>
     </div>
-  );
+  )
 }

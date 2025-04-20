@@ -4,38 +4,45 @@ import type React from "react";
 
 import { useState } from "react";
 import Link from "next/link";
-import EmailInput from "@/components/LoginInput";
+import LoginInput from "@/components/LoginInput";
 import { PasswordInput } from "@/components/passwordInput";
 
-export function LoginForm() {
+export function RegisterForm() {
+  const [name, setName] = useState("")
+  const [telephone, setTelephone] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle login logic here
-    console.log("Login attempt with:", { email, password })
+    console.log("Register attempt with:", { name, telephone,email, password })
   }
 
   return (
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <EmailInput onChange={setEmail} />
+        <div className="flex flex-row space-x-[16px]">
+            <LoginInput id="name" label="Name" placeholder="Full Name" onChange={setName}/>
+            <LoginInput id="telephone" label="Telephone" placeholder="012-345-6789" type="tel" onChange={setTelephone}/>
+        </div>
 
-        <PasswordInput forgotPasswordLink="#" onChange={setPassword} />
+        <LoginInput type="email" onChange={setEmail}/>
+
+        <PasswordInput forgotPasswordLink="#" forgotPasswordText="" onChange={setPassword} />
 
         <button
           type="submit"
           className="h-12 w-full rounded-full bg-[#F49B4A] font-semibold text-[#0A0C10] transition-colors hover:bg-[#e48a3f]"
         >
-          Login
+          Create Account
         </button>
       </form>
 
       {/* Divider */}
       <div className="flex items-center">
         <div className="h-px flex-grow bg-gray-200"></div>
-        <span className="mx-4 text-xl text-[#7D7E80]">Or Login with</span>
+        <span className="mx-4 text-xl text-[#7D7E80]">Or Register with</span>
         <div className="h-px flex-grow bg-gray-200"></div>
       </div>
 
@@ -63,15 +70,13 @@ export function LoginForm() {
             fill="#EA4335"
           />
         </svg>
-        Login with Google
+        Register with Google
       </button>
 
       {/* Register Link */}
       <div className="text-center text=lg text-black relative">
-        Don&apos;t have an account?{" "}
-        <Link href="#" className="font-semibold text-black underline hover:no-underline hover:text-lg">
-          Register
-        </Link>
+      Already have an account?{" "}
+        <Link href="#" className="font-semibold text-black underline hover:no-underline hover:text-lg">Login</Link>
       </div>
     </div>
   )

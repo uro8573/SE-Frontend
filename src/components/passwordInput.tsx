@@ -46,7 +46,7 @@ export function PasswordInput({
           type={showPassword ? "text" : "password"}
           placeholder={placeholder}
           required={required}
-          className={`h-12 w-full rounded-md border border-gray-300 bg-gray-100 px-4 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 rounded-2xl bg-[#D8D8D8] text-[#7D7E80] ${className}`}
+          className={`h-12 w-full rounded-2xl border border-gray-300 bg-gray-100 px-4 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 rounded-2xl bg-[#D8D8D8] text-[#7D7E80] ${className}`}
           onChange={(e) => onChange && onChange(e.target.value)}
         />
         <button
