@@ -79,6 +79,15 @@ module.exports = {
         'transparent-stroke': 'rgba(0, 0, 0, 0.2)',
         'transparent-bg': 'rgba(0, 0, 0, 0.1)',
       },
+      animation: {
+        "loop-scroll": "loop-scroll 10s linear infinite",
+      },
+      keyframes: {
+        "loop-scroll": {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-100%)" },
+        },
+      },
     },
   },
   plugins: [],

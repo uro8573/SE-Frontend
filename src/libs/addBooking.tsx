@@ -1,4 +1,4 @@
-export default async function addBooking(id: string, token: string, checkInDate: string, checkOutDate: string) {
+export default async function addBooking(id: string, token: string, guest:number, room:string, checkInDate: string, checkOutDate: string) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/hotels/${id}/bookings`, {
         method: "POST",
         headers: {
@@ -6,6 +6,8 @@ export default async function addBooking(id: string, token: string, checkInDate:
             "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
+            "guest": guest,
+            "room": room,
             "checkInDate": checkInDate,
             "checkOutDate": checkOutDate
         })

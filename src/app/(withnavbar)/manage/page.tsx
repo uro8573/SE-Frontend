@@ -1,7 +1,12 @@
 import Link from "next/link"
 import { ChevronDown, Edit, Star } from "lucide-react"
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/authOptions";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+
+  const session = await getServerSession(authOptions);
+
   return (
     <div className="min-h-screen flex flex-col text-black">
 
@@ -42,20 +47,25 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div>
-                <button className="w-full flex items-center justify-between p-3 rounded-md hover:bg-gray-100">
-                  <span className="font-medium">Admin</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                <div className="pl-6 py-1">
-                  <Link href="/manage/admin/reservations" className="block py-1.5 text-gray-600">
-                    Reservations
-                  </Link>
-                  <Link href="/manage/admin/reviews" className="block py-1.5 text-gray-600">
-                    Reviews
-                  </Link>
-                </div>
-              </div>
+              {
+                session?.user.role == 'admin' ? ( 
+                    <div>
+                    <button className="w-full flex items-center justify-between p-3 rounded-md hover:bg-gray-100">
+                      <span className="font-medium">Admin</span>
+                      <ChevronDown className="h-4 w-4" />
+                    </button>
+                    <div className="pl-6 py-1">
+                      <Link href="/manage/admin/reservations" className="block py-1.5 text-gray-600">
+                        Reservations
+                      </Link>
+                      <Link href="/manage/admin/reviews" className="block py-1.5 text-gray-600">
+                        Reviews
+                      </Link>
+                    </div>
+                  </div>
+                ) : ''
+              }
+
             </nav>
           </div>
 

@@ -11,6 +11,7 @@ import addRating from '@/libs/addRating';
 import { Hotel, HotelItem, ReviewItem ,Review } from '../../../../../../interfaces';
 import { ArrowLeft, ChevronDown, MapPin, Star, Wifi, Bed, Bath, Maximize } from "lucide-react"
 import getReviewWithHotelID from '@/libs/getReviewWithHotelID';
+import addBooking from '@/libs/addBooking';
 
 
 export default function ItemPage({ params }: { params: { id: number } }) {
@@ -22,6 +23,15 @@ export default function ItemPage({ params }: { params: { id: number } }) {
   const [reviews, setReview] = useState<Review[] | null>(null);
 
   const [avgRating, setAvgRating] = useState(0);
+
+  const [newReview, setNewReview] = useState('');
+  const [newRating, setNewRating] = useState<number>(0);
+
+  const [guestCount, setGuestCount] = useState(2);
+  const [roomCount, setRoomCount] = useState('1');
+  const [checkInDate, setCheckInDate] = useState("2024-12-22");
+  const [checkOutDate, setCheckOutDate] = useState("2024-12-24");
+
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -75,6 +85,29 @@ export default function ItemPage({ params }: { params: { id: number } }) {
     if (!hotel) {
         return <div className="flex justify-center items-center h-screen">Loading...</div>;
     }
+
+    const handleBooking = async () => {
+      if (!session?.user?.token || !hotel?.id) {
+        toast.error("You must be signed in to book.");
+        return;
+      }
+  
+      try {
+        const result = await addBooking(
+          session.user._id,
+          session.user.token,
+          guestCount,
+          roomCount,
+          checkInDate,
+          checkOutDate
+        );
+        toast.success("Booking successful!");
+        console.log(result);
+      } catch (error) {
+        console.error(error);
+        toast.error("Booking failed!");
+      }
+    };
 
         return (
             <div className="max-w-7xl mx-auto text-black">
@@ -140,7 +173,7 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                         </div>
                         <div className="flex items-center w-1/2">
                           <Bed className="h-5 w-5 mr-2 text-gray-600" />
-                          <span className="text-sm">1-2 Bedroom</span>
+                          <span className="text-sm">For up to {hotel.guests} Guests</span>
                         </div>
                         <div className="flex items-center w-1/2">
                           <Bath className="h-5 w-5 mr-2 text-gray-600" />
@@ -148,7 +181,7 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                         </div>
                         <div className="flex items-center w-1/2">
                           <Maximize className="h-5 w-5 mr-2 text-gray-600" />
-                          <span className="text-sm">Large Room</span>
+                          <span className="text-sm">{hotel.size} Room</span>
                         </div>
                       </div>
                     </div>
@@ -214,12 +247,28 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                         </div>
         
                         {/* Write a review */}
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-                          <span className="text-gray-500 text-sm">{session?.user.name}</span>
-                        </div>
-                        <div className="border rounded-lg p-3 mb-4">
-                          <Input className="text-gray-500 text-sm" placeholder='you can comment here'></Input>
+
+                        <div className="pt-[10px] pb-[30px] flex flex-col">
+                          <div className="flex items-center gap-3 mb-[2px]">
+                            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                            <div className="flex flex-col">
+                              <span className="text-gray-500 text-sm">{session?.user.name}</span>
+                              <Rating
+                                name="simple-controlled"
+                                value={newRating}
+                                size="small"
+                                onChange={(event, newValue) => {
+                                    setNewRating(newValue || 0)
+                                  }
+                                }
+                              />
+                            </div>
+                          </div>
+                          <Input 
+                          className="text-gray-500 text-sm" 
+                          placeholder='Write a review' 
+                          onChange={(value) => setNewReview(value)}/>
+                          <button className="bg-black text-white w-[200px] py-2 rounded-full text-sm mt-2">Submit Review</button>
                         </div>
         
                         {/* Reviews list */}
@@ -253,7 +302,7 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                   </div>
         
                   {/* Right Column - Booking */}
-                  <div className="lg:w-80 text-black">
+                  {/* <div className="lg:w-80 text-black">
                     <div className="border rounded-lg p-4 sticky top-4">
                       <h3 className="font-medium mb-3">Guest</h3>
                       <div className="flex justify-between items-center mb-3 border-b pb-3">
@@ -295,7 +344,79 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                             <button className="bg-black text-white w-full py-3 rounded-full font-medium">Reserve</button>
                         </Link>
                     </div>
+                  </div> */}
+
+                  {/* Right Column - Booking */}
+                  <div className="lg:w-80 text-black">
+                    <div className="border rounded-lg p-4 sticky top-4">
+                      <h3 className="font-medium mb-3">Guest</h3>
+                      <div className="flex justify-between items-center mb-3 border-b pb-3">
+                        <input
+                          type="number"
+                          value={guestCount}
+                          onChange={(e) => {
+                            const value = Math.min(4, Math.max(1, Number(e.target.value)));   
+                            setGuestCount(value)
+                          }}
+                          className="text-sm w-20 border rounded px-2 py-1"
+                          min={1}
+                        />
+                      </div>
+
+                      <h3 className="font-medium mb-3">Room</h3>
+                      <div className="flex justify-between items-center mb-3 border-b pb-3">
+                        <input
+                          type="number"
+                          value={roomCount}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            const numericValue = Number(value);
+                        
+                            // ตรวจสอบว่าอยู่ในช่วง 1-4
+                            if (numericValue >= 1 && numericValue <= 4) {
+                              setGuestCount(value);
+                            }
+                          }}
+                          className="text-sm w-20 border rounded px-2 py-1"
+                          min={1}
+                          max={4}
+                        />
+                      </div>
+
+                      <h3 className="font-medium mb-3">Check in</h3>
+                      <div className="flex justify-between items-center mb-3 border-b pb-3">
+                        <input
+                          type="date"
+                          value={checkInDate}
+                          onChange={(e) => setCheckInDate(e.target.value)}
+                          className="text-sm w-full border rounded px-2 py-1"
+                        />
+                      </div>
+
+                      <h3 className="font-medium mb-3">Check out</h3>
+                      <div className="flex justify-between items-center mb-3 border-b pb-3">
+                        <input
+                          type="date"
+                          value={checkOutDate}
+                          onChange={(e) => setCheckOutDate(e.target.value)}
+                          className="text-sm w-full border rounded px-2 py-1"
+                        />
+                      </div>
+
+                      <div className="flex justify-between items-center mb-4">
+                        <div className="text-sm font-medium">Pricing per night</div>
+                        <div className="font-bold">$10/night</div>
+                      </div>
+
+                      <button
+                        className="bg-black text-white w-full py-3 rounded-full font-medium"
+                        onClick={handleBooking}
+                      >
+                        Reserve
+                      </button>
+                    </div>
                   </div>
+                  <ToastContainer />
                 </div>
               </div>
         

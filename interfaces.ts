@@ -8,7 +8,7 @@ export interface Hotel {
     region: string,
     tel: string,
     dailyRate: string,
-    guests: string,
+    guests: number,
     picture: string,
     size: string,
     __v: number,

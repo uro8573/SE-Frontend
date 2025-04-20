@@ -7,10 +7,13 @@ import { LinearProgress } from "@mui/material"
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { Review, ReviewJson, ReviewItem } from '../../../../../../interfaces'
-import getReviewWithHotelID from '../../../../../libs/getReviewWithHotelID'
+import getReviews from '../../../../../libs/getReviews'
 
+import { useSession } from "next-auth/react"
 
 export default function Dashboard() {
+
+  const { data:session } = useSession();
 
   const [reviews, setReview] = useState<Review[]>([]);
   const [reviewCount, setReviewCount] = useState<number>(0);
@@ -18,7 +21,11 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const respond = await getReviewWithHotelID();
+        if (!session?.user?.token) {
+          throw new Error("User token is undefined");
+        }
+        console.log("Fetching bookings with token:", session);
+        const respond = await getReviews(session.user.token);
         setReview(respond.data);
         setReviewCount(respond.count);
       } catch (err) {
@@ -106,11 +113,16 @@ export default function Dashboard() {
                     ) : (
 
                       reviews.map((review) => (
-                        <div key={item} className="border rounded-lg overflow-hidden">
+                        <div key={review._id} className="border rounded-lg overflow-hidden">
                           <div className="p-4">
                             <h3 className="font-medium text-lg">Hotel : {review.hotel.name}</h3>
                             <h3 className="font-medium text-lg">User : {review.user.name}</h3>
-                            <h3 className="font-medium text-lg">Comment : {review.comment}</h3>
+                            {
+                              review.comment ? (
+                                <h3 className="font-medium text-lg">Comment : {review.comment}</h3>
+                              ) : ''
+                            }
+                            <h3 className="font-medium text-lg">Rating : {review.rating}/5</h3>                       
                           </div>
                         </div>
                     )))

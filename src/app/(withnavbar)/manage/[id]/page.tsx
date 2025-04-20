@@ -4,7 +4,7 @@ import { Button, Rating } from '@mui/material';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import getHotel from '@/libs/getHotel';
+import getBooking from '@/libs/getBooking';
 import { useSession } from 'next-auth/react';
 import { ToastContainer, toast } from 'react-toastify'
 import addRating from '@/libs/addRating';
@@ -13,23 +13,25 @@ import { ArrowLeft, ChevronDown, MapPin, Star, Wifi, Bed, Bath, Maximize ,Edit, 
 import { Suspense } from 'react';
 import { LinearProgress } from '@mui/material';
 
-export default function itemPage({params}:{params: {id: number}}) {
+export default function itemPage({params}:{params: {id: string}}) {
 
-    //const { data:session } = useSession();
+    const { data:session } = useSession();
 
     const [item, setItem] = useState<HotelItem|null>(null);
     const [loading, setLoading] = useState(true);
     const [rating, setRating] = useState(0);
 
+    if(!session) return (<div>You must login to view this page.</div>)
+
     useEffect(() => {
-        const fetchitem = async () => {
+        const fetchBooking = async () => {
             try {
-                const response = await getHotel(params.id);
+                const response = await getBooking(session?.user.token, params.id);
 
                 if(!response) throw new Error("Failed to fetch data.");
 
                 setItem(response);
-                
+                console.log("fetch successfully");
             } catch(err) {
                 console.error(err);
             } finally {
@@ -37,26 +39,26 @@ export default function itemPage({params}:{params: {id: number}}) {
             }
         }
 
-        fetchitem();
+        fetchBooking();
 
     }, []);
 
-    /*if(loading || !item) return ( <div></div> )
+    // if(loading || !item) return ( <div></div> )
 
-    const alert = async () => {
-        if(!session) {
-            toast.error("You must authorized first!!");
-            return;
-        }
-        if(rating < 1 || rating > 5) {
-            toast.warn("Rating value must between 1 and 5.");
-            return;
-        }
-        const response = await addRating(params.id, rating, session?.user.token);
-        if(response.success == true) {
-            toast.success("Rating Successfully!");
-        } else toast.error("Error occured while rating this hotel.");
-    }*/
+    // const alert = async () => {
+    //     if(!session) {
+    //         toast.error("You must authorized first!!");
+    //         return;
+    //     }
+    //     if(rating < 1 || rating > 5) {
+    //         toast.warn("Rating value must between 1 and 5.");
+    //         return;
+    //     }
+    //     const response = await addRating(params.id, rating, session?.user.token);
+    //     if(response.success == true) {
+    //         toast.success("Rating Successfully!");
+    //     } else toast.error("Error occured while rating this hotel.");
+    // }
 
         return (
             

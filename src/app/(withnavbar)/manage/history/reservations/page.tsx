@@ -31,12 +31,12 @@ export default function Dashboard() {
                     </div>
 
                     <div>
-                    <button className="w-full flex items-center justify-between p-3 rounded-md">
+                    <button className="w-full flex items-center justify-between p-3 rounded-md bg-gray-100">
                         <span className="font-medium">History</span>
                         <ChevronDown className="h-4 w-4" />
                     </button>
                     <div className="pl-6 py-1">
-                        <Link href="/manage/history/reservations" className="block py-1.5 text-gray-600">
+                        <Link href="/manage/history/reservations" className="block py-1.5 font-medium">
                         Reservations
                         </Link>
                         <Link href="/manage/history/reviews" className="block py-1.5 text-gray-600">
@@ -46,12 +46,12 @@ export default function Dashboard() {
                     </div>
 
                     <div>
-                    <button className="w-full flex items-center justify-between p-3 rounded-md bg-gray-100">
+                    <button className="w-full flex items-center justify-between p-3 rounded-md">
                         <span className="font-medium  ">Admin</span>
                         <ChevronDown className="h-4 w-4" />
                     </button>
                     <div className="pl-6 py-1">
-                        <Link href="/manage/admin/reservations" className="block py-1.5 text-black-600 font-medium  ">
+                        <Link href="/manage/admin/reservations" className="block py-1.5 text-black-600 text-gray-600">
                         Reservations
                         </Link>
                         <Link href="/manage/admin/reviews" className="block py-1.5 text-gray-600">

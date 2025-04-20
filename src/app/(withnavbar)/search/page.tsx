@@ -39,6 +39,14 @@ export default function Search() {
 
     const [hotelRatings, setHotelRatings] = useState<{ [hotelId: string]: number }>({});
 
+    if (!session?.user.token) {
+      return (
+        <>
+          <p>Please log in to view hotels.</p>
+        </>
+      );
+    }
+
     useEffect(() => {
       const fetchHotels = async () => {
         try {

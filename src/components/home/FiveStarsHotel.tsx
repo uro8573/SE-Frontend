@@ -7,37 +7,37 @@ export default function FiveStarsHotel() {
             title: "Silverpine Retreat",
             desc: "A peaceful mountain escape surrounded by whispering pines and fresh alpine air.",
             tags: ["Mountain", "Nature", "Wellness"],
-            img: "/images/hotel4.jpg",
+            img: "/res/img/home/fiveStarsHotel-1.jpg",
         },
         {
             title: "The Velvet Lantern",
             desc: "An elegant, vintage-style hotel with warm lighting and timeless charm.",
             tags: ["Boutique", "Historic", "Romantic"],
-            img: "/images/hotel5.jpg",
+            img: "/res/img/home/fiveStarsHotel-2.jpg",
         },
         {
             title: "Sundara Bay Resort",
             desc: "A sun-soaked beachfront haven with crystal waters and endless horizon views.",
             tags: ["Beachfront", "Luxury", "Tropical"],
-            img: "/images/hotel6.jpg",
+            img: "/res/img/home/fiveStarsHotel-3.jpg",
         },
         {
             title: "Urban Nest Hotel",
             desc: "A sleek, modern space in the heart of the city — perfect for business and weekend stays alike.",
             tags: ["City", "Modern", "Business Friendly"],
-            img: "/images/hotel7.jpg",
+            img: "/res/img/home/fiveStarsHotel-4.jpg",
         },
         {
             title: "The Havencrest",
             desc: "A charming countryside inn blending rustic textures with cozy elegance.",
             tags: ["Countryside", "Rustic", "Cozy"],
-            img: "/images/hotel1.jpg",
+            img: "/res/img/home/fiveStarsHotel-5.jpg",
         },
         {
             title: "Celestia Horizon",
             desc: "A sky-high sanctuary with panoramic views, blending celestial design with refined luxury.",
             tags: ["Luxury", "Skyline", "Modern Retreat"],
-            img: "/images/hotel8.jpg",
+            img: "/res/img/home/fiveStarsHotel-6.jpg",
         },
     ];
 

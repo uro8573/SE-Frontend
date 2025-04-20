@@ -2,7 +2,9 @@ import Image from 'next/image';
 import TopMenuItem from './TopMenuItem';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/(withnavbar)/api/auth/[...nextauth]/authOptions';
+import getUserProfile from '@/libs/getUserProfile';
 import { Link } from '@mui/material';
+import { useEffect } from 'react';
 
 export default async function TopMenu() {
 
@@ -47,12 +49,21 @@ export default async function TopMenu() {
                 <div className="bg-black/20 w-full flex flex-row gap-[1.5rem] justify-center items-center">
                     <TopMenuItem title="Home" pageRef='/'/>
                     <TopMenuItem title="Search" pageRef='/search'/>
-                    <TopMenuItem title="Search" pageRef='/search'/>
+                    <TopMenuItem title="Manage" pageRef='/manage/current-reservations'/>
+                    
                 </div>
-                <div className="bg-black/10 w-full flex flex-row gap-[1.5rem] justify-end items-center">
-                    <TopMenuItem title="Sign In" pageRef='/api/auth/signin'/>
-                    <TopMenuItem title="Register" pageRef='/api/auth/signup'/>
-                </div>
+                {
+                    session?.user.role ? (
+                        <div className="bg-black/10 w-full flex flex-row gap-[1.5rem] justify-end items-center">
+                            <TopMenuItem title='Sign Out' pageRef='/api/auth/signout'/>
+                        </div>
+                    ) : (
+                        <div className="bg-black/10 w-full flex flex-row gap-[1.5rem] justify-end items-center">
+                            <TopMenuItem title="Sign In" pageRef='/api/auth/signin'/>
+                            <TopMenuItem title="Register" pageRef='/api/auth/signup'/>
+                        </div>
+                    )
+                }   
             </div>
         </div>
     )
