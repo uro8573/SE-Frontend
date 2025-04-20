@@ -1,8 +1,6 @@
 "use client";
 
-import { useRef } from "react";
 import Image from "next/image";
-import HotelTag from "./HotelTag";
 
 export default function CustomerReviewSection() {
     const reviews = [
@@ -56,7 +54,7 @@ export default function CustomerReviewSection() {
     const reviewCards = reviews.map((review, i) => (
         <div
             key={i}
-            className="bg-black/10 min-w-[450px] snap-start p-6 flex flex-col justify-start items-start gap-6 rounded-2xl"
+            className="bg-transparent-bg min-w-[450px] max-w-[450px] snap-start p-6 flex flex-col justify-start items-start gap-6 rounded-2xl"
         >
             <div className="flex flex-row gap-4 justify-start items-center">
                 <div className="w-16 h-16 bg-gray-100 rounded-full">
@@ -64,7 +62,7 @@ export default function CustomerReviewSection() {
                 </div>
                 <div className="flex flex-col gap-2">
                     <h4 className="text-h4-heading text-primary-dark">{review.user}</h4>
-                    <p className="text-p3-paragraphy-small text-primary-dark">
+                    <p className="text-p3-paragraphy-small text-ct-light-dark">
                         {review.hotel}
                     </p>
                 </div>
@@ -87,7 +85,7 @@ export default function CustomerReviewSection() {
     ));
 
     return (
-        <section className="bg-black/10 w-full text-black flex flex-col items-center justify-center gap-12">
+        <section className="w-full text-black flex flex-col items-center justify-center gap-12">
             <h5 className="text-h5-heading text-ct-dark-grey">
                 Customer Reviews
             </h5>
@@ -99,11 +97,11 @@ export default function CustomerReviewSection() {
             </h3>
 
             {/* Card Container */}
-            <div className="w-full flex flex-row gap-6 overflow-hidden">
-                <div className="bg-black/10 flex flex-row gap-6 animate-loop-scroll">
+            <div className="w-full flex flex-row overflow-hidden gap-6">
+                <div className="flex flex-row gap-6 animate-loop-scroll">
                     {reviewCards}
                 </div>
-                <div className="bg-black/10 flex flex-row gap-6 animate-loop-scroll" aria-hidden="true">
+                <div className="flex flex-row gap-6 animate-loop-scroll" aria-hidden="true">
                     {reviewCards}
                 </div>
             </div>

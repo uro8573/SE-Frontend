@@ -15,7 +15,7 @@ export default function Banner() {
                     That Feels Just Right
                 </h1>
 
-                <div className="bg-ct-white rounded-2xl p-4 flex flex-col lg:flex-row gap-y-4 lg:gap-y-0 lg:gap-x-4 justify-center items-center w-full max-w-4xl">
+                <div className="bg-ct-white rounded-2xl p-4 flex flex-col lg:flex-row gap-y-4 lg:gap-y-0 lg:gap-x-4 justify-between items-center w-full max-w-5xl">
                     {/* Where */}
                     <div className="flex flex-col gap-2.5 justify-center items-start w-full lg:w-[160px]">
                         <label className="text-h5-heading text-primary-dark">Where</label>

@@ -67,7 +67,8 @@ export interface BookingItem {
       _id: string,
       name: string,
       address: string,
-      tel: string
+      tel: string,
+      picture: string
     },
     createdAt: string
 }

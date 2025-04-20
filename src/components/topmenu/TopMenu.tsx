@@ -1,70 +1,82 @@
-import Image from 'next/image';
+'use client';
+
+import { useEffect, useState } from 'react';
 import TopMenuItem from './TopMenuItem';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/(withnavbar)/api/auth/[...nextauth]/authOptions';
-import getUserProfile from '@/libs/getUserProfile';
-import { Link } from '@mui/material';
-import { useEffect } from 'react';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { Session } from 'next-auth';
 
-export default async function TopMenu() {
+type Props = {
+    session: Session | null;
+};
 
-    const session = await getServerSession(authOptions);
+export default function TopMenuClient({ session }: Props) {
+    const pathname = usePathname();
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    const isHome = pathname === '/';
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > window.innerHeight);
+        };
+
+        if (isHome) {
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
+        }
+    }, [isHome]);
+
+    const isTransparent = isHome && !isScrolled;
+
+    const menuClasses = `
+        fixed z-50 w-full px-8 pt-[26px] pb-[10px]
+        flex flex-col items-center
+        transition-all duration-500 ease-in-out
+        ${isTransparent ? 'bg-transparent' : 'bg-white/10 backdrop-blur-md shadow-md'}
+        ${isTransparent ? 'text-white' : 'text-black'}
+    `;
 
     return (
-        <div className="bg-black/10 w-full px-8 text-black flex flex-col items-center fixed z-50 pt-[26px] pb-[10px]">
-            <div className="bg-black/10 w-full max-w-screen-2xl flex flex-row justify-between">
-                {/* <div>
-                    <span className="text-[#F3E158] text-[28px] font-bold">TungTee</span>
-                    <span className="text-[#D3C44E] text-[28px] font-bold">888</span>
+        <div className={menuClasses}>
+            <div className="w-full max-w-screen-2xl flex flex-row justify-between items-center">
+                <div className="relative w-full h-10 flex items-center">
+                    <div className="relative w-[40px] h-[40px]">
+                        <Image
+                            src="/res/img/logo/White.png"
+                            alt="Logo white"
+                            fill
+                            className={`object-contain transition-opacity duration-700 ease-in-out ${
+                                isTransparent ? 'opacity-100' : 'opacity-0'
+                            }`}
+                        />
+                        <Image
+                            src="/res/img/logo/Pure-Black.png"
+                            alt="Logo black"
+                            fill
+                            className={`object-contain transition-opacity duration-700 ease-in-out absolute top-0 left-0 ${
+                                isTransparent ? 'opacity-0' : 'opacity-100'
+                            }`}
+                        />
+                    </div>
                 </div>
-                <div className="flex">
-                    <TopMenuItem title="Home" pageRef='/'/>
-                    <TopMenuItem title="Search" pageRef='/search'/>
+
+                <div className="w-full flex flex-row gap-[1.5rem] justify-center items-center">
+                    <TopMenuItem title="Home" pageRef="/" />
+                    <TopMenuItem title="Search" pageRef="/search" />
+                    <TopMenuItem title="Manage" pageRef="/manage/current-reservations" />
                 </div>
-                <div className='flex flex-row gap-2'>
-                    <Link href={session ? "/api/auth/signout" : "/api/auth/signin"}>
-                        <div className="text-[14px] bg-black text-white px-[24px] py-[14px] rounded-lg hover:shadow-xl hover:bg-white hover:text-black duration-300">
-                                {session ? `Sign Out` : `Sign In`}
-                        </div>
-                    </Link>
-                    {
-                        !session ? (
-                            <Link href={"/api/auth/signup"}>
-                                <div className="text-[14px] bg-white text-black border border-black px-[24px] py-[14px] rounded-lg hover:shadow-xl hover:bg-black hover:text-white duration-300">
-                                    Sign Up
-                                </div>
-                            </Link>
-                        ) : ""
-                    }
-                </div> */}
-                <div className="bg-black/10 w-full flex flex-row gap-[1.5rem] justify-start items-center">
-                <Image
-                    src="/res/img/logo/Pure-White.png"
-                    alt="Website logo"
-                    width={40}
-                    height={40}
-                    className="object-contain"
-                />
-                </div>
-                <div className="bg-black/20 w-full flex flex-row gap-[1.5rem] justify-center items-center">
-                    <TopMenuItem title="Home" pageRef='/'/>
-                    <TopMenuItem title="Search" pageRef='/search'/>
-                    <TopMenuItem title="Manage" pageRef='/manage/current-reservations'/>
-                    
-                </div>
-                {
-                    session?.user.role ? (
-                        <div className="bg-black/10 w-full flex flex-row gap-[1.5rem] justify-end items-center">
-                            <TopMenuItem title='Sign Out' pageRef='/api/auth/signout'/>
-                        </div>
+                <div className="w-full flex flex-row gap-[1.5rem] justify-end items-center">
+                    {session?.user.role ? (
+                        <TopMenuItem title="Sign Out" pageRef="/api/auth/signout" />
                     ) : (
-                        <div className="bg-black/10 w-full flex flex-row gap-[1.5rem] justify-end items-center">
-                            <TopMenuItem title="Sign In" pageRef='/api/auth/signin'/>
-                            <TopMenuItem title="Register" pageRef='/api/auth/signup'/>
-                        </div>
-                    )
-                }   
+                        <>
+                            <TopMenuItem title="Sign In" pageRef="/api/auth/signin" />
+                            <TopMenuItem title="Register" pageRef="/api/auth/signup" />
+                        </>
+                    )}
+                </div>
             </div>
         </div>
-    )
+    );
 }

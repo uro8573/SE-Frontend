@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link"
-import { ChevronDown, Edit, Star } from "lucide-react"
+import { ChevronDown, Edit, Star, Delete } from "lucide-react"
 import { Suspense } from "react"
 import { LinearProgress } from "@mui/material"
 
@@ -11,12 +11,22 @@ import getReviews from '../../../../../libs/getReviews'
 
 import { useSession } from "next-auth/react"
 
+import Rating from '@mui/material/Rating'
+
+import updateReview from "@/libs/updateReview"
+import deleteReview from "@/libs/deleteReview"
+
+
 export default function Dashboard() {
 
   const { data:session } = useSession();
 
   const [reviews, setReview] = useState<Review[]>([]);
   const [reviewCount, setReviewCount] = useState<number>(0);
+
+  const [comment, setComment] = useState<Map<string, string>>(new Map());
+  const [rating, setRating] = useState<Map<string, number>>(new Map());
+
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -35,6 +45,47 @@ export default function Dashboard() {
 
     fetchReviews();
   }, []);
+
+  if(reviews.length > 0 && comment.size == 0 && rating == 0) {
+
+    const initialCommentState = new Map<string, string>();
+    const initialRatingState = new Map<string, number>();
+
+    reviews.map((review) => {
+      initialCommentState.set(review._id, review.comment);
+      initialRatingState.set(review._id, review.rating);
+    });
+
+    setComment(initialCommentState);
+    setRating(initialRatingState);
+
+  }
+
+  const handleUpdateReview = async (reviewId: string) => {
+    if(comment.get(reviewId) && session && rating.get(reviewId)) {
+        const response = await updateReview(reviewId, session.user.token, comment.get(reviewId), rating.get(reviewId));
+        if(response.success == true) {
+            toast.success("Update Review Successfully.");
+        } else toast.error(response.message ? response.message : `An Error has occurred while update review.`);
+    } else toast.error("Invalid comment or rating");
+  }
+
+  const handleDeleteReview = async (reviewId: string) => {
+      if(session) {
+          const response = await deleteReview(reviewId, session.user.token);
+          if(response.success == true) {
+              toast.success("Delete Review Successfully.");
+              const newReview = structuredClone(reviews);
+              for(var i = 0; i < reviews.length; ++i) {
+                  if(reviews[i]._id == reviewId) {
+                      newReview.splice(i, 1);
+                      break;
+                  }
+              }
+              setReview(newReview);
+          } else toast.error(response.message ? response.message : `An Error has occurred while delete review.`);
+      } else toast.error("Invalid Session.");
+  }
 
   return (
     
@@ -108,25 +159,73 @@ export default function Dashboard() {
             </div>
 
             <div className="space-y-4">
-            {reviews.length === 0 ? (
-                      <p>กำลังโหลดข้อมูลรีวิว...</p>
-                    ) : (
+              {reviews.length === 0 ? (
+                <p>กำลังโหลดข้อมูลรีวิว...</p>
+              ) : (
+                reviews.map((review) => (
+                  <div
+                    key={review._id}
+                    className={`border rounded-lg overflow-hidden ${editingId === review._id ? 'bg-white shadow-md' : ''}`}
+                  >
+                    <div className="w-8 h-8 bg-gray-200 rounded-full flex-shrink-0 mx-2 my-1"></div>
+                    <div className="flex-1 mx-2">
+                      <div className="flex gap-5">
+                        <Link href="#" className="font-medium hover:underline">
+                          {review.hotel.name}
+                        </Link>
+                        <div>reviewed by {review.user.name}</div>
+                        <button onClick={() => setEditingId(review._id)}>
+                          <Edit className="h-4 w-4 text-gray-500" />
+                        </button>
+                        <button >
+                          <Delete className="h-4 w-4 text-gray-500" />
+                        </button>
+                      </div>
 
-                      reviews.map((review) => (
-                        <div key={review._id} className="border rounded-lg overflow-hidden">
-                          <div className="p-4">
-                            <h3 className="font-medium text-lg">Hotel : {review.hotel.name}</h3>
-                            <h3 className="font-medium text-lg">User : {review.user.name}</h3>
-                            {
-                              review.comment ? (
-                                <h3 className="font-medium text-lg">Comment : {review.comment}</h3>
-                              ) : ''
-                            }
-                            <h3 className="font-medium text-lg">Rating : {review.rating}/5</h3>                       
+                      {/* Conditional rendering for editing or displaying the review */}
+                      {editingId === review._id ? (
+                        <div className="space-y-2">
+                          <textarea
+                            className="w-full border rounded-md p-2 bg-ct-light-grey"
+                            value={editedComment}
+                            onChange={(e) => setEditedComment(e.target.value)}
+                          />
+                          <Rating
+                            value={editedRating}
+                            precision={1}
+                            onChange={(e, newValue) => setEditedRating(newValue ?? 0)}
+                          />
+                          <div className="flex gap-2">
+                          <button
+                            onClick={() => handleUpdateReview}
+                            className="text-white bg-blue-600 px-3 py-1 rounded"
+                          >
+                            Save
+                          </button>
+                            <button
+                              onClick={() => setEditingId(null)}
+                              className="text-gray-600 border border-gray-300 px-3 py-1 rounded"
+                            >
+                              Cancel
+                            </button>
                           </div>
                         </div>
-                    )))
-                  }
+                      ) : (
+                        <>
+                          <Rating
+                            name="simple-controlled"
+                            value={review.rating}
+                            precision={1}
+                            size="small"
+                            readOnly
+                          />
+                          <p className="text-sm text-gray-600">{review.comment}</p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

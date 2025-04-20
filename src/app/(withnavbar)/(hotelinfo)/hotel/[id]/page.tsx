@@ -12,6 +12,7 @@ import { Hotel, HotelItem, ReviewItem ,Review } from '../../../../../../interfac
 import { ArrowLeft, ChevronDown, MapPin, Star, Wifi, Bed, Bath, Maximize } from "lucide-react"
 import getReviewWithHotelID from '@/libs/getReviewWithHotelID';
 import addBooking from '@/libs/addBooking';
+import createReview from '@/libs/createReview';
 
 
 export default function ItemPage({ params }: { params: { id: number } }) {
@@ -28,7 +29,7 @@ export default function ItemPage({ params }: { params: { id: number } }) {
   const [newRating, setNewRating] = useState<number>(0);
 
   const [guestCount, setGuestCount] = useState(2);
-  const [roomCount, setRoomCount] = useState('1');
+  const [roomCount, setRoomCount] = useState(1);
   const [checkInDate, setCheckInDate] = useState("2024-12-22");
   const [checkOutDate, setCheckOutDate] = useState("2024-12-24");
 
@@ -85,6 +86,33 @@ export default function ItemPage({ params }: { params: { id: number } }) {
     if (!hotel) {
         return <div className="flex justify-center items-center h-screen">Loading...</div>;
     }
+    
+    const handleReview = async () => {
+      if (!session?.user?.token || !hotel?.id) {
+        toast.error("You must be signed in to review.");
+        return;
+      }
+
+      alert (newRating)
+
+      try {
+
+        const result = await createReview(
+          params.id,
+          session.user.token,
+          newRating,
+          newReview
+        );
+
+        if (result.success) {
+          toast.success("Review successful!");
+        } else toast.error(`${result.message}`);
+          console.log(result);
+      } catch (error) {
+        console.error(error);
+        toast.error("Review failed!");
+      }
+    }
 
     const handleBooking = async () => {
       if (!session?.user?.token || !hotel?.id) {
@@ -93,21 +121,28 @@ export default function ItemPage({ params }: { params: { id: number } }) {
       }
   
       try {
+        // alert("Session: "session.user._id,)
+        alert(guestCount, roomCount, checkInDate, checkOutDate)
+
         const result = await addBooking(
-          session.user._id,
+          params.id,
           session.user.token,
           guestCount,
-          roomCount,
+          roomCount.toString(),
           checkInDate,
           checkOutDate
         );
-        toast.success("Booking successful!");
+        if(result.success) {
+          toast.success("Booking successful!");
+        } else toast.error(`${result.message}`);
         console.log(result);
       } catch (error) {
         console.error(error);
         toast.error("Booking failed!");
       }
     };
+
+    
 
         return (
             <div className="max-w-7xl mx-auto text-black">
@@ -266,9 +301,10 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                           </div>
                           <Input 
                           className="text-gray-500 text-sm" 
-                          placeholder='Write a review' 
-                          onChange={(value) => setNewReview(value)}/>
-                          <button className="bg-black text-white w-[200px] py-2 rounded-full text-sm mt-2">Submit Review</button>
+                          placeholder='Write a review'
+                          value={newReview} 
+                          onChange={(e) => setNewReview(e.target.value)}/>
+                          <button className="bg-black text-white w-[200px] py-2 rounded-full text-sm mt-2" onClick={handleReview}>Submit Review</button>
                         </div>
         
                         {/* Reviews list */}
@@ -369,13 +405,8 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                           type="number"
                           value={roomCount}
                           onChange={(e) => {
-                            const value = e.target.value;
-                            const numericValue = Number(value);
-                        
-                            // ตรวจสอบว่าอยู่ในช่วง 1-4
-                            if (numericValue >= 1 && numericValue <= 4) {
-                              setGuestCount(value);
-                            }
+                            const value = Math.min(4, Math.max(1, Number(e.target.value)));   
+                            setRoomCount(value)
                           }}
                           className="text-sm w-20 border rounded px-2 py-1"
                           min={1}

@@ -28,7 +28,7 @@ export default function FiveStarsHotel() {
             img: "/res/img/home/fiveStarsHotel-4.jpg",
         },
         {
-            title: "The Havencrest",
+            title: "The Willow Whisper Inn",
             desc: "A charming countryside inn blending rustic textures with cozy elegance.",
             tags: ["Countryside", "Rustic", "Cozy"],
             img: "/res/img/home/fiveStarsHotel-5.jpg",
