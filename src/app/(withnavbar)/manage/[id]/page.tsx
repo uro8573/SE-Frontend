@@ -1,363 +1,471 @@
 'use client'
 import Image from 'next/image';
-import { Button, Rating } from '@mui/material';
+import { Button, Input, Rating } from '@mui/material';
 import Link from 'next/link';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import getBooking from '@/libs/getBooking';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { ToastContainer, toast } from 'react-toastify'
 import addRating from '@/libs/addRating';
-import { HotelItem } from '../../../../../interfaces';
-import { ArrowLeft, ChevronDown, MapPin, Star, Wifi, Bed, Bath, Maximize ,Edit, ChevronLeft } from "lucide-react"
-import { Suspense } from 'react';
-import { LinearProgress } from '@mui/material';
+import { Hotel, HotelItem, ReviewItem ,Review, BookingItem } from '../../../../../interfaces';
+import { ArrowLeft, ChevronDown, MapPin, Star, Wifi, Bed, Bath, Maximize } from "lucide-react"
+import getReviewWithHotelID from '@/libs/getReviewWithHotelID';
+import addBooking from '@/libs/addBooking';
+import createReview from '@/libs/createReview';
+import { Edit } from 'lucide-react';
+import getBooking from '@/libs/getBooking'; // Import the new function
+import updateBooking from '@/libs/updateBooking';
+import deleteBooking from '@/libs/deleteBooking';
 
-export default function itemPage({params}:{params: {id: string}}) {
+import Swal from 'sweetalert2';
+import { useRouter } from 'next/router';
 
-    const { data:session } = useSession();
+export default function ItemPage({ params }: { params: { id: string } }) { // params.id is now string
+  const { data: session } = useSession();
 
-    const [item, setItem] = useState<HotelItem|null>(null);
-    const [loading, setLoading] = useState(true);
-    const [rating, setRating] = useState(0);
+  const [hotel, setHotel] = useState<Hotel | null>(null); // Hotel can be null initially
+  const [item, setItem] = useState<HotelItem | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [reviews, setReview] = useState<Review[] | null>(null);
+  const [avgRating, setAvgRating] = useState(0);
+  const [newReview, setNewReview] = useState('');
+  const [newRating, setNewRating] = useState<number>(0);
+  const [guestCount, setGuestCount] = useState(2);
+  const [roomCount, setRoomCount] = useState(1);
+  const [checkInDate, setCheckInDate] = useState("2024-12-22");
+  const [checkOutDate, setCheckOutDate] = useState("2024-12-24");
 
-    if(!session) return (<div>You must login to view this page.</div>)
+  useEffect(() => {
+    const fetchBookingAndHotel = async () => {
+      try {
+        if (!session?.user.token) throw new Error("User token is undefined");
 
-    useEffect(() => {
-        const fetchBooking = async () => {
-            try {
-                const response = await getBooking(session?.user.token, params.id);
+        const bookingResponse = await getBooking(params.id, session.user.token);
+        console.log("Booking Response:", bookingResponse); // เพิ่ม Log นี้
 
-                if(!response) throw new Error("Failed to fetch data.");
+        if (!bookingResponse?.data) throw new Error("Failed to fetch booking");
 
-                setItem(response);
-                console.log("fetch successfully");
-            } catch(err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
+        const bookingData = bookingResponse.data;
+        console.log("Booking Data:", bookingData); // เพิ่ม Log นี้
+        setHotel(bookingData.hotel); // Set hotel data from booking
+
+        // Now that we have hotel data, fetch reviews for this hotel
+        const reviewsResponse = await getReviewWithHotelID(session.user.token, bookingData.hotel.id);
+        const reviewsData = reviewsResponse.data;
+        setReview(reviewsData);
+
+        const ratingSum = reviewsData.reduce((sum: number, r: Review) => sum + r.rating, 0);
+        const avgRatingCalc = reviewsData.length > 0 ? ratingSum / reviewsData.length : 0;
+        setAvgRating(avgRatingCalc);
+
+      } catch (err) {
+        console.error(err);
+        toast.error(`Failed to fetch data: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookingAndHotel();
+  }, [params.id, session?.user.token]);
+
+  if (loading || !hotel) {
+    return <div className="flex justify-center items-center h-screen text-black">Loading...</div>;
+  }
+
+    const handleUpdate = async () => {
+      if (!session?.user?.token || !hotel?.id) {
+        toast.error("You must be signed in to book.");
+        return;
+      }
+  
+      try {
+        // alert("Session: "session.user._id,)
+
+        const result = await updateBooking(
+          params.id.toString(),
+          session.user.token,
+          guestCount,
+          roomCount.toString(),
+          checkInDate,
+          checkOutDate
+        );
+        if(result.success) {
+          toast.success("Edit Booking successful!");
+        } else toast.error(`${result.message}`);
+        console.log(result);
+      } catch (error) {
+        console.error(error);
+        toast.error("Edit Booking failed!");
+      }
+    };
+
+    const handleDelete = async () => {
+      if (!session?.user?.token || !hotel?.id) {
+        toast.error("You must be signed in to book.");
+        return;
+      }
+  
+      try {
+          Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const result = await deleteBooking(
+                params.id.toString(),
+                session.user.token,
+              );
+              if(result.success) {
+                toast.success("Delete Booking successful!");
+                setTimeout(() => {
+                  window.location.pathname = "/manage/current-reservations";
+                }, 3000);
+              } else toast.error(`${result.message}`);
+              console.log(result);
             }
-        }
+          });
 
-        fetchBooking();
+      } catch (error) {
+        console.error(error);
+        toast.error("Delete Booking failed!");
+      }
+    };
 
-    }, []);
-
-    // if(loading || !item) return ( <div></div> )
-
-    // const alert = async () => {
-    //     if(!session) {
-    //         toast.error("You must authorized first!!");
-    //         return;
-    //     }
-    //     if(rating < 1 || rating > 5) {
-    //         toast.warn("Rating value must between 1 and 5.");
-    //         return;
-    //     }
-    //     const response = await addRating(params.id, rating, session?.user.token);
-    //     if(response.success == true) {
-    //         toast.success("Rating Successfully!");
-    //     } else toast.error("Error occured while rating this hotel.");
-    // }
+    
 
         return (
-            
-                <div className="container mx-auto px-4 py-8 max-w-7xl text-black">
-                    {/* Breadcrumb */}
-                    <div className="flex items-center gap-2 text-sm mb-6">
-                        <Link href="/manage" className="flex items-center gap-1 text-gray-600">
-                        <ChevronLeft className="h-4 w-4" />
-                        Manage
-                        </Link>
-                        <span className="text-gray-400">•</span>
-                        <span className="font-medium">Details</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div className="lg:col-span-2">
-                        {/* Hotel Header */}
-                        <h1 className="text-3xl font-bold mb-2">The Havencrest</h1>
-                        <p className="text-gray-600 mb-2">
-                            A serene escape nestled above the city skyline, offering luxury with a view.
-                        </p>
-
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="flex items-center gap-1">
-                            <MapPin className="h-4 w-4 text-gray-500" />
-                            <span className="text-gray-600">Bangkok, Thailand</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                            <span>4.6</span>
-                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                            </div>
-                        </div>
-
-                        {/* Main Image */}
-                        <div className="mb-4">
-                            <div className="relative h-[400px] w-full rounded-lg overflow-hidden">
-                            <Image src="/placeholder.svg?height=600&width=800" alt="Hotel room" fill className="object-cover" />
-                            </div>
-                        </div>
-
-                        {/* Thumbnail Images */}
-                        <div className="grid grid-cols-4 gap-2 mb-8">
-                            {[1, 2, 3, 4].map((_, index) => (
-                            <div key={index} className="relative h-24 rounded-lg overflow-hidden cursor-pointer">
-                                <Image
-                                src="/placeholder.svg?height=150&width=200"
-                                alt={`Hotel room thumbnail ${index + 1}`}
-                                fill
-                                className="object-cover"
-                                />
-                            </div>
-                            ))}
-                        </div>
-
-                        {/* About */}
-                        <div className="mb-8">
-                            <h2 className="text-xl font-bold mb-4">About</h2>
-                            <p className="text-gray-600">
-                            A serene escape nestled high above the bustling city skyline, this luxurious haven offers an unparalleled
-                            blend of tranquility and sophistication, where every detail is thoughtfully designed to elevate your
-                            experience and every window frames a breathtaking panoramic view.
-                            </p>
-                        </div>
-
-                        {/* Facilities */}
-                        <div className="mb-8">
-                            <h2 className="text-xl font-bold mb-4">Facilities</h2>
-                            <div className="flex flex-wrap gap-2">
-                            <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-full">
-                                <Wifi className="h-4 w-4" />
-                                <span className="text-sm">Free Wifi</span>
-                            </div>
-                            <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-full">
-                                <Bed className="h-4 w-4" />
-                                <span className="text-sm">2 Bedroom</span>
-                            </div>
-                            <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-full">
-                                <Bath className="h-4 w-4" />
-                                <span className="text-sm">1 Bathroom</span>
-                            </div>
-                            <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-full">
-                                <Maximize className="h-4 w-4" />
-                                <span className="text-sm">Large Room</span>
-                            </div>
-                            </div>
-                        </div>
-
-                        {/* Reviews */}
-                        <div>
-                            <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold">Reviews</h2>
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm">Sort By:</span>
-                                <button className="flex items-center gap-1 text-sm font-medium">
-                                Highest Star Rating
-                                <ChevronDown className="h-4 w-4" />
-                                </button>
-                            </div>
-                            </div>
-
-                            <div className="flex items-center gap-4 mb-6">
-                            <div>
-                                <div className="text-3xl font-bold">4.6</div>
-                                <div className="text-sm text-gray-500">out of 5</div>
-                                <div className="flex mt-1">
-                                {[1, 2, 3, 4, 5].map((_, index) => (
-                                    <Star
-                                    key={index}
-                                    className={`h-4 w-4 ${index < 4 ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
-                                    />
-                                ))}
-                                </div>
-                                <div className="text-xs text-gray-500 mt-1">120 Ratings</div>
-                            </div>
-
-                            <div className="flex-1 space-y-2">
-                                <div>
-                                <div className="flex justify-between text-sm mb-1">
-                                    <span>Cleanliness</span>
-                                    <span>4.7</span>
-                                </div>
-                                <div className="h-2 bg-gray-200 rounded-full">
-                                    <div className="h-2 bg-yellow-400 rounded-full" style={{ width: "94%" }}></div>
-                                </div>
-                                </div>
-                                <div>
-                                <div className="flex justify-between text-sm mb-1">
-                                    <span>Location</span>
-                                    <span>4.7</span>
-                                </div>
-                                <div className="h-2 bg-gray-200 rounded-full">
-                                    <div className="h-2 bg-yellow-400 rounded-full" style={{ width: "94%" }}></div>
-                                </div>
-                                </div>
-                                <div>
-                                <div className="flex justify-between text-sm mb-1">
-                                    <span>Amenities</span>
-                                    <span>4.5</span>
-                                </div>
-                                <div className="h-2 bg-gray-200 rounded-full">
-                                    <div className="h-2 bg-yellow-400 rounded-full" style={{ width: "90%" }}></div>
-                                </div>
-                                </div>
-                                <div>
-                                <div className="flex justify-between text-sm mb-1">
-                                    <span>Service</span>
-                                    <span>4.7</span>
-                                </div>
-                                <div className="h-2 bg-gray-200 rounded-full">
-                                    <div className="h-2 bg-yellow-400 rounded-full" style={{ width: "94%" }}></div>
-                                </div>
-                                </div>
-                            </div>
-                            </div>
-
-                            <div className="text-sm text-gray-600 mb-4">17 Reviews</div>
-
-                            {/* Review Items */}
-                            <div className="space-y-6">
-                            <div className="flex gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0"></div>
-                                <div>
-                                <div className="font-medium">@Username</div>
-                                <div className="flex mt-1 mb-2">
-                                    {[1, 2, 3, 4, 5].map((_, index) => (
-                                    <Star key={index} className="h-3 w-3 text-gray-300" />
-                                    ))}
-                                </div>
-                                <p className="text-gray-600">Write a review</p>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0"></div>
-                                <div>
-                                <div className="font-medium">@cityhopper22</div>
-                                <div className="flex mt-1 mb-2">
-                                    {[1, 2, 3, 4, 5].map((_, index) => (
-                                    <Star
-                                        key={index}
-                                        className={`h-3 w-3 ${index < 5 ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
-                                    />
-                                    ))}
-                                </div>
-                                <p className="text-gray-600">
-                                    Super convenient location! Room was sleek and clean, perfect for working during the day and
-                                    exploring the city at night.
-                                </p>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0"></div>
-                                <div>
-                                <div className="font-medium">@skyline_dreamer</div>
-                                <div className="flex mt-1 mb-2">
-                                    {[1, 2, 3, 4, 5].map((_, index) => (
-                                    <Star
-                                        key={index}
-                                        className={`h-3 w-3 ${index < 5 ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
-                                    />
-                                    ))}
-                                </div>
-                                <p className="text-gray-600">
-                                    Those views are unreal — we watched the sunset from our balcony and felt like we were floating.
-                                    Total luxury, worth every penny.
-                                </p>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0"></div>
-                                <div className="flex-1">
-                                <div className="flex justify-between">
-                                    <div className="font-medium">@vintagevibes</div>
-                                    <Button size="small" variant="text" className="h-6 w-6">
-                                    <Edit className="h-3 w-3" />
-                                    </Button>
-                                </div>
-                                <div className="flex mt-1 mb-2">
-                                    {[1, 2, 3, 4, 5].map((_, index) => (
-                                    <Star
-                                        key={index}
-                                        className={`h-3 w-3 ${index < 5 ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
-                                    />
-                                    ))}
-                                </div>
-                                <p className="text-gray-600">
-                                    This place feels like stepping into a romantic novel. The vintage decor is gorgeous, and the staff
-                                    made our anniversary weekend extra special.
-                                </p>
-                                </div>
-                            </div>
-                            </div>
-
-                            <div className="flex justify-center mt-8">
-                            <Button variant="outlined" className="rounded-full px-8">
-                                Load more
-                            </Button>
-                            </div>
-                        </div>
-                        </div>
-
-                        {/* Sidebar */}
-                        <div className="lg:col-span-1">
-                        <div className="border border-gray-200 rounded-lg p-6 sticky top-8">
-                            <div className="space-y-4">
-                                <div>
-                                    <div className="flex justify-between items-center mb-2">
-                                        <h3 className="font-medium">Guest</h3>
-                                        <Button size="small" variant="text" className="h-6 w-6 rounded-full">
-                                            <Edit className="h-3 w-3" />
-                                        </Button>
-                                        </div>
-                                    <div className="font-normal text-gray-500">2 Person</div>
-                                </div>
-
-                                <div>
-                                    <div className="flex justify-between items-center mb-2">
-                                        <h3 className="font-medium">Room</h3>
-                                        <Button size="small" variant="text" className="h-6 w-6 rounded-full">
-                                            <Edit className="h-3 w-3" />
-                                        </Button>
-                                        </div>
-                                    <div className="font-medium text-gray-500 my-5 ">1 Room</div>
-                                </div>
-                                <div className="mb-2">
-                                    <div className='flex justify-between items-center mb-2'>
-                                        <h3 className="font-medium ">Check In</h3>
-                                        <Button size="small" variant="text" className="h-6 w-6 rounded-full">
-                                            <Edit className="h-3 w-3" />
-                                        </Button>
-                                    </div>
-                                    <div className="font-medium text-gray-500 mt-1">22 December 2024</div>
-                                </div>
-                                <div className="mb-2">
-                                    <div className="flex justify-between items-center  mb-2">
-                                        <h3 className="font-medium">Check Out</h3>
-                                        <Button size="small" variant="text" className="h-6 w-6 rounded-full">
-                                            <Edit className="h-3 w-3" />
-                                        </Button>
-                                    </div>
-                                    <div className="font-medium text-gray-500 mt-1">24 December 2024</div>
-                                </div>
-
-                                <div className="flex justify-between items-center">
-                                    <h3 className="font-medium">Pricing per night</h3>
-                                    <div className="font-medium">$10.99/night</div>
-                                </div>
-
-                                    <Button className="w-full bg-black hover:bg-gray-800 text-white">Update</Button>
-                                    <Button variant="contained" color="error" className="w-full">
-                                        Delete
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div className="max-w-7xl mx-auto text-black">
+              
+        
+              {/* Breadcrumb */}
+              <div className="p-4">
+                <div className="flex items-center text-sm mb-4">
+                  <Link href="/search" className="flex items-center text-gray-500">
+                    <ArrowLeft className="h-4 w-4 mr-1" />
+                    Search
+                  </Link>
+                  <span className="mx-2 text-gray-400">{"•"}</span>
+                  <span className='text-gray-400'>Details</span>
                 </div>
-            
+        
+                {/* Main Content */}
+                <div className="flex flex-col lg:flex-row gap-6">
+                  {/* Left Column */}
+                  <div className="flex-1">
+                    <h1 className="text-2xl font-bold mb-1">{hotel.name}</h1>
+                    <p className="text-gray-600 mb-2">
+                      hotel.description
+                    </p>
+        
+                    <div className="flex items-center mb-4">
+                      <MapPin className="h-4 w-4 text-gray-500 mr-1" />
+                      <span className="text-gray-600 text-sm mr-3">{hotel.province}, {hotel.region}</span>
+                      <div className="flex items-center">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="ml-1 font-medium">{avgRating}</span>
+                      </div>
+                    </div>
+        
+                    {/* Main Image */}
+                    <div className="relative mb-2">
+                      <Image
+                        src={hotel.picture || "/placeholder.svg"}
+                        alt="The Havencrest room"
+                        width={600}
+                        height={400}
+                        className="w-full h-[300px] md:h-[400px] object-cover rounded-lg"
+                      />
+                    </div>
+        
+                    
+        
+                    {/* About */}
+                    <div className="mb-6">
+                      <h2 className="text-lg font-semibold mb-2">About</h2>
+                      <p className="text-gray-600 text-sm">
+                        hotel.about
+                      </p>
+                    </div>
+        
+                    {/* Facilities */}
+                    <div className="mb-6">
+                      <h2 className="text-lg font-semibold mb-3">Facilities</h2>
+                      <div className="flex flex-wrap gap-y-3">
+                        <div className="flex items-center w-1/2">
+                          <Wifi className="h-5 w-5 mr-2 text-gray-600" />
+                          <span className="text-sm">Free WiFi</span>
+                        </div>
+                        <div className="flex items-center w-1/2">
+                          <Bed className="h-5 w-5 mr-2 text-gray-600" />
+                          <span className="text-sm">For up to {hotel.guests} Guests</span>
+                        </div>
+                        <div className="flex items-center w-1/2">
+                          <Bath className="h-5 w-5 mr-2 text-gray-600" />
+                          <span className="text-sm">1 Bathroom</span>
+                        </div>
+                        <div className="flex items-center w-1/2">
+                          <Maximize className="h-5 w-5 mr-2 text-gray-600" />
+                          <span className="text-sm">{hotel.size} Room</span>
+                        </div>
+                      </div>
+                    </div>
+        
+                    {/* Reviews */}
+                    <div className="mb-6">
+                      <h2 className="text-lg font-semibold mb-3">Reviews</h2>
+                      <div className="flex items-center mb-2">
+                        <div className="mr-4">
+                          <div className="font-semibold">Excellent</div>
+                          <div className="flex items-center">
+                            <span className="text-xl font-bold mr-1">{avgRating}</span>
+                            <span className="text-sm text-gray-500">out of 5</span>
+                          </div>
+                        </div>
+                        <div className="flex-1 grid grid-cols-2 gap-2">
+                          <div>
+                            <div className="flex justify-between text-sm mb-1">
+                              <span>Cleanliness</span>
+                              <span>{avgRating}</span>
+                            </div>
+                            <div className="h-1.5 bg-gray-200 rounded-full">
+                              <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${(avgRating / 5) * 100}%` }}></div>
+                            </div>
+                          </div>
+                          <div>
+                            <div className="flex justify-between text-sm mb-1">
+                              <span>Amenities</span>
+                              <span>{avgRating}</span>
+                            </div>
+                            <div className="h-1.5 bg-gray-200 rounded-full">
+                              <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${(avgRating / 5) * 100}%` }}></div>
+                            </div>
+                          </div>
+                          <div>
+                            <div className="flex justify-between text-sm mb-1">
+                              <span>Location</span>
+                              <span>{avgRating}</span>
+                            </div>
+                            <div className="h-1.5 bg-gray-200 rounded-full">
+                              <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${(avgRating / 5) * 100}%` }}></div>
+                            </div>
+                          </div>
+                          <div>
+                            <div className="flex justify-between text-sm mb-1">
+                              <span>Service</span>
+                              <span>{avgRating}</span>
+                            </div>
+                            <div className="h-1.5 bg-gray-200 rounded-full">
+                              <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${(avgRating / 5) * 100}%` }}></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+        
+                      <div className="mb-4">
+                        <div className="flex justify-between items-center mb-3">
+                          <div>{reviews?.length} Reviews</div>
+                          <div className="flex items-center text-sm">
+                            <span>Sort By: Highest Star Rating</span>
+                            <ChevronDown className="h-4 w-4 ml-1" />
+                          </div>
+                        </div>
+        
+                        {/* Write a review
+
+                        <div className="pt-[10px] pb-[30px] flex flex-col">
+                          <div className="flex items-center gap-3 mb-[2px]">
+                            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                            <div className="flex flex-col">
+                              <span className="text-gray-500 text-sm">{session?.user.name}</span>
+                              <Rating
+                                name="simple-controlled"
+                                value={newRating}
+                                size="small"
+                                onChange={(event, newValue) => {
+                                    setNewRating(newValue || 0)
+                                  }
+                                }
+                              />
+                            </div>
+                          </div>
+                          <Input 
+                          className="text-gray-500 text-sm" 
+                          placeholder='Write a review'
+                          value={newReview} 
+                          onChange={(e) => setNewReview(e.target.value)}/>
+                          <button className="bg-black text-white w-[200px] py-2 rounded-full text-sm mt-2" onClick={handleReview}>Submit Review</button>
+                        </div> */}
+        
+                        {/* Reviews list */}
+                     
+                        {reviews && reviews.map((review, index) => (
+                          <div key={index} className="mb-4">
+                            <div className="flex items-center gap-3 mb-1">
+                              <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                              <span className="font-medium text-sm">{review.user?.name}</span>
+                            </div>
+
+                            <div className="flex items-center gap-1 mb-1">
+                              {[1, 2, 3, 4, 5].map((i) => (
+                                <Star
+                                  key={i}
+                                  className={`h-4 w-4 ${
+                                    i <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                                  }`}
+                                />
+                              ))}
+                              <span className="text-sm text-gray-600 ml-2">({review.rating})</span>
+                            </div>
+
+                            <p className="text-sm text-gray-700">{review.comment}</p>
+                          </div>
+                        ))}
+        
+                        <button className="bg-black text-white w-full py-2 rounded-full text-sm mt-2">Load more</button>
+                      </div>
+                    </div>
+                  </div>
+        
+                  {/* Right Column - Booking */}
+                  {/* <div className="lg:w-80 text-black">
+                    <div className="border rounded-lg p-4 sticky top-4">
+                      <h3 className="font-medium mb-3">Guest</h3>
+                      <div className="flex justify-between items-center mb-3 border-b pb-3">
+                        <div className="text-sm">2 Person</div>
+                        <button className="p-1 rounded-full border">
+                          <ChevronDown className="h-4 w-4" />
+                        </button>
+                      </div>
+        
+                      <h3 className="font-medium mb-3">Room</h3>
+                      <div className="flex justify-between items-center mb-3 border-b pb-3">
+                        <div className="text-sm">1 Room</div>
+                        <button className="p-1 rounded-full border">
+                          <ChevronDown className="h-4 w-4" />
+                        </button>
+                      </div>
+        
+                      <h3 className="font-medium mb-3">Check in</h3>
+                      <div className="flex justify-between items-center mb-3 border-b pb-3">
+                        <div className="text-sm">22 December 2024</div>
+                        <button className="p-1 rounded-full border">
+                          <ChevronDown className="h-4 w-4" />
+                        </button>
+                      </div>
+        
+                      <h3 className="font-medium mb-3">Check out</h3>
+                      <div className="flex justify-between items-center mb-3 border-b pb-3">
+                        <div className="text-sm">24 December 2024</div>
+                        <button className="p-1 rounded-full border">
+                          <ChevronDown className="h-4 w-4" />
+                        </button>
+                      </div>
+        
+                    <div className="flex justify-between items-center mb-4">
+                        <div className="text-sm font-medium">Pricing per night</div>
+                        <div className="font-bold">$10/night</div>
+                    </div>
+                        <Link href={`/checkout`}>
+                            <button className="bg-black text-white w-full py-3 rounded-full font-medium">Reserve</button>
+                        </Link>
+                    </div>
+                  </div> */}
+
+                  {/* Sidebar */}
+                  <div className="lg:w-80 text-black">
+                    <div className="border rounded-lg p-4 sticky top-4">
+                      <h3 className="font-medium mb-3">Guest</h3>
+                      <div className="flex justify-between items-center mb-3 border-b pb-3">
+                        <input
+                          type="number"
+                          value={guestCount}
+                          onChange={(e) => {
+                            const value = Math.min(4, Math.max(1, Number(e.target.value)));   
+                            setGuestCount(value)
+                          }}
+                          className="text-sm w-20 border rounded px-2 py-1"
+                          min={1}
+                        />
+                      </div>
+
+                      <h3 className="font-medium mb-3">Room</h3>
+                      <div className="flex justify-between items-center mb-3 border-b pb-3">
+                        <input
+                          type="number"
+                          value={roomCount}
+                          onChange={(e) => {
+                            const value = Math.min(4, Math.max(1, Number(e.target.value)));   
+                            setRoomCount(value)
+                          }}
+                          className="text-sm w-20 border rounded px-2 py-1"
+                          min={1}
+                          max={4}
+                        />
+                      </div>
+
+                      <h3 className="font-medium mb-3">Check in</h3>
+                      <div className="flex justify-between items-center mb-3 border-b pb-3">
+                        <input
+                          type="date"
+                          value={checkInDate}
+                          onChange={(e) => setCheckInDate(e.target.value)}
+                          className="text-sm w-full border rounded px-2 py-1"
+                        />
+                      </div>
+
+                      <h3 className="font-medium mb-3">Check out</h3>
+                      <div className="flex justify-between items-center mb-3 border-b pb-3">
+                        <input
+                          type="date"
+                          value={checkOutDate}
+                          onChange={(e) => setCheckOutDate(e.target.value)}
+                          className="text-sm w-full border rounded px-2 py-1"
+                        />
+                      </div>
+
+                      <div className="flex justify-between items-center mb-4">
+                        <div className="text-sm font-medium">Pricing per night</div>
+                        <div className="font-bold">$10/night</div>
+                      </div>
+
+                      <button
+                        className="bg-black text-white w-full py-3 rounded-full font-medium hover:shadow-lg duration-300"
+                        onClick={handleUpdate}
+                      >
+                        Update
+                      </button>
+
+                      <button
+                        className="my-2 bg-[#EB4444] text-white w-full py-3 rounded-full font-medium hover:bg-[#962929] duration-300"
+                        onClick={handleDelete}
+                      >
+                        Delete
+                      </button>
+
+                    </div>
+                  </div>
+
+
+                  <ToastContainer />
+                </div>
+              </div>
+        
+             
+        </div>
     )
 }
+
+
+
+
+
+
+
+
+
+

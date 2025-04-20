@@ -1,3 +1,4 @@
+
 'use client'
 import Image from 'next/image';
 import { Button, Input, Rating } from '@mui/material';
@@ -13,6 +14,7 @@ import { ArrowLeft, ChevronDown, MapPin, Star, Wifi, Bed, Bath, Maximize } from 
 import getReviewWithHotelID from '@/libs/getReviewWithHotelID';
 import addBooking from '@/libs/addBooking';
 import createReview from '@/libs/createReview';
+import { Edit } from 'lucide-react';
 
 
 export default function ItemPage({ params }: { params: { id: number } }) {
@@ -164,7 +166,7 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                   <div className="flex-1">
                     <h1 className="text-2xl font-bold mb-1">{hotel.name}</h1>
                     <p className="text-gray-600 mb-2">
-                      {hotel.description}
+                      hotel.description
                     </p>
         
                     <div className="flex items-center mb-4">
@@ -381,71 +383,62 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                     </div>
                   </div> */}
 
-                  {/* Right Column - Booking */}
-                  <div className="lg:w-80 text-black">
-                    <div className="border rounded-lg p-4 sticky top-4">
-                      <h3 className="font-medium mb-3">Guest</h3>
-                      <div className="flex justify-between items-center mb-3 border-b pb-3">
-                        <input
-                          type="number"
-                          value={guestCount}
-                          onChange={(e) => {
-                            const value = Math.min(4, Math.max(1, Number(e.target.value)));   
-                            setGuestCount(value)
-                          }}
-                          className="text-sm w-20 border rounded px-2 py-1"
-                          min={1}
-                        />
-                      </div>
+                  {/* Sidebar */}
+                    <div className="lg:col-span-1">
+                    <div className="border border-gray-200 rounded-lg p-6 sticky top-8">
+                        <div className="space-y-4">
+                            <div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <h3 className="font-medium">Guest</h3>
+                                    <Button size="small" variant="text" className="h-6 w-6 rounded-full">
+                                        <Edit className="h-3 w-3" />
+                                    </Button>
+                                    </div>
+                                <div className="font-normal text-gray-500">2 Person</div>
+                            </div>
 
-                      <h3 className="font-medium mb-3">Room</h3>
-                      <div className="flex justify-between items-center mb-3 border-b pb-3">
-                        <input
-                          type="number"
-                          value={roomCount}
-                          onChange={(e) => {
-                            const value = Math.min(4, Math.max(1, Number(e.target.value)));   
-                            setRoomCount(value)
-                          }}
-                          className="text-sm w-20 border rounded px-2 py-1"
-                          min={1}
-                          max={4}
-                        />
-                      </div>
+                            <div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <h3 className="font-medium">Room</h3>
+                                    <Button size="small" variant="text" className="h-6 w-6 rounded-full">
+                                        <Edit className="h-3 w-3" />
+                                    </Button>
+                                    </div>
+                                <div className="font-medium text-gray-500 my-5 ">1 Room</div>
+                            </div>
+                            <div className="mb-2">
+                                <div className='flex justify-between items-center mb-2'>
+                                    <h3 className="font-medium ">Check In</h3>
+                                    <Button size="small" variant="text" className="h-6 w-6 rounded-full">
+                                        <Edit className="h-3 w-3" />
+                                    </Button>
+                                </div>
+                                <div className="font-medium text-gray-500 mt-1">22 December 2024</div>
+                            </div>
+                            <div className="mb-2">
+                                <div className="flex justify-between items-center  mb-2">
+                                    <h3 className="font-medium">Check Out</h3>
+                                    <Button size="small" variant="text" className="h-6 w-6 rounded-full">
+                                        <Edit className="h-3 w-3" />
+                                    </Button>
+                                </div>
+                                <div className="font-medium text-gray-500 mt-1">24 December 2024</div>
+                            </div>
 
-                      <h3 className="font-medium mb-3">Check in</h3>
-                      <div className="flex justify-between items-center mb-3 border-b pb-3">
-                        <input
-                          type="date"
-                          value={checkInDate}
-                          onChange={(e) => setCheckInDate(e.target.value)}
-                          className="text-sm w-full border rounded px-2 py-1"
-                        />
-                      </div>
+                            <div className="flex justify-between items-center">
+                                <h3 className="font-medium">Pricing per night</h3>
+                                <div className="font-medium">$10.99/night</div>
+                            </div>
 
-                      <h3 className="font-medium mb-3">Check out</h3>
-                      <div className="flex justify-between items-center mb-3 border-b pb-3">
-                        <input
-                          type="date"
-                          value={checkOutDate}
-                          onChange={(e) => setCheckOutDate(e.target.value)}
-                          className="text-sm w-full border rounded px-2 py-1"
-                        />
-                      </div>
-
-                      <div className="flex justify-between items-center mb-4">
-                        <div className="text-sm font-medium">Pricing per night</div>
-                        <div className="font-bold">$10/night</div>
-                      </div>
-
-                      <button
-                        className="bg-black text-white w-full py-3 rounded-full font-medium"
-                        onClick={handleBooking}
-                      >
-                        Reserve
-                      </button>
+                                <Button className="w-full bg-black hover:bg-gray-800 text-white">Update</Button>
+                                <Button variant="contained" color="error" className="w-full">
+                                    Delete
+                                </Button>
+                            </div>
+                        </div>
                     </div>
-                  </div>
+
+
                   <ToastContainer />
                 </div>
               </div>
@@ -454,3 +447,13 @@ export default function ItemPage({ params }: { params: { id: number } }) {
         </div>
     )
 }
+
+
+
+
+
+
+
+
+
+

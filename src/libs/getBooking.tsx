@@ -1,4 +1,4 @@
-export default async function getBooking(token: string, id: string) {
+export default async function getBooking(id: string, token: string) {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 

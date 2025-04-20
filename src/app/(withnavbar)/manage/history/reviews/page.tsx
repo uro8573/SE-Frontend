@@ -27,7 +27,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div>
+              {/* <div>
                 <button className="w-full flex items-center justify-between p-3 rounded-md bg-gray-100">
                   <span className="font-medium">History</span>
                   <ChevronDown className="h-4 w-4" />
@@ -40,7 +40,7 @@ export default function Dashboard() {
                     Reviews
                   </Link>
                 </div>
-              </div>
+              </div> */}
 
               <div>
                 <button className="w-full flex items-center justify-between p-3 rounded-md hover:bg-gray-100">
