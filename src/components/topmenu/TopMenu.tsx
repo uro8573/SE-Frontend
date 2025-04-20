@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import TopMenuItem from './TopMenuItem';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/(withnavbar)/api/auth/[...nextauth]/authOptions';
@@ -8,10 +9,10 @@ export default async function TopMenu() {
     const session = await getServerSession(authOptions);
 
     return (
-        <div className="w-full h-[100px] bg-transparent absolute top-0 left-0 z-30">
-            <div className="flex h-full justify-between ml-[5%] mr-[5%] items-center">
-                <div>
-                    <span className="text-[#F3E158] text-[28px] font-bold">UFA</span>
+        <div className="bg-black/10 w-full px-8 text-black flex flex-col items-center fixed z-50 pt-[26px] pb-[10px]">
+            <div className="bg-black/10 w-full max-w-screen-2xl flex flex-row justify-between">
+                {/* <div>
+                    <span className="text-[#F3E158] text-[28px] font-bold">TungTee</span>
                     <span className="text-[#D3C44E] text-[28px] font-bold">888</span>
                 </div>
                 <div className="flex">
@@ -28,11 +29,29 @@ export default async function TopMenu() {
                         !session ? (
                             <Link href={"/api/auth/signup"}>
                                 <div className="text-[14px] bg-white text-black border border-black px-[24px] py-[14px] rounded-lg hover:shadow-xl hover:bg-black hover:text-white duration-300">
-                                        Sign Up
+                                    Sign Up
                                 </div>
                             </Link>
                         ) : ""
                     }
+                </div> */}
+                <div className="bg-black/10 w-full flex flex-row gap-[1.5rem] justify-start items-center">
+                <Image
+                    src="/res/img/logo/Pure-White.png"
+                    alt="Website logo"
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                />
+                </div>
+                <div className="bg-black/20 w-full flex flex-row gap-[1.5rem] justify-center items-center">
+                    <TopMenuItem title="Home" pageRef='/'/>
+                    <TopMenuItem title="Search" pageRef='/search'/>
+                    <TopMenuItem title="Search" pageRef='/search'/>
+                </div>
+                <div className="bg-black/10 w-full flex flex-row gap-[1.5rem] justify-end items-center">
+                    <TopMenuItem title="Sign In" pageRef='/api/auth/signin'/>
+                    <TopMenuItem title="Register" pageRef='/api/auth/signup'/>
                 </div>
             </div>
         </div>

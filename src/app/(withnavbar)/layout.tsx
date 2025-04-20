@@ -1,4 +1,4 @@
-import TopMenu from "@/components/TopMenu";
+import TopMenu from "@/components/topmenu/TopMenu";
 import NextAuthProvider from "@/providers/NextAuthProvider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/authOptions";

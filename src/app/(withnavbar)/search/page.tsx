@@ -10,13 +10,15 @@ import getHotel from '@/libs/getHotel'
 import { useSession } from 'next-auth/react'
 import addBooking from '@/libs/addBooking'
 import { ToastContainer, toast } from 'react-toastify'
-import { HotelItem } from '../../../../interfaces'
+import { HotelJson, Hotel, HotelItem } from '../../../../interfaces'
 
 import Image from "next/image"
 import { Star, MapPin, Users, Maximize } from "lucide-react"
 import Link from "next/link";
 import { Slider } from "@/components/ui/Slider"
 import { Checkbox } from "@/components/ui/CheckBox"
+import getHotels from '@/libs/getHotels'
+
 
 export default function Search() {
 
@@ -28,47 +30,31 @@ export default function Search() {
     const [checkInDate, setCheckInDate] = useState<Dayjs|null>(null);
     const [checkOutDate, setCheckOutDate] = useState<Dayjs|null>(null);
     
-    
-    if(!session) return ( <div className="text-black text-xl text-center">You must Login first to view this page.</div> )
-    
-        const [item, setItem] = useState<HotelItem|null>(null);
-        const [loading, setLoading] = useState(true);
+    const [item, setItem] = useState<HotelItem|null>(null);
+    const [loading, setLoading] = useState(true);
+
+    const [hotelCount, setHotelCount] = useState<number>(0);
+    const [hotels, setHotels] = useState<Hotel[]>([]);
+
+    useEffect(() => {
+      const fetchHotels = async () => {
+        try {
+          const response = await getHotels();
+          setHotelCount(response.count);
+          setHotels(response.data);
+        } catch (error) {
+          console.error("เกิดข้อผิดพลาดในการโหลดโรงแรม:", error);
+        }
+      };
+  
+      fetchHotels();
+    }, []);
         
-        useEffect(() => {
-            if(!id) {
-                setLoading(false);
-                return;
-            }
-            const fetchItems = async () => {
-                try {
-                    const response = await getHotel(id);
-                    
-                    if(!response) throw new Error("Failed to fetch data.");
-                    
-                    setItem(response);
-                    
-                } catch(err) {
-                    console.error(err);
-                } finally {
-                    setLoading(false);
-                }
-            }
-            
-            fetchItems();
-            
-        }, []);
         
-        if(!id){
-            return (
-                <div>
-                    <BookingList/>
-                </div>
-            );
-        } 
         
-        if(loading || !item) return (<div></div>)
+       // if(loading || !item) return (<div>is loading</div>)
             
-    const makeBooking = async () => {
+    /*const makeBooking = async () => {
         if(checkInDate && session && checkOutDate) {
             const response = await addBooking(item.data._id, session.user.token, checkInDate.format("YYYY-MM-DD"), checkOutDate.format("YYYY-MM-DD"));
             if(response.success == true) {
@@ -76,69 +62,7 @@ export default function Search() {
                 window.location.search = '';
             } else toast.error(response.message ? response.message : `An Error has occurred while booking a hotel.`);
         } else toast.error("Invalid Date or Session.");
-    }
-        const mockHotels = [
-            {
-              id: 1,
-              name: "The Havencrest",
-              description: "A serene escape nestled above the city skyline, offering luxury with a view.",
-              location: "Bangkok",
-              guests: 4,
-              size: "Large",
-              price: 10.99,
-              image: "/placeholder.svg?height=300&width=400",
-            },
-            {
-              id: 2,
-              name: "Urban Oasis",
-              description: "Modern comforts in the heart of the city, ideal for business and leisure.",
-              location: "Bangkok",
-              guests: 2,
-              size: "Medium",
-              price: 15.50,
-              image: "/placeholder.svg?height=300&width=400",
-            },
-            {
-              id: 3,
-              name: "Skyview Retreat",
-              description: "Panoramic skyline views with minimalist luxury decor.",
-              location: "Bangkok",
-              guests: 3,
-              size: "Large",
-              price: 18.75,
-              image: "/placeholder.svg?height=300&width=400",
-            },
-            {
-              id: 4,
-              name: "Riverside Comfort",
-              description: "Peaceful riverside ambiance with elegant interiors.",
-              location: "Bangkok",
-              guests: 4,
-              size: "Extra Large",
-              price: 22.00,
-              image: "/placeholder.svg?height=300&width=400",
-            },
-            {
-              id: 5,
-              name: "Heritage Haven",
-              description: "Charming traditional decor meets modern amenities.",
-              location: "Bangkok",
-              guests: 2,
-              size: "Small",
-              price: 9.99,
-              image: "/placeholder.svg?height=300&width=400",
-            },
-            {
-              id: 6,
-              name: "Metro Luxe",
-              description: "Stylish studio with quick access to transport hubs.",
-              location: "Bangkok",
-              guests: 2,
-              size: "Medium",
-              price: 13.45,
-              image: "/placeholder.svg?height=300&width=400",
-            },
-          ];
+    }*/
           
     return (
         <div className="min-h-screen bg-white text-black">
@@ -327,7 +251,7 @@ export default function Search() {
             {/* Hotel Listings */}
             <div className="w-full lg:w-3/4 text-black">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-medium">17 Hotels available</h3>
+                <h3 className="font-medium">{hotelCount} Hotels available</h3>
                 <div className="flex items-center gap-2">
                   <span className="text-sm">Sort By:</span>
                   <button className="flex items-center gap-1 text-sm font-medium">
@@ -346,38 +270,44 @@ export default function Search() {
               </div>
   
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {mockHotels.map((hotel) => (
-                        <div key={hotel.id} className="border border-gray-200 rounded-lg overflow-hidden">
+
+              {hotels.length === 0 ? (
+                      <p>กำลังโหลดข้อมูลโรงแรม...</p>
+                    ) : (
+
+                      hotels.map((hotel) => (
+                        <div key={hotel._id} className="border border-gray-200 rounded-lg overflow-hidden">
                             <div className="relative h-48">
-                            <Image src={hotel.image} alt={hotel.name} fill className="object-cover" />
+                            {/* <Image src={hotel.image} alt={hotel.name} fill className="object-cover" /> */}
                             </div>
                             <div className="p-4">
                             <h3 className="font-bold text-lg mb-1 text-black">{hotel.name}</h3>
-                            <p className="text-sm text-gray-600 mb-2">{hotel.description}</p>
+                            {/* <p className="text-sm text-gray-600 mb-2">{hotel.description}</p> */}
                             <div className="flex items-center gap-1 mb-2">
                                 <MapPin className="w-4 h-4 text-gray-500" />
-                                <span className="text-sm text-black">{hotel.location}</span>
+                                <span className="text-sm text-black">{hotel.region}, {hotel.address}</span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center gap-4">
                                 <div className="flex items-center gap-1">
                                     <Users className="w-4 h-4 text-gray-500" />
-                                    <span className="text-xs text-black">{hotel.guests}</span>
+                                    {/* <span className="text-xs text-black">{hotel.guests}</span> */}
                                 </div>
                                 <Link href={`/hotel/${hotel.id}`}>
                                     <div className="flex items-center gap-1">
                                         
                                             <Maximize className="w-4 h-4 text-gray-500" />
-                                            <span className="text-xs text-black">{hotel.size}</span>
+                                            {/* <span className="text-xs text-black">{hotel.size}</span> */}
                                         
                                     </div>
                                 </Link>
                                 </div>
-                                <div className="font-bold text-lg text-black">${hotel.price.toFixed(2)}</div>
+                                <div className="font-bold text-lg text-black">${hotel.dailyRate}</div>
                             </div>
                             </div>
                         </div>
-                    ))}
+                    )))
+                  }
               </div>
             </div>
           </div>

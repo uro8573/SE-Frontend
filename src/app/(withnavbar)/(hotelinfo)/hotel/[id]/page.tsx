@@ -14,7 +14,7 @@ import { ArrowLeft, ChevronDown, MapPin, Star, Wifi, Bed, Bath, Maximize } from 
 
 export default function itemPage({params}:{params: {id: string}}) {
 
-    //const { data:session } = useSession();
+    const { data:session } = useSession();
 
     const [item, setItem] = useState<HotelItem|null>(null);
     const [loading, setLoading] = useState(true);
@@ -24,7 +24,7 @@ export default function itemPage({params}:{params: {id: string}}) {
         const fetchitem = async () => {
             try {
                 const response = await getHotel(params.id);
-
+                console.log("amoungus",response);
                 if(!response) throw new Error("Failed to fetch data.");
 
                 setItem(response);
@@ -40,7 +40,7 @@ export default function itemPage({params}:{params: {id: string}}) {
 
     }, []);
 
-    /*if(loading || !item) return ( <div></div> )
+    //if(loading || !item) return ( <div></div> )
 
     const alert = async () => {
         if(!session) {
@@ -55,7 +55,7 @@ export default function itemPage({params}:{params: {id: string}}) {
         if(response.success == true) {
             toast.success("Rating Successfully!");
         } else toast.error("Error occured while rating this hotel.");
-    }*/
+    }
 
         return (
             <div className="max-w-7xl mx-auto text-black">

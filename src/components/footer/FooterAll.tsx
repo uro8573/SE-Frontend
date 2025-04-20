@@ -1,18 +1,53 @@
 import Link from "next/link"
+import Image from "next/image"
+
+import Contact from "./Contact"
 
 export default function FooterAll() {
     return (
-        <div className="mt-[20%] h-[264px] w-full border-t-2 border-[#E6E6E6]">
-            <div className="mt-[2%] flex justify-between">
-                <div className="ml-[6%]">
-                    <span className="text-[#F3E158] text-[28px] font-bold">UFA</span>
-                    <span className="text-[#D3C44E] text-[28px] font-bold">888</span>
+        <div className="w-full px-8 pb-24 text-black flex flex-col items-center gap-[3rem]">
+            <div className="w-full max-w-screen-2xl flex flex-row justify-between gap-[6rem]">
+                <div className="flex flex-row gap-[6rem]">
+                    <div className="flex flex-col gap-[1rem]">
+                        <h4 className="text-h4-heading">Page</h4>
+                        <p className="text-p3-paragraphy-small">Home</p>
+                        <p className="text-p3-paragraphy-small">Search</p>
+                        <p className="text-p3-paragraphy-small">Manage</p>
+                        <p className="text-p3-paragraphy-small">About us</p>
+                    </div>
+
+                    <div className="flex flex-col gap-[1rem]">
+                        <h4 className="text-h4-heading">Features</h4>
+                        <p className="text-p3-paragraphy-small">Find Hotels</p>
+                        <p className="text-p3-paragraphy-small">Book Reservation</p>
+                        <p className="text-p3-paragraphy-small">View Reservation</p>
+                        <p className="text-p3-paragraphy-small">Reviews</p>
+                    </div>
+
+                    <div className="flex flex-col gap-[1rem]">
+                        <h4 className="text-h4-heading">Cookies</h4>
+                        <p className="text-p3-paragraphy-small">Data Collect</p>
+                        <p className="text-p3-paragraphy-small">Term</p>
+                        <p className="text-p3-paragraphy-small">Privacy</p>
+                    </div>
                 </div>
-                <div className="flex flex-col gap-5 text-black mr-[8%]">
-                    <Link href="/">Home</Link>
-                    <Link href="/hotel">Hotels</Link>
-                    <Link href="/booking">Booking</Link>
-                    <Link href="/contact">Contact Us</Link>
+                <div className="flex flex-row gap-[2rem] items-center">
+                    <div className="flex flex-col gap-[16px] items-end">
+                        <p className="text-p1-paragraphy-large">Tungtee888@gmail.com</p>
+                        <p className="text-p1-paragraphy-large">080-269-9284</p>
+                        <div className="flex flex-row gap-[16px]">
+                            <Contact message="Gmail" iconUrl="/res/svg/Social-Icons-gmail.svg" />
+                            <Contact message="Instagram" iconUrl="/res/svg/Social-Icons-instagram.svg" />
+                            <Contact message="Discord" iconUrl="/res/svg/Social-Icons-discord.svg" />
+                        </div>
+                    </div>
+                    <Image
+                        src="/res/img/logo/Pure-Black.png"
+                        alt="Website Logo"
+                        width={116}
+                        height={116}
+                        className="object-contain"
+                    />
                 </div>
             </div>
         </div>

@@ -1,30 +1,46 @@
 "use client"
 
 import type React from "react";
-
+import { toast, ToastContainer } from 'react-toastify';
 import { useState } from "react";
 import Link from "next/link";
 import LoginInput from "@/components/LoginInput";
 import { PasswordInput } from "@/components/passwordInput";
+import { useRouter } from "next/navigation";
+import userRegister from "@/libs/userRegister";
 
 export function RegisterForm() {
-  const [name, setName] = useState("")
-  const [telephone, setTelephone] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState('');
+  const [tel, setTel] = useState('');
+  const [password, setPassword] = useState('');
+  const [rePassword, setRePassword] = useState('');
+  const [name, setName] = useState('');
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle login logic here
-    console.log("Register attempt with:", { name, telephone,email, password })
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if(password != rePassword) {
+        toast.error("Your Re-Password doesn't match.");
+        return;
+    }
+
+    const res = await userRegister(email, password, name, tel);
+
+    if(res.success) {
+        toast.success("Register Successfully.");
+        setTimeout(() => router.push("/api/auth/signin"), 2000);
+    } else toast.error(res.message ? res.message : `An Error has occurred while registering.`)
   }
+  
+ 
 
   return (
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex flex-row space-x-[16px]">
             <LoginInput id="name" label="Name" placeholder="Full Name" onChange={setName}/>
-            <LoginInput id="telephone" label="Telephone" placeholder="012-345-6789" type="tel" onChange={setTelephone}/>
+            <LoginInput id="telephone" label="Telephone" placeholder="012-345-6789" type="tel" onChange={setTel}/>
         </div>
 
         <LoginInput type="email" onChange={setEmail}/>

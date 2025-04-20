@@ -2,7 +2,6 @@
 module.exports = {
   content: [
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    './pages/**/*.{js,ts,jsx,tsx}',
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
@@ -71,13 +70,12 @@ module.exports = {
       colors: {
         'primary-orange': '#F49B4A',
         'secondary-orange': '#F3E5D9',
-        'accent-blue': '#7290CC',
         'primary-dark': '#0A0C10',
-        'light-dark': '#424345',
-        'dark-grey': '#7D7E80',
-        'grey': '#B9B9B9',
-        'light-grey': '#D8D8D8',
-        'white': '#FBFBFB',
+        'ct-light-dark': '#424345',
+        'ct-dark-grey': '#7D7E80',
+        'ct-grey': '#B9B9B9',
+        'ct-light-grey': '#D8D8D8',
+        'ct-white': '#FBFBFB',
         'transparent-stroke': 'rgba(0, 0, 0, 0.2)',
         'transparent-bg': 'rgba(0, 0, 0, 0.1)',
       },
