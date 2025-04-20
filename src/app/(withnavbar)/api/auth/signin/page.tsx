@@ -1,4 +1,8 @@
+
 'use client';
+
+import Image from "next/image"
+import { LoginForm } from "@/components/loginForm"
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
@@ -50,6 +54,7 @@ export default function Page() {
                    
                 </div>
             </div>
+
 
             <div className="w-1/2 h-full flex flex-col px-[153px] py-[122px]">
                 <h1 className="text-[64px] font-bold mb-2">Welcome Back</h1>
@@ -119,3 +124,6 @@ export default function Page() {
         </main>
     );
 }
+
+ 
+
