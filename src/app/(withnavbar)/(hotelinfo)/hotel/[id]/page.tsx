@@ -52,9 +52,8 @@ export default function ItemPage({ params }: { params: { id: number } }) {
         setReview(reviewsData);
   
         const ratingSum = reviewsData.reduce((sum: number, r: Review) => sum + r.rating, 0);
-        const avgRatingCalc = reviewsData.length > 0 ? ratingSum / reviewsData.length : 0;
+        const avgRatingCalc = reviewsData.length > 0 ? Math.round((ratingSum / reviewsData.length) * 10) / 10 : 0;
         setAvgRating(avgRatingCalc);
-  
       } catch (err) {
         console.error(err);
       } finally {
