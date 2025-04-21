@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ChevronDown, Edit, Star } from "lucide-react"
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/authOptions";
+import { authOptions } from "@/app/(withoutnavbar)/api/auth/[...nextauth]/authOptions";
 
 export default async function Dashboard() {
 
