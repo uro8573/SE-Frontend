@@ -478,7 +478,7 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                     const value = Math.min(4, Math.max(1, Number(e.target.value)));   
                     setGuestCount(value)
                   }}
-                  className="text-sm w-20 border rounded px-2 py-1"
+                  className="text-sm w-20 border bg-white rounded px-2 py-1"
                   min={1}
                 />
               </div>
@@ -492,7 +492,7 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                     const value = Math.min(4, Math.max(1, Number(e.target.value)));   
                     setRoomCount(value)
                   }}
-                  className="text-sm w-20 border rounded px-2 py-1"
+                  className="text-sm w-20 border bg-white rounded px-2 py-1"
                   min={1}
                   max={4}
                 />
@@ -504,7 +504,7 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                   type="date"
                   value={checkInDate}
                   onChange={(e) => setCheckInDate(e.target.value)}
-                  className="text-sm w-full border rounded px-2 py-1"
+                  className="text-sm w-full border bg-white rounded px-2 py-1"
                 />
               </div>
 
@@ -514,7 +514,7 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                   type="date"
                   value={checkOutDate}
                   onChange={(e) => setCheckOutDate(e.target.value)}
-                  className="text-sm w-full border rounded px-2 py-1"
+                  className="text-sm w-full border bg-white rounded px-2 py-1"
                 />
               </div>
 
