@@ -66,6 +66,10 @@ export const authOptions:AuthOptions = {
         return session;
       }
     },
+    pages: {
+      // signIn: "/sign-in",
+      signOut: "/api/auth/signout1",
+    },
 }
 
 const handler = NextAuth(authOptions);
