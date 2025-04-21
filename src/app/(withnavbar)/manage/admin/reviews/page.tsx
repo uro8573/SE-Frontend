@@ -163,10 +163,10 @@ export default function Dashboard() {
                   <ChevronDown className="h-4 w-4" />
                 </button>
                 <div className="pl-6 py-1">
-                  <Link href="/manage/admin/reservations" className="block py-1.5 text-gray-600">
+                  <Link href="/manage/history/reservations" className="block py-1.5 text-gray-600">
                     Reservations
                   </Link>
-                  <Link href="/manage/admin/reviews" className="block py-1.5 text-black-600">
+                  <Link href="/manage/history/reviews" className="block py-1.5 text-black-600">
                     Reviews
                   </Link>
                 </div>

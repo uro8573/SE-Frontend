@@ -34,12 +34,12 @@ export function PasswordInput({
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         {label && (
-          <label htmlFor={id} className="block text-[#0A0C10] text-lg font-bold">
+          <label htmlFor={id} className="block text-p3-paragraphy-small font-bold text-primary-dark">
             {label}
           </label>
         )}
         {forgotPasswordLink && (
-          <Link href={forgotPasswordLink} className="text-lg text-[#424345] hover:underline">
+          <Link href={forgotPasswordLink} className="text-p3-paragraphy-small text-ct-light-dark hover:underline">
             {forgotPasswordText}
           </Link>
         )}
@@ -52,7 +52,7 @@ export function PasswordInput({
           placeholder={placeholder}
           value={password}
           required={required}
-          className={`h-12 w-full rounded-2xl border border-gray-300 bg-gray-100 px-4 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 rounded-2xl bg-[#D8D8D8] text-[#7D7E80] ${className}`}
+          className={`h-14 w-full rounded-2xl bg-gray-100 px-4 focus:outline-none text-ct-dark-grey ${className}`}
           onChange={(e) => onChange && onChange(e.target.value)}
         />
         <button

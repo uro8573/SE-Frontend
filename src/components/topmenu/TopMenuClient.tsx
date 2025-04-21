@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import TopMenuItem from './TopMenuItem';
 import Image from 'next/image';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function TopMenuClient({ session }: { session: any }) {
@@ -37,7 +38,7 @@ export default function TopMenuClient({ session }: { session: any }) {
         <div className={menuClasses}>
             <div className="w-full max-w-screen-2xl flex flex-row justify-between items-center">
                 <div className="relative w-full h-10 flex items-center">
-                    <div className="relative w-[40px] h-[40px]">
+                    <Link href={"/"} className="relative w-[40px] h-[40px]">
                         <Image
                             src="/res/img/logo/White.png"
                             alt="Logo white"
@@ -54,7 +55,7 @@ export default function TopMenuClient({ session }: { session: any }) {
                                 isTransparent ? 'opacity-0' : 'opacity-100'
                             }`}
                         />
-                    </div>
+                    </Link>
                 </div>
 
                 <div className="w-full flex flex-row gap-[1.5rem] justify-center items-center">

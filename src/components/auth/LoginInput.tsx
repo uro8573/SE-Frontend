@@ -26,7 +26,7 @@ export default function LoginInput({
   return (
     <div className="space-y-2">
       {label && (
-        <label htmlFor={id} className="block text-[#0A0C10] text-lg font-bold">
+        <label htmlFor={id} className="block text-p3-paragraphy-small font-bold text-primary-dark">
           {label}
         </label>
       )}
@@ -37,7 +37,7 @@ export default function LoginInput({
         value={input}
         required={required}
         type={type}
-        className={`h-12 w-full rounded-2xl border border-gray-300 bg-gray-100 px-4 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 rounded-2xl bg-[#D8D8D8] text-[#0A0C10] ${className}`}
+        className={`h-14 w-full rounded-2xl bg-gray-100 px-4 focus:outline-none text-ct-dark-grey ${className}`}
         onChange={(e) => onChange && onChange(e.target.value)}
       />
     </div>

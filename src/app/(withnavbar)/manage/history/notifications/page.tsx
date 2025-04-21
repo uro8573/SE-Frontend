@@ -74,13 +74,17 @@ export default function Dashboard() {
                   <ChevronDown className="h-4 w-4" />
                 </button>
                 <div className="pl-6 py-1">
-                  <Link href="/manage/history/reservations" className="block py-1.5 font-medium">
+                  <Link href="/manage/history/reservations" className="block py-1.5 text-gray-600">
                     Reservations
                   </Link>
                   <Link href="/manage/history/reviews" className="block py-1.5 text-gray-600">
                     Reviews
                   </Link>
+                  <Link href="/manage/history/notifications" className="block py-1.5 font-medium">
+                    Notifications
+                </Link>
                 </div>
+                
               </div>
             </nav>
           </div>
@@ -88,7 +92,7 @@ export default function Dashboard() {
           {/* Main Content */}
           <div className="flex-1">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-medium">{bookingCount} Reservations</h2>
+              <h2 className="text-lg font-medium">{bookingCount} Notifications</h2> {/* ยังเอาเลขมาจาก booking ทั้งหมด */}
               <div className="flex items-center">
                 <span className="text-sm mr-2">Sort By:</span>
                 <button className="flex items-center text-sm">
@@ -98,7 +102,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {bookings.length === 0 ? (
                 <p>กำลังโหลดข้อมูลการจอง...</p>
               ) : (
@@ -143,7 +147,9 @@ export default function Dashboard() {
                   </div>
                 ))
               )}
-            </div>
+            </div> */}
+
+
           </div>
         </div>
       </main>
