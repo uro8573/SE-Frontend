@@ -7,37 +7,37 @@ export default function FiveStarsHotel() {
             title: "Silverpine Retreat",
             desc: "A peaceful mountain escape surrounded by whispering pines and fresh alpine air.",
             tags: ["Mountain", "Nature", "Wellness"],
-            img: "/res/img/home/fiveStarsHotel-1.jpg",
+            img: "/res/img/home/Silverpine_Retreat.jpg",
         },
         {
             title: "The Velvet Lantern",
             desc: "An elegant, vintage-style hotel with warm lighting and timeless charm.",
             tags: ["Boutique", "Historic", "Romantic"],
-            img: "/res/img/home/fiveStarsHotel-2.jpg",
+            img: "/res/img/home/The_Velvet_Lantern.jpg",
         },
         {
             title: "Sundara Bay Resort",
             desc: "A sun-soaked beachfront haven with crystal waters and endless horizon views.",
             tags: ["Beachfront", "Luxury", "Tropical"],
-            img: "/res/img/home/fiveStarsHotel-3.jpg",
+            img: "/res/img/home/Sundara_Bay_Resort.jpg",
         },
         {
             title: "Urban Nest Hotel",
             desc: "A sleek, modern space in the heart of the city — perfect for business and weekend stays alike.",
             tags: ["City", "Modern", "Business Friendly"],
-            img: "/res/img/home/fiveStarsHotel-4.jpg",
+            img: "/res/img/home/Urban_Nest_Hotel.jpg",
         },
         {
             title: "The Willow Whisper Inn",
             desc: "A charming countryside inn blending rustic textures with cozy elegance.",
             tags: ["Countryside", "Rustic", "Cozy"],
-            img: "/res/img/home/fiveStarsHotel-5.jpg",
+            img: "/res/img/home/The_Willow_Whisper_Inn.jpg",
         },
         {
             title: "Celestia Horizon",
             desc: "A sky-high sanctuary with panoramic views, blending celestial design with refined luxury.",
             tags: ["Luxury", "Skyline", "Modern Retreat"],
-            img: "/res/img/home/fiveStarsHotel-6.jpg",
+            img: "/res/img/home/Celestia_Horizon.jpg",
         },
     ];
 

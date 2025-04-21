@@ -27,7 +27,7 @@ export default function TopHotelSection() {
                     <div className="w-full sm:w-[48%] lg:w-[30%] flex flex-col justify-start items-start gap-4 min-w-0">
                         <div className="relative w-full bg-gray-100 rounded-2xl aspect-square overflow-hidden">
                             <Image
-                                src="/res/img/home/topFirstHotel.jpg"
+                                src="/res/img/home/The_Havencrest.jpg"
                                 alt="The Havencrest"
                                 fill
                                 className="object-cover rounded-2xl"
@@ -47,7 +47,7 @@ export default function TopHotelSection() {
                     <div className="w-full sm:w-[48%] lg:w-[38%] flex flex-col justify-start items-start gap-4 min-w-0">
                         <div className="relative w-full bg-gray-100 rounded-2xl aspect-square">
                             <Image
-                                src="/res/img/home/topSecondHotel.jpg"
+                                src="/res/img/home/Lunara_Inn.jpg"
                                 alt="Lunara Inn"
                                 fill
                                 className="object-cover rounded-2xl"
@@ -67,7 +67,7 @@ export default function TopHotelSection() {
                     <div className="w-full sm:w-[48%] lg:w-[30%] flex flex-col justify-start items-start gap-4 min-w-0">
                         <div className="relative w-full bg-gray-100 rounded-2xl aspect-square">
                             <Image
-                                src="/res/img/home/topThridHotel.jpg"
+                                src="/res/img/home/Blue_Fern_Lodge.jpg"
                                 alt="Blue Fern Lodge"
                                 fill
                                 className="object-cover rounded-2xl"

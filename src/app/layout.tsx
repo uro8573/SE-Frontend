@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./(withnavbar)/api/auth/[...nextauth]/authOptions";
+import { authOptions } from "./(withoutnavbar)/api/auth/[...nextauth]/authOptions";
 import NextAuthProvider from "@/providers/NextAuthProvider";
 import Footer from "@/components/footer/FooterHome";
-import TopMenu from "@/components/topmenu/TopMenu";
+import TopMenu from "@/components/topmenu/TopMenuClient";
 
 const inter = Inter({ subsets: ["latin"] });
 

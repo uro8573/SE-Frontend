@@ -7,7 +7,7 @@ export default function Banner() {
     return (
         <section
             className="relative h-screen bg-cover bg-center"
-            style={{ backgroundImage: "url(/res/img/home/bannerHome.jpg)" }}
+            style={{ backgroundImage: "url(/res/img/home/banner.jpg)" }}
         >
             <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-white px-4 text-center gap-9">
                 <h1 className="text-h1-heading">

@@ -6,48 +6,48 @@ export default function CustomerReviewSection() {
     const reviews = [
         {
             user: "@nomad",
-            userImg: "/images/review1.jpg",
+            userImg: "/res/img/home/User_Profile.png",
             hotel: "Blue Fern Lodge",
             review:
                 "Loved the calm, peaceful atmosphere and cozy surroundings. Woke up to birdsong and fresh air — exactly what I needed!",
             title: "hotel Image",
-            hotelImg: "/images/review1.jpg",
+            hotelImg: "/res/img/home/Blue_Fern_Lodge.jpg",
         },
         {
             user: "@vintagevibes",
-            userImg: "/images/review1.jpg",
+            userImg: "/res/img/home/User_Profile.png",
             hotel: "The Velvet Lantern",
             review:
                 "This place feels like stepping into a romantic novel. The vintage decor is gorgeous, and the staff made our anniversary weekend extra special.",
             title: "hotel Image",
-            hotelImg: "/images/review2.jpg",
+            hotelImg: "/res/img/home/The_Velvet_Lantern.jpg",
         },
         {
             user: "@cityhopper22",
-            userImg: "/images/review1.jpg",
+            userImg: "/res/img/home/User_Profile.png",
             hotel: "Urban Nest Hotel",
             review:
                 "Super convenient location! Room was sleek and clean, perfect for working during the day and exploring the city at night.",
             title: "hotel Image",
-            hotelImg: "/images/review3.jpg",
+            hotelImg: "/res/img/home/Urban_Nest_Hotel.jpg",
         },
         {
             user: "@skyline_dreamer",
-            userImg: "/images/review1.jpg",
+            userImg: "/res/img/home/User_Profile.png",
             hotel: "Celestia Horizon",
             review:
                 "Those views are unreal — we watched the sunset from our balcony and felt like we were floating. Total luxury, worth every penny.",
             title: "hotel Image",
-            hotelImg: "/images/review4.jpg",
+            hotelImg: "/res/img/home/Celestia_Horizon.jpg",
         },
         {
             user: "@beachbum",
-            userImg: "/images/review1.jpg",
+            userImg: "/res/img/home/User_Profile.png",
             hotel: "Sundara Bay Resort",
             review:
                 "This place is paradise! Crystal-clear water, and cocktails by the beach — didn’t want to leave. Already planning my next trip back.",
             title: "hotel Image",
-            hotelImg: "/images/review5.jpg",
+            hotelImg: "/res/img/home/Sundara_Bay_Resort.jpg",
         },
     ];
 
@@ -57,8 +57,14 @@ export default function CustomerReviewSection() {
             className="bg-transparent-bg min-w-[450px] max-w-[450px] snap-start p-6 flex flex-col justify-start items-start gap-6 rounded-2xl"
         >
             <div className="flex flex-row gap-4 justify-start items-center">
-                <div className="w-16 h-16 bg-gray-100 rounded-full">
-                    {/* รูปโปรไฟล์ผู้ใช้ถ้ามี */}
+                <div className="relative w-16 h-16 bg-gray-100 rounded-full aspect-square overflow-hidden">
+                    <Image
+                        src={review.userImg}
+                        alt={review.user}
+                        fill
+                        priority={i === 0}
+                        className="object-cover rounded-2xl"
+                    />
                 </div>
                 <div className="flex flex-col gap-2">
                     <h4 className="text-h4-heading text-primary-dark">{review.user}</h4>

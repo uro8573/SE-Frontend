@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import userRegister from "@/libs/userRegister";
 
-  export function RegisterForm() {
+export function RegisterForm() {
   const [email, setEmail] = useState('');
   const [telephone, setTelephone] = useState('');
   const [password, setPassword] = useState('');
@@ -24,8 +24,9 @@ import userRegister from "@/libs/userRegister";
     setIsLoading(true);
 
     if(password != rePassword) {
-        toast.error("Your Re-Password doesn't match.");
-        return;
+      toast.error("Your Re-Password doesn't match.");
+      setIsLoading(false);
+      return;
     }
 
     try {
