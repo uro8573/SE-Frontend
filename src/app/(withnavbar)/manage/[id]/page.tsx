@@ -54,7 +54,7 @@ export default function ItemPage({ params }: { params: { id: string } }) { // pa
         setReview(reviewsData);
 
         const ratingSum = reviewsData.reduce((sum: number, r: Review) => sum + r.rating, 0);
-        const avgRatingCalc = reviewsData.length > 0 ? ratingSum / reviewsData.length : 0;
+        const avgRatingCalc = reviewsData.length > 0 ? Math.round((ratingSum / reviewsData.length) * 10) / 10 : 0;
         setAvgRating(avgRatingCalc);
 
       } catch (err) {
@@ -388,7 +388,7 @@ export default function ItemPage({ params }: { params: { id: string } }) { // pa
                             const value = Math.min(4, Math.max(1, Number(e.target.value)));   
                             setGuestCount(value)
                           }}
-                          className="text-sm w-20 border rounded px-2 py-1"
+                          className="text-sm w-20 border rounded px-2 py-1 bg-white"
                           min={1}
                         />
                       </div>
@@ -402,7 +402,7 @@ export default function ItemPage({ params }: { params: { id: string } }) { // pa
                             const value = Math.min(4, Math.max(1, Number(e.target.value)));   
                             setRoomCount(value)
                           }}
-                          className="text-sm w-20 border rounded px-2 py-1"
+                          className="text-sm w-20 border rounded px-2 py-1 bg-white"
                           min={1}
                           max={4}
                         />
@@ -414,7 +414,7 @@ export default function ItemPage({ params }: { params: { id: string } }) { // pa
                           type="date"
                           value={checkInDate}
                           onChange={(e) => setCheckInDate(e.target.value)}
-                          className="text-sm w-full border rounded px-2 py-1"
+                          className="text-sm w-full border rounded px-2 py-1 bg-white"
                         />
                       </div>
 
@@ -424,7 +424,7 @@ export default function ItemPage({ params }: { params: { id: string } }) { // pa
                           type="date"
                           value={checkOutDate}
                           onChange={(e) => setCheckOutDate(e.target.value)}
-                          className="text-sm w-full border rounded px-2 py-1"
+                          className="text-sm w-full border rounded px-2 py-1 bg-white"
                         />
                       </div>
 

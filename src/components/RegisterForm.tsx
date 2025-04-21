@@ -10,28 +10,38 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import userRegister from "@/libs/userRegister";
 
-export function RegisterForm() {
+  export function RegisterForm() {
   const [email, setEmail] = useState('');
   const [telephone, setTelephone] = useState('');
   const [password, setPassword] = useState('');
   const [rePassword, setRePassword] = useState('');
   const [name, setName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if(password != rePassword) {
         toast.error("Your Re-Password doesn't match.");
         return;
     }
 
-    const res = await userRegister(email, password, name, telephone);
+    try {
+      const res = await userRegister(email, password, name, telephone);
 
-    if(res.success) {
+      if(res.success) {
         toast.success("Register Successfully.");
-        setTimeout(() => router.push("/api/auth/signin"), 2000);
-    } else toast.error(res.message ? res.message : `An Error has occurred while registering.`)
+        setTimeout(() => router.push("/api/auth/signup"), 2000);
+      } else toast.error(res.message ? res.message : `An Error has occurred while registering.`);
+    } catch (err) {
+      showAlert("error", "Please check your Input");
+        console.error("Register error:", err);
+        setError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -48,9 +58,40 @@ export function RegisterForm() {
 
         <button
           type="submit"
-          className="h-12 w-full rounded-full bg-[#F49B4A] font-semibold text-[#0A0C10] transition-colors hover:bg-[#e48a3f]"
+          disabled={isLoading}
+          className={`h-12 w-full rounded-full font-semibold text-[#0A0C10] transition-colors ${
+            isLoading
+              ? "bg-[#e48a3f] cursor-not-allowed opacity-70"
+              : "bg-[#F49B4A] hover:bg-[#e48a3f]"
+          }`}
         >
-          Create Account
+          {isLoading ? (
+            <div className="flex items-center justify-center space-x-2">
+              <svg
+                className="animate-spin h-5 w-5 text-[#0A0C10]"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+              <span>Create Account...</span>
+            </div>
+          ) : (
+            "Create Account"
+          )}
         </button>
       </form>
 

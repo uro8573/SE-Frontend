@@ -11,7 +11,7 @@ export default function TopMenuItem({ title, pageRef }: { title: string; pageRef
         <Link
             href={pageRef}
             className={` text-ui-label-regular px-[18px] py-[11px] rounded-full flex justify-center items-center ${
-                isActive ? 'bg-ct-white text-black' : 'text-white'
+                isActive ? 'bg-ct-white text-black' : 'text-grey'
             }`}
         >
             {title}
