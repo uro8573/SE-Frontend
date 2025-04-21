@@ -22,24 +22,26 @@ export function RegisterForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
-    if(password != rePassword) {
+    console.log("Registering...");
+    /*if(password != rePassword) {
       toast.error("Your Re-Password doesn't match.");
       setIsLoading(false);
       return;
-    }
+    }*/
 
     try {
       const res = await userRegister(email, password, name, telephone);
 
       if(res.success) {
+        console.log("Register success:", res);
+        alert("Register success:");
         toast.success("Register Successfully.");
-        setTimeout(() => router.push("/api/auth/signup"), 2000);
+        setTimeout(() => router.push("/api/auth/signin"), 2000);
       } else toast.error(res.message ? res.message : `An Error has occurred while registering.`);
     } catch (err) {
-      showAlert("error", "Please check your Input");
+      alert("error Please check your Input");
         console.error("Register error:", err);
-        setError("Something went wrong. Please try again.");
+        console.log(err);
     } finally {
       setIsLoading(false);
     }
