@@ -4,7 +4,6 @@ import { Select, MenuItem, TextField, SelectChangeEvent, Input, Button } from '@
 import { useState, useEffect } from 'react'
 import dayjs, { Dayjs } from 'dayjs'
 import { useSearchParams } from 'next/navigation'
-import BookingList from '@/components/BookingList'
 import getHotel from '@/libs/getHotel'
 import { useSession } from 'next-auth/react'
 import addBooking from '@/libs/addBooking'
