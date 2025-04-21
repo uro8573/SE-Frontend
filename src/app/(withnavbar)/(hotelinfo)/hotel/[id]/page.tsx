@@ -265,20 +265,20 @@ export default function ItemPage({ params }: { params: { id: number } }) {
             {/* Facilities */}
             <div className="mb-6">
               <h2 className="text-lg font-semibold mb-3">Facilities</h2>
-              <div className="flex flex-wrap gap-y-3">
-                <div className="flex items-center w-1/2">
+              <div className="flex flex-wrap  gap-y-3">
+                <div className="flex items-center bg-white w-1/2">
                   <Wifi className="h-5 w-5 mr-2 text-gray-600" />
                   <span className="text-sm">Free WiFi</span>
                 </div>
-                <div className="flex items-center w-1/2">
+                <div className="flex items-center bg-white w-1/2">
                   <Bed className="h-5 w-5 mr-2 text-gray-600" />
-                  <span className="text-sm">For up to {hotel.guests} Guests</span>
+                  <span className="text-sm text-black">For up to {hotel.guests} Guests</span>
                 </div>
-                <div className="flex items-center w-1/2">
+                <div className="flex items-center bg-white w-1/2">
                   <Bath className="h-5 w-5 mr-2 text-gray-600" />
                   <span className="text-sm">1 Bathroom</span>
                 </div>
-                <div className="flex items-center w-1/2">
+                <div className="flex items-center  bg-white w-1/2">
                   <Maximize className="h-5 w-5 mr-2 text-gray-600" />
                   <span className="text-sm">{hotel.size} Room</span>
                 </div>
