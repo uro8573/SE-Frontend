@@ -10,8 +10,10 @@ export default async function layout_name ({ children } : { children: React.Reac
   return (
     <NextAuthProvider session={session}>
       <TopMenu />
-      <div className="mt-[100px]">{children}</div>
-      <FooterAll />
+      <div className="mt-[116px] space-y-20 md:space-y-32">
+        {children}
+        <FooterAll />
+      </div>
     </NextAuthProvider>
   )
 }
