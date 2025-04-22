@@ -67,8 +67,8 @@ export const authOptions:AuthOptions = {
       }
     },
     pages: {
-      signIn: "/sign-in",
-      signOut: "/api/auth/signout1",
+      signIn: "/signin",
+      signOut: "/signout1",
     },
 }
 
