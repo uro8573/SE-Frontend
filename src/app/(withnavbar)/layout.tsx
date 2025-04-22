@@ -1,4 +1,5 @@
 import TopMenu from "@/components/topmenu/TopMenu";
+import FooterAll from "@/components/footer/FooterAll";
 import NextAuthProvider from "@/providers/NextAuthProvider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/authOptions";
@@ -10,6 +11,7 @@ export default async function layout_name ({ children } : { children: React.Reac
     <NextAuthProvider session={session}>
       <TopMenu />
       <div className="mt-[100px]">{children}</div>
+      <FooterAll />
     </NextAuthProvider>
   )
 }

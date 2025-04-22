@@ -4,7 +4,7 @@ import type React from "react";
 
 import { useState } from "react";
 import Link from "next/link";
-import LoginInput from "@/components/auth/LoginInput";
+import VerifyInput from "./VerifyInput";
 import { PasswordInput } from "@/components/auth/passwordInput";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -12,7 +12,7 @@ import userRegister from "@/libs/userRegister";
 import { Alert, Slide, SlideProps, Snackbar } from "@mui/material";
 import { AlertCircle, CheckCircle } from "lucide-react";
 
-export function RegisterForm() {
+export function VerifyForm() {
     const [email, setEmail] = useState("");
     const [telephone, setTelephone] = useState("");
     const [password, setPassword] = useState("");
@@ -103,98 +103,23 @@ export function RegisterForm() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="flex flex-row space-x-[16px]">
-                    <LoginInput
-                        id="name"
-                        input={name}
-                        label="Name"
-                        placeholder="Full Name"
-                        onChange={setName}
-                    />
-                    <LoginInput
-                        id="telephone"
-                        input={telephone}
-                        label="Telephone"
-                        placeholder="012-345-6789"
-                        type="tel"
-                        onChange={setTelephone}
-                    />
+                    <VerifyInput id="name" input={name} onChange={setName} />
+                    <VerifyInput id="name" input={name} onChange={setName} />
+                    <VerifyInput id="name" input={name} onChange={setName} />
+                    <VerifyInput id="name" input={name} onChange={setName} />
+                    <VerifyInput id="name" input={name} onChange={setName} />
+                    <VerifyInput id="name" input={name} onChange={setName} />
                 </div>
-
-                <LoginInput type="email" input={email} onChange={setEmail} />
-
-                <PasswordInput
-                    forgotPasswordLink="#"
-                    forgotPasswordText=""
-                    password={password}
-                    onChange={setPassword}
-                />
-
-                <button
-                    type="submit"
-                    disabled={isLoading}
-                    className={`h-14 w-full rounded-full text-ui-label-semi-bold text-primary-dark transition-colors ${
-                        isLoading
-                            ? "bg-primary-orange cursor-not-allowed opacity-70"
-                            : "bg-primary-orange hover:brightness-95"
-                    }`}
-                >
-                    {isLoading ? (
-                        <div className="flex items-center justify-center space-x-2">
-                            <svg
-                                className="animate-spin h-5 w-5 text-[#0A0C10]"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                            >
-                                <circle
-                                    className="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                ></circle>
-                                <path
-                                    className="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                                ></path>
-                            </svg>
-                            <span>Create Account...</span>
-                        </div>
-                    ) : (
-                        "Create Account"
-                    )}
-                </button>
             </form>
-
-            {/* Divider */}
-            <div className="flex items-center">
-                <div className="h-1 flex-grow bg-[#9E9E9E] rounded-full"></div>
-                <span className="mx-4 text-p3-paragraphy-small text-ct-dark-grey">
-                    Or Register with
-                </span>
-                <div className="h-1 flex-grow bg-[#9E9E9E] rounded-full"></div>
-            </div>
-
-            {/* Social Login */}
-            <button
-                type="button"
-                className="flex h-14 w-full gap-3 items-center justify-center rounded-full bg-secondary-orange text-ui-label-semi-bold text-primary-dark transition-colors hover:brightness-95"
-                onClick={() => console.log("Google login clicked")}
-            >
-                <img src="/res/svg/Social-Icons-google.svg" alt="icon" />
-                Register with Google
-            </button>
 
             {/* Register Link */}
             <div className="text-center text-p3-paragraphy-small text-primary-dark">
-                Already have an account?{" "}
+                Didn't receive the verification code?{" "}
                 <Link
                     href="/signin"
                     className="text-p3-paragraphy-small text-primary-dark font-bold no-underline hover:underline"
                 >
-                    Login
+                    Resend
                 </Link>
             </div>
         </div>

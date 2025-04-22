@@ -10,25 +10,25 @@ export default function FooterAll() {
                 <div className="flex flex-row gap-[6rem]">
                     <div className="flex flex-col gap-[1rem]">
                         <h4 className="text-h4-heading">Page</h4>
-                        <p className="text-p3-paragraphy-small">Home</p>
-                        <p className="text-p3-paragraphy-small">Search</p>
-                        <p className="text-p3-paragraphy-small">Manage</p>
-                        <p className="text-p3-paragraphy-small">About us</p>
+                        <p className="text-p3-paragraphy-small text-ct-dark-grey">Home</p>
+                        <p className="text-p3-paragraphy-small text-ct-dark-grey">Search</p>
+                        <p className="text-p3-paragraphy-small text-ct-dark-grey">Manage</p>
+                        <p className="text-p3-paragraphy-small text-ct-dark-grey">About us</p>
                     </div>
 
                     <div className="flex flex-col gap-[1rem]">
                         <h4 className="text-h4-heading">Features</h4>
-                        <p className="text-p3-paragraphy-small">Find Hotels</p>
-                        <p className="text-p3-paragraphy-small">Book Reservation</p>
-                        <p className="text-p3-paragraphy-small">View Reservation</p>
-                        <p className="text-p3-paragraphy-small">Reviews</p>
+                        <p className="text-p3-paragraphy-small text-ct-dark-grey">Find Hotels</p>
+                        <p className="text-p3-paragraphy-small text-ct-dark-grey">Book Reservation</p>
+                        <p className="text-p3-paragraphy-small text-ct-dark-grey">View Reservation</p>
+                        <p className="text-p3-paragraphy-small text-ct-dark-grey">Reviews</p>
                     </div>
 
                     <div className="flex flex-col gap-[1rem]">
                         <h4 className="text-h4-heading">Cookies</h4>
-                        <p className="text-p3-paragraphy-small">Data Collect</p>
-                        <p className="text-p3-paragraphy-small">Term</p>
-                        <p className="text-p3-paragraphy-small">Privacy</p>
+                        <p className="text-p3-paragraphy-small text-ct-dark-grey">Data Collect</p>
+                        <p className="text-p3-paragraphy-small text-ct-dark-grey">Term</p>
+                        <p className="text-p3-paragraphy-small text-ct-dark-grey">Privacy</p>
                     </div>
                 </div>
                 <div className="flex flex-row gap-[2rem] items-center">
