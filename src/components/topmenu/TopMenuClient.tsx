@@ -65,11 +65,11 @@ export default function TopMenuClient({ session }: { session: any }) {
                 </div>
                 <div className="w-full flex flex-row gap-[1.5rem] justify-end items-center">
                     {session?.user.role ? (
-                        <TopMenuItem title="Sign Out" pageRef="/api/auth/signout" isTransparent={isTransparent}/>
+                        <TopMenuItem title="Sign Out" pageRef="/signout" isTransparent={isTransparent}/>
                     ) : (
                         <>
-                            <TopMenuItem title="Sign In" pageRef="/api/auth/signin" isTransparent={isTransparent}/>
-                            <TopMenuItem title="Register" pageRef="/api/auth/signup" isTransparent={isTransparent}/>
+                            <TopMenuItem title="Sign In" pageRef="/signin" isTransparent={isTransparent}/>
+                            <TopMenuItem title="Register" pageRef="/signup" isTransparent={isTransparent}/>
                         </>
                     )}
                 </div>

@@ -1,7 +1,7 @@
 import TopMenu from "@/components/topmenu/TopMenu";
 import NextAuthProvider from "@/providers/NextAuthProvider";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../(withoutnavbar)/api/auth/[...nextauth]/authOptions";
+import { authOptions } from "../api/auth/[...nextauth]/authOptions";
 
 export default async function layout_name ({ children } : { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
