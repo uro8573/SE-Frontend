@@ -105,48 +105,57 @@ export default function Dashboard() {
               {bookings.length === 0 ? (
                 <p>กำลังโหลดข้อมูลการจอง...</p>
               ) : (
-                bookings.map((booking) => (
-                  <div key={booking._id} className="border rounded-lg overflow-hidden">
-                    <div className="relative h-48">
-                      <Image
-                        src={booking.hotel.picture || "/placeholder.svg"}
-                        alt="Hotel room"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-medium text-lg">{booking.hotel.name}</h3>
-                      <p className="text-sm text-gray-600 mt-1">ติดต่อโรงแรม: {booking.hotel.tel}</p>
-                      <div className="flex items-center mt-3">
-                        <MapPin className="h-4 w-4 text-gray-500 mr-1" />
-                        <span className="text-sm text-gray-600">{booking.hotel.address || "ไม่ระบุ"}</span>
+                bookings.map((booking) => {
+                  const checkInDate = new Date(booking.checkInDate);
+                  const now = new Date();
+                  const isEditable = now <= checkInDate;
+
+                  return (
+                    <div key={booking._id} className="border rounded-lg overflow-hidden">
+                      <div className="relative h-48">
+                        <Image
+                          src={booking.hotel.picture || "/placeholder.svg"}
+                          alt="Hotel room"
+                          fill
+                          className="object-cover"
+                        />
                       </div>
-                      <div className="flex items-center justify-between mt-3">
-                        <div className="flex items-center">
-                          <User className="h-4 w-4 text-gray-500 mr-1" />
-                          <span className="text-sm text-gray-600">{booking.guest}</span>
+                      <div className="p-4">
+                        <h3 className="font-medium text-lg">{booking.hotel.name}</h3>
+                        <p className="text-sm text-gray-600 mt-1">ติดต่อโรงแรม: {booking.hotel.tel}</p>
+                        <div className="flex items-center mt-3">
+                          <MapPin className="h-4 w-4 text-gray-500 mr-1" />
+                          <span className="text-sm text-gray-600">{booking.hotel.address || "ไม่ระบุ"}</span>
                         </div>
-                        <div className="flex items-center">
-                          <HomeIcon className="h-4 w-4 text-gray-500 mr-1" />
-                          <span className="text-sm text-gray-600">{booking.room}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 text-gray-500 mr-1" />
-                          <span className="text-sm text-gray-600">{booking.checkInDate}</span>
-                        </div>
-                        <Link href={`/manage/${booking._id}`} className="block py-1.5 text-black-600 font-medium">
+                        <div className="flex items-center justify-between mt-3">
                           <div className="flex items-center">
-                            <Pencil className="h-4 w-4 text-gray-500 mr-1" />
+                            <User className="h-4 w-4 text-gray-500 mr-1" />
+                            <span className="text-sm text-gray-600">{booking.guest}</span>
                           </div>
-                        </Link>
+                          <div className="flex items-center">
+                            <HomeIcon className="h-4 w-4 text-gray-500 mr-1" />
+                            <span className="text-sm text-gray-600">{booking.room}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 text-gray-500 mr-1" />
+                            <span className="text-sm text-gray-600">{booking.checkInDate}</span>
+                          </div>
+                          {isEditable && (
+                            <Link href={`/manage/${booking._id}`} className="block py-1.5 text-black-600 font-medium">
+                              <div className="flex items-center">
+                                <Pencil className="h-4 w-4 text-gray-500 mr-1" />
+                              </div>
+                            </Link>
+                          )}
+                        </div>
+                        <div className="text-sm text-gray-500 mt-2">Check-Out: {booking.checkOutDate}</div>
                       </div>
-                      <div className="text-sm text-gray-500 mt-2">Check-Out: {booking.checkOutDate}</div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
-            </div>
+          </div>
+
           </div>
         </div>
       </main>
