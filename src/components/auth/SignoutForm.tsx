@@ -13,35 +13,6 @@ export function SignoutForm() {
 
     return (
         <div className="space-y-6 relative">
-            {/* <Snackbar
-                open={openAlert}
-                autoHideDuration={5000}
-                onClose={handleCloseAlert}
-                anchorOrigin={{ vertical: "top", horizontal: "center" }}
-                TransitionComponent={SlideTransition}
-            >
-                <Alert
-                    onClose={handleCloseAlert}
-                    severity={alertSeverity}
-                    variant="filled"
-                    iconMapping={{
-                        success: <CheckCircle className="w-5 h-5" />,
-                        error: <AlertCircle className="w-5 h-5" />,
-                    }}
-                    sx={{
-                        width: "100%",
-                        borderRadius: "8px",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                        fontWeight: 500,
-                        "& .MuiAlert-icon": {
-                            fontSize: "1.25rem",
-                        },
-                    }}
-                >
-                    {alertMessage}
-                </Alert>
-            </Snackbar> */}
-
             <button
                 onClick={handleSignOut}
                 disabled={isLoading}
@@ -81,7 +52,7 @@ export function SignoutForm() {
             </button>
 
             {/* Register Link */}
-            <div className="text-center text-p3-paragraphy-small text-primary-dark">
+            <div className="text-p3-paragraphy-small text-primary-dark">
                 Changed your mind?{" "}
                 <Link
                     href="/"

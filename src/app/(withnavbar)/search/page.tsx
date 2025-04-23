@@ -41,7 +41,7 @@ export default function Search() {
     if (!session?.user.token) {
       return (
         <>
-          <div className='w-full text-h3-heading text-primary-dark text-center'>Please log in to view hotels.</div>
+          <div className='w-full h-[80vh] text-h3-heading text-primary-dark flex justify-center items-center'>Please log in to view hotels.</div>
         </>
       );
     }

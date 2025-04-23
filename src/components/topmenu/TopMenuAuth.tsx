@@ -16,9 +16,6 @@ export default function TopMenuAuth() {
                         />
                     </Link>
                 </div>
-
-                <div className="w-full flex flex-row gap-[1.5rem] justify-center items-center"></div>
-                <div className="w-full flex flex-row gap-[1.5rem] justify-end items-center"></div>
             </div>
         </div>
     )

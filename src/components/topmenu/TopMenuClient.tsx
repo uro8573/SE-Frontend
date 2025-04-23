@@ -3,9 +3,11 @@
 
 import { useEffect, useState } from 'react';
 import TopMenuItem from './TopMenuItem';
+import TopMenuAuth from './TopMenuAuth';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import TopMenuItemAuth from './TopMenuItemAuth';
 
 export default function TopMenuClient({ session }: { session: any }) {
     const pathname = usePathname();
@@ -30,7 +32,7 @@ export default function TopMenuClient({ session }: { session: any }) {
         fixed z-50 w-full px-8 pt-[26px] pb-[10px]
         flex flex-col items-center
         transition-all duration-500 ease-in-out
-        ${isTransparent ? 'bg-transparent' : 'bg-white shadow-sm'}
+        ${isTransparent ? 'bg-transparent' : 'bg-white'}
         ${isTransparent ? 'text-white' : 'text-black'}
     `;
 
@@ -69,8 +71,8 @@ export default function TopMenuClient({ session }: { session: any }) {
                         <TopMenuItem title="Sign Out" pageRef="/signout" isTransparent={isTransparent}/>
                     ) : (
                         <>
-                            <TopMenuItem title="Sign In" pageRef="/signin" isTransparent={isTransparent}/>
-                            <TopMenuItem title="Register" pageRef="/signup" isTransparent={isTransparent}/>
+                            <TopMenuItemAuth title="Sign In" pageRef="/signin" isTransparent={isTransparent} isSignin={false}/>
+                            <TopMenuItemAuth title="Register" pageRef="/signup" isTransparent={isTransparent} isSignin={true}/>
                         </>
                     )}
                 </div>
