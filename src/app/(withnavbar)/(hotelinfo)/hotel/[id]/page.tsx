@@ -248,7 +248,6 @@ export default function ItemPage({ params }: { params: { id: number } }) {
     return (
         <section className="w-full px-4 md:px-8 text-black flex flex-col items-center justify-start gap-12">
             <div className="w-full max-w-screen-2xl flex flex-col justify-center item-start gap-8">
-            {/* <div className="w-full max-w-screen-2xl mx-auto text-black space"> */}
                 {/* Breadcrumb */}
                 <div className="flex gap-1">
                     <Link
@@ -296,15 +295,136 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                                 className="w-full h-[680px] object-cover rounded-2xl aspect-auto"
                             />
                         </div>
+                    </div>
 
+                    {/* Right Column - Booking */}
+                    <div className="w-full xl:w-1/3 bg-ct-white rounded-2xl">
+                        <div className="space-y-16 p-4 sticky">
+                            <div className="space-y-6">
+                                <div className="space-y-4">
+                                    <h3 className="text-h5-heading text-ct-dark-grey">Guest</h3>
+                                    <div className="flex justify-between items-center">
+                                        {/* <input
+                                            type="number"
+                                            value={guestCount}
+                                            onChange={(e) => {
+                                                const value = Math.min(
+                                                    4,
+                                                    Math.max(1, Number(e.target.value)),
+                                                );
+                                                setGuestCount(value);
+                                            }}
+                                            className="text-h5-heading text-primary-dark w-20 bg-ct-white px-2 focus:outline-none focus:ring-0"
+                                            min={1}
+                                        /> */}
+                                        <p className="text-h5-heading text-primary-dark px-2">{guestCount} Person</p>
+                                        <div className="flex flex-row gap-2">
+                                            <div className="w-6 h-6 flex justify-center items-center rounded-full bg-ct-light-grey"
+                                                onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
+                                            >
+                                                <img src="/res/svg/Minus.svg" alt="icon"/>
+                                            </div>
+                                            <div className="w-6 h-6 flex justify-center items-center rounded-full bg-primary-dark"
+                                                onClick={() => setGuestCount(Math.min(4, guestCount + 1))}
+                                            >
+                                                <img src="/res/svg/Plus.svg" alt="icon"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h3 className="text-h5-heading text-ct-dark-grey">Room</h3>
+                                    <div className="flex justify-between items-center">
+                                        {/* <input
+                                            type="number"
+                                            value={roomCount}
+                                            onChange={(e) => {
+                                                const value = Math.min(
+                                                    4,
+                                                    Math.max(1, Number(e.target.value)),
+                                                );
+                                                setRoomCount(value);
+                                            }}
+                                            className="text-h5-heading text-primary-dark w-20 bg-ct-white rounded px-2 focus:outline-none focus:ring-0"
+                                            min={1}
+                                            max={4}
+                                        /> */}
+                                        <p className="text-h5-heading text-primary-dark px-2">{roomCount} Room</p>
+                                        <div className="flex flex-row gap-2">
+                                            <div className="w-6 h-6 flex justify-center items-center rounded-full bg-ct-light-grey"
+                                                onClick={() => setRoomCount(Math.max(1, roomCount - 1))}
+                                            >
+                                                <img src="/res/svg/Minus.svg" alt="icon"/>
+                                            </div>
+                                            <div className="w-6 h-6 flex justify-center items-center rounded-full bg-primary-dark"
+                                                onClick={() => setRoomCount(Math.min(4, roomCount + 1))}
+                                            >
+                                                <img src="/res/svg/Plus.svg" alt="icon"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h3 className="text-h5-heading text-ct-dark-grey">Check in</h3>
+                                    <div className="flex justify-between items-center">
+                                        <input
+                                            type="date"
+                                            value={checkInDate}
+                                            onChange={(e) =>
+                                                setCheckInDate(e.target.value)
+                                            }
+                                            className="text-h5-heading text-primary-dark w-full bg-ct-white rounded px-2 focus:outline-none focus:ring-0"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h3 className="text-h5-heading text-ct-dark-grey">Check out</h3>
+                                    <div className="flex justify-between items-center">
+                                        <input
+                                            type="date"
+                                            value={checkOutDate}
+                                            onChange={(e) =>
+                                                setCheckOutDate(e.target.value)
+                                            }
+                                            className="text-h5-heading text-primary-dark w-full bg-ct-white rounded px-2 focus:outline-none focus:ring-0"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <div className="text-h5-heading text-primary-dark">
+                                        Pricing
+                                    </div>
+                                    <div className="text-h5-heading text-primary-dark">$10/night</div>
+                                </div>
+
+                                <button
+                                    className="bg-black text-ui-label-semi-bold text-ct-white w-full py-3 rounded-full"
+                                    onClick={handleBooking}
+                                >
+                                    Reserve
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <ToastContainer />
+                </div>
+
+                <div className="w-full flex flex-col xl:flex-row justify-center items-start gap-8">
+                    <div className="w-full flex flex-col gap-16">
                         {/* About */}
                         <div className="space-y-4">
-                            <h2 className="text-h4-heading text-primary-dark">
-                                About
-                            </h2>
-                            <p className="text-p3-paragraphy-small text-ct-light-dark">
-                                {hotel.description}
-                            </p>
+                                <h2 className="text-h4-heading text-primary-dark">
+                                    About
+                                </h2>
+                                <p className="text-p3-paragraphy-small text-ct-light-dark">
+                                    {hotel.description}
+                                </p>
                         </div>
 
                         {/* Facilities */}
@@ -427,43 +547,55 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                                 </div>
                             </div>
 
-                            <div className="space-y-4 pt-6">
-                                <div className="flex justify-between items-center text-p3-paragraphy-small text-primary-dark">
+                            <div className="flex flex-col gap-4 items-center pt-6">
+                                <div className="w-full flex justify-between items-center text-p3-paragraphy-small text-primary-dark">
                                     <div>{reviews?.length} Reviews</div>
-                                    <div className="flex items-center">
+                                    <div className="flex items-center gap-3">
                                         <span>
-                                            Sort By: Highest Star Rating
+                                            Sort By:
                                         </span>
-                                        <ChevronDown className="h-4 w-4 ml-1" />
+                                        <span>
+                                            Highest Star Rating
+                                        </span>
+                                        <img src="/res/svg/Arrow-Down.svg" alt="icon"/>
                                     </div>
                                 </div>
 
                                 {/* Write a review */}
                                 {!editMode && (
-                                    <div className="pt-[10px] pb-[30px] flex flex-col">
-                                        <div className="flex items-center gap-3 mb-[2px]">
-                                            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-                                            <div className="flex flex-col">
-                                                <span className="text-gray-500 text-sm">
-                                                    {session?.user.name}
-                                                </span>
-                                                <Rating
-                                                    name="simple-controlled"
-                                                    value={newRating}
-                                                    size="small"
-                                                    onChange={(
-                                                        event,
-                                                        newValue,
-                                                    ) => {
-                                                        setNewRating(
-                                                            newValue || 0,
-                                                        );
-                                                    }}
-                                                />
+                                    <div className="w-full bg-ct-white flex flex-col p-4 rounded-2xl gap-2">
+                                        <div className="flex justify-between items-start">
+                                            <div className="flex items-center gap-3">
+                                                <div className="relative w-12 h-12 bg-gray-100 rounded-full aspect-square overflow-hidden">
+                                                    <Image
+                                                        src="/res/img/home/User_Profile.png"
+                                                        alt="User Profile"
+                                                        fill
+                                                        className="object-cover rounded-2xl"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-p3-paragraphy-small text-primary-dark font-bold">
+                                                        {session?.user.name}
+                                                    </p>
+                                                    <Rating
+                                                        name="simple-controlled"
+                                                        value={newRating}
+                                                        size="small"
+                                                        onChange={(
+                                                            event,
+                                                            newValue,
+                                                        ) => {
+                                                            setNewRating(
+                                                                newValue || 0,
+                                                            );
+                                                        }}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                         <Input
-                                            className="text-gray-500 text-sm"
+                                            className="text-primary-dark text-c1-comment-large"
                                             placeholder="Write a review"
                                             value={newReview}
                                             onChange={(e) =>
@@ -471,7 +603,7 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                                             }
                                         />
                                         <button
-                                            className="bg-black text-white w-[200px] py-2 rounded-full text-sm mt-2"
+                                            className="bg-primary-dark text-ct-white w-[20%] py-3 rounded-full text-ui-label-semi-bold mt-2"
                                             onClick={handleReview}
                                         >
                                             Submit Review
@@ -481,33 +613,42 @@ export default function ItemPage({ params }: { params: { id: number } }) {
 
                                 {/* Edit review form */}
                                 {editMode && (
-                                    <div className="pt-[10px] pb-[30px] flex flex-col border p-4 rounded-lg bg-gray-50">
-                                        <h3 className="font-medium mb-2">
+                                    <div className="w-full bg-ct-white flex flex-col p-4 rounded-2xl gap-2">
+                                        <h3 className="text-p3-paragraphy-small text-primary-dark font-bold">
                                             Edit Your Review
                                         </h3>
-                                        <div className="flex items-center gap-3 mb-[2px]">
-                                            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-                                            <div className="flex flex-col">
-                                                <span className="text-gray-500 text-sm">
-                                                    {session?.user.name}
-                                                </span>
-                                                <Rating
-                                                    name="edit-rating"
-                                                    value={editedRating}
-                                                    size="small"
-                                                    onChange={(
-                                                        event,
-                                                        newValue,
-                                                    ) => {
-                                                        setEditedRating(
-                                                            newValue || 0,
-                                                        );
-                                                    }}
-                                                />
+                                        <div className="flex justify-between items-start">
+                                            <div className="flex items-center gap-3">
+                                                <div className="relative w-12 h-12 bg-gray-100 rounded-full aspect-square overflow-hidden">
+                                                    <Image
+                                                        src="/res/img/home/User_Profile.png"
+                                                        alt="User Profile"
+                                                        fill
+                                                        className="object-cover rounded-2xl"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-p3-paragraphy-small text-primary-dark font-bold">
+                                                        {session?.user.name}
+                                                    </p>
+                                                    <Rating
+                                                        name="edit-rating"
+                                                        value={editedRating}
+                                                        size="small"
+                                                        onChange={(
+                                                            event,
+                                                            newValue,
+                                                        ) => {
+                                                            setEditedRating(
+                                                                newValue || 0,
+                                                            );
+                                                        }}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                         <Input
-                                            className="text-gray-500 text-sm mb-3"
+                                            className="text-primary-dark text-c1-comment-large"
                                             placeholder="Edit your review"
                                             value={editedComment}
                                             onChange={(e) =>
@@ -516,13 +657,13 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                                         />
                                         <div className="flex gap-2">
                                             <button
-                                                className="bg-black text-white w-[150px] py-2 rounded-full text-sm"
+                                                className="bg-primary-dark text-ct-white w-[20%] py-3 rounded-full text-ui-label-semi-bold mt-2"
                                                 onClick={handleUpdateReview}
                                             >
                                                 Update Review
                                             </button>
                                             <button
-                                                className="bg-gray-300 text-gray-700 w-[150px] py-2 rounded-full text-sm"
+                                                className="bg-ct-light-grey text-primary-dark w-[20%] py-3 rounded-full text-ui-label-semi-bold mt-2"
                                                 onClick={handleCancelEdit}
                                             >
                                                 Cancel
@@ -534,23 +675,41 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                                 {/* Reviews list */}
                                 {reviews &&
                                     reviews.map((review, index) => (
-                                        <div
-                                            key={index}
-                                            className="mb-4 border-b pb-4"
-                                        >
-                                            <div className="flex justify-between">
-                                                <div className="flex items-center gap-3 mb-1">
-                                                    <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-                                                    <span className="font-medium text-sm">
-                                                        {review.user?.name}
-                                                    </span>
+                                        <div key={index} className="w-full bg-ct-white rounded-2xl p-4 space-y-2">
+                                            <div className="flex justify-between items-start">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="relative w-12 h-12 bg-gray-100 rounded-full aspect-square overflow-hidden">
+                                                        <Image
+                                                            src="/res/img/home/User_Profile.png"
+                                                            alt="User Profile"
+                                                            fill
+                                                            className="object-cover rounded-2xl"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <p className="text-p3-paragraphy-small text-primary-dark font-bold">
+                                                            {review.user?.name}
+                                                        </p>
+                                                        <div className="flex items-center gap-1">
+                                                            {[1, 2, 3, 4, 5].map((i) => (
+                                                                <Star
+                                                                    key={i}
+                                                                    className={`h-4 w-4 ${
+                                                                        i <= review.rating
+                                                                            ? "fill-yellow-400 text-yellow-400"
+                                                                            : "text-gray-300"
+                                                                    }`}
+                                                                />
+                                                            ))}
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 {/* Show edit/delete buttons only for the user's own reviews */}
                                                 {session?.user._id ===
                                                     review.user?._id && (
                                                     <div className="flex gap-2">
                                                         <button
-                                                            className="p-1 text-gray-600 hover:text-blue-600 transition-colors"
+                                                            className=""
                                                             onClick={() =>
                                                                 handleEditReview(
                                                                     review._id,
@@ -559,141 +718,35 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                                                                 )
                                                             }
                                                         >
-                                                            <Edit className="h-4 w-4" />
+                                                            <img src="/res/svg/Pencil.svg" alt="icon"/>
                                                         </button>
                                                         <button
-                                                            className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                                                            className=""
                                                             onClick={() =>
                                                                 handleDeleteReview(
                                                                     review._id,
                                                                 )
                                                             }
                                                         >
-                                                            <Trash2 className="h-4 w-4" />
+                                                            <img src="/res/svg/TrashCan.svg" alt="icon"/>
                                                         </button>
                                                     </div>
                                                 )}
                                             </div>
 
-                                            <div className="flex items-center gap-1 mb-1">
-                                                {[1, 2, 3, 4, 5].map((i) => (
-                                                    <Star
-                                                        key={i}
-                                                        className={`h-4 w-4 ${
-                                                            i <= review.rating
-                                                                ? "fill-yellow-400 text-yellow-400"
-                                                                : "text-gray-300"
-                                                        }`}
-                                                    />
-                                                ))}
-                                                <span className="text-sm text-gray-600 ml-2">
-                                                    ({review.rating})
-                                                </span>
-                                            </div>
-
-                                            <p className="text-sm text-gray-700">
+                                            <p className="text-base text-primary-dark">
                                                 {review.comment}
                                             </p>
                                         </div>
                                     ))}
 
-                                <button className="bg-black text-white w-full py-2 rounded-full text-sm mt-2">
+                                <button className="bg-primary-dark text-ct-white w-1/4 py-3 rounded-full text-ui-label-semi-bold">
                                     Load more
                                 </button>
                             </div>
                         </div>
                     </div>
-
-                    {/* Right Column - Booking */}
-                    <div className="w-full xl:w-1/3 bg-ct-white rounded-2xl">
-                        <div className="space-y-16 p-4 sticky">
-                            <div className="space-y-6">
-                                <div className="space-y-4">
-                                    <h3 className="text-h5-heading text-ct-dark-grey">Guest</h3>
-                                    <div className="flex justify-between items-center">
-                                        <input
-                                            type="number"
-                                            value={guestCount}
-                                            onChange={(e) => {
-                                                const value = Math.min(
-                                                    4,
-                                                    Math.max(1, Number(e.target.value)),
-                                                );
-                                                setGuestCount(value);
-                                            }}
-                                            className="text-h5-heading text-primary-dark w-20 bg-ct-white px-2 focus:outline-none focus:ring-0"
-                                            min={1}
-                                            />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <h3 className="text-h5-heading text-ct-dark-grey">Room</h3>
-                                    <div className="flex justify-between items-center">
-                                        <input
-                                            type="number"
-                                            value={roomCount}
-                                            onChange={(e) => {
-                                                const value = Math.min(
-                                                    4,
-                                                    Math.max(1, Number(e.target.value)),
-                                                );
-                                                setRoomCount(value);
-                                            }}
-                                            className="text-h5-heading text-primary-dark w-20 bg-ct-white rounded px-2 focus:outline-none focus:ring-0"
-                                            min={1}
-                                            max={4}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <h3 className="text-h5-heading text-ct-dark-grey">Check in</h3>
-                                    <div className="flex justify-between items-center">
-                                        <input
-                                            type="date"
-                                            value={checkInDate}
-                                            onChange={(e) =>
-                                                setCheckInDate(e.target.value)
-                                            }
-                                            className="text-h5-heading text-primary-dark w-full bg-ct-white rounded px-2 focus:outline-none focus:ring-0"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <h3 className="text-h5-heading text-ct-dark-grey">Check out</h3>
-                                    <div className="flex justify-between items-center">
-                                        <input
-                                            type="date"
-                                            value={checkOutDate}
-                                            onChange={(e) =>
-                                                setCheckOutDate(e.target.value)
-                                            }
-                                            className="text-h5-heading text-primary-dark w-full bg-ct-white rounded px-2 focus:outline-none focus:ring-0"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <div className="text-h5-heading text-primary-dark">
-                                        Pricing
-                                    </div>
-                                    <div className="text-h5-heading text-primary-dark">$10/night</div>
-                                </div>
-
-                                <button
-                                    className="bg-black text-ui-label-semi-bold text-ct-white w-full py-3 rounded-full"
-                                    onClick={handleBooking}
-                                >
-                                    Reserve
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <ToastContainer />
+                    <div className="w-full xl:w-1/3 bg-ct-white rounded-2xl"></div>
                 </div>
             </div>
         </section>

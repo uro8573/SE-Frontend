@@ -64,15 +64,17 @@ export default function TopMenuClient({ session }: { session: any }) {
                     <TopMenuItem title="Home" pageRef="/" isTransparent={isTransparent}/>
                     <TopMenuItem title="Search" pageRef="/search" isTransparent={isTransparent}/>
                     <TopMenuItem title="Manage" pageRef="/manage/current-reservations" isTransparent={isTransparent}/>
-                    <TopMenuItem title="Notification" pageRef="/manage/history/notifications" isTransparent={isTransparent}/>
                 </div>
-                <div className="w-full flex flex-row gap-[1.5rem] justify-end items-center">
+                <div className="relative w-full flex flex-row gap-[1.5rem] justify-end items-center">
                     {session?.user.role ? (
-                        <TopMenuItem title="Sign Out" pageRef="/signout" isTransparent={isTransparent}/>
+                        <>
+                            <TopMenuItemAuth title="N" pageRef="/manage/history/notifications" isTransparent={isTransparent} isSignup={false}/>
+                            <TopMenuItem title="Sign Out" pageRef="/signout" isTransparent={isTransparent}/>
+                        </>
                     ) : (
                         <>
-                            <TopMenuItemAuth title="Sign In" pageRef="/signin" isTransparent={isTransparent} isSignin={false}/>
-                            <TopMenuItemAuth title="Register" pageRef="/signup" isTransparent={isTransparent} isSignin={true}/>
+                            <TopMenuItemAuth title="Sign In" pageRef="/signin" isTransparent={isTransparent} isSignup={false}/>
+                            <TopMenuItemAuth title="Register" pageRef="/signup" isTransparent={isTransparent} isSignup={true}/>
                         </>
                     )}
                 </div>

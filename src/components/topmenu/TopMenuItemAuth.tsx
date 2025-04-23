@@ -3,17 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export default function TopMenuItemAuth({
-    title,
-    pageRef,
-    isTransparent,
-    isSignin
-}: {
-    title: string;
-    pageRef: string;
-    isTransparent: boolean;
-    isSignin: boolean;
-}) {
+export default function TopMenuItemAuth({ title, pageRef, isTransparent, isSignup }: { title: string; pageRef: string; isTransparent: boolean; isSignup: boolean; }) {
     const pathname = usePathname();
     const isActive = pathname.toLowerCase() === pageRef.toLowerCase();
 
@@ -23,7 +13,7 @@ export default function TopMenuItemAuth({
     let stateClasses = '';
 
     if (isTransparent) {
-        if (isSignin) {
+        if (isSignup) {
             // Signin button on transparent bg → white bg + dark text
             stateClasses = 'bg-ct-white text-primary-dark';
         } else if (isActive) {
@@ -32,7 +22,7 @@ export default function TopMenuItemAuth({
             stateClasses = 'text-ct-white border border-[rgba(255,255,255,0.2)] bg-[rgba(255,255,255,0.1)]';
         }
     } else {
-        if (isSignin) {
+        if (isSignup) {
             // Signin button on solid bg → black bg + white text
             stateClasses = 'bg-primary-dark text-ct-white';
         } else if (isActive) {
