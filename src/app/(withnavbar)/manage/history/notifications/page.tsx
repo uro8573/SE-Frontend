@@ -28,7 +28,50 @@ export default function Dashboard() {
 
     fetchBookings();
   }, [session]);
-
+   
+  const mockDataNoti = [
+    {
+      id: '1',
+      title: 'Booking Confirmed',
+      message: 'Your booking at The Grand Hotel has been confirmed.',
+      type: 'success',
+      read: false,
+      timestamp: '2025-04-22T10:45:00Z',
+    },
+    {
+      id: '2',
+      title: 'Payment Received',
+      message: 'We have received your payment for the stay at Beach Resort.',
+      type: 'info',
+      read: true,
+      timestamp: '2025-04-21T14:20:00Z',
+    },
+    {
+      id: '3',
+      title: 'Booking Cancelled',
+      message: 'Your booking at City Inn has been cancelled as per your request.',
+      type: 'warning',
+      read: false,
+      timestamp: '2025-04-20T09:00:00Z',
+    },
+    {
+      id: '4',
+      title: 'New Promotion!',
+      message: 'Enjoy 30% off on your next booking with code SUMMER30.',
+      type: 'promo',
+      read: true,
+      timestamp: '2025-04-19T08:00:00Z',
+    },
+    {
+      id: '5',
+      title: 'Profile Update Required',
+      message: 'Please update your profile to continue using our services.',
+      type: 'alert',
+      read: false,
+      timestamp: '2025-04-18T12:15:00Z',
+    },
+  ];
+  
   return (
     <div className="min-h-screen flex flex-col text-black">
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-8">
@@ -102,52 +145,49 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {bookings.length === 0 ? (
-                <p>กำลังโหลดข้อมูลการจอง...</p>
-              ) : (
-                bookings.map((booking) => (
-                  <div key={booking._id} className="border rounded-lg overflow-hidden">
-                    <div className="relative h-48">
-                      <Image
-                        src={booking.hotel.picture || "/placeholder.svg"}
-                        alt="Hotel room"
-                        fill
-                        className="object-cover"
-                      />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {mockDataNoti.length === 0 ? (
+              <p>ยังไม่มีการแจ้งเตือน</p>
+            ) : (
+              mockDataNoti.map((noti) => (
+                <div
+                  key={noti.id}
+                  className={`border-l-4 rounded-md p-4 shadow-sm ${
+                    noti.type === 'success'
+                      ? 'border-green-500 bg-green-50'
+                      : noti.type === 'warning'
+                      ? 'border-yellow-500 bg-yellow-50'
+                      : noti.type === 'promo'
+                      ? 'border-purple-500 bg-purple-50'
+                      : noti.type === 'alert'
+                      ? 'border-red-500 bg-red-50'
+                      : 'border-blue-500 bg-blue-50'
+                  }`}
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="font-semibold text-base">{noti.title}</h4>
+                      <p className="text-sm text-gray-600 mt-1">{noti.message}</p>
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-medium text-lg">{booking.hotel.name}</h3>
-                      <p className="text-sm text-gray-600 mt-1">ติดต่อโรงแรม: {booking.hotel.tel}</p>
-                      <div className="flex items-center mt-3">
-                        <MapPin className="h-4 w-4 text-gray-500 mr-1" />
-                        <span className="text-sm text-gray-600">{booking.hotel.address || "ไม่ระบุ"}</span>
-                      </div>
-                      <div className="flex items-center justify-between mt-3">
-                        <div className="flex items-center">
-                          <User className="h-4 w-4 text-gray-500 mr-1" />
-                          <span className="text-sm text-gray-600">{booking.guest}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <HomeIcon className="h-4 w-4 text-gray-500 mr-1" />
-                          <span className="text-sm text-gray-600">{booking.room}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 text-gray-500 mr-1" />
-                          <span className="text-sm text-gray-600">{booking.checkInDate}</span>
-                        </div>
-                        <Link href={`/manage/${booking._id}`} className="block py-1.5 text-black-600 font-medium">
-                          <div className="flex items-center">
-                            <Pencil className="h-4 w-4 text-gray-500 mr-1" />
-                          </div>
-                        </Link>
-                      </div>
-                      <div className="text-sm text-gray-500 mt-2">Check-Out: {booking.checkOutDate}</div>
+                    <div>
+                     
                     </div>
+                    {!noti.read && (
+                      <span className="ml-2 mt-1 inline-block bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                        new
+                      </span>
+                    )}
                   </div>
+                  <div className="text-xs text-gray-500 mt-2">
+                    {new Date(noti.timestamp).toLocaleString('th-TH', {
+                      dateStyle: 'short',
+                      timeStyle: 'short',
+                    })}
+                  </div>
+                </div>
                 ))
               )}
-            </div> */}
+            </div>
 
 
           </div>
