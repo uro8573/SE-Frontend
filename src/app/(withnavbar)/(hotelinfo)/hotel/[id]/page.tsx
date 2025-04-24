@@ -23,6 +23,7 @@ import addBooking from "@/libs/addBooking";
 import createReview from "@/libs/createReview";
 import updateReview from "@/libs/updateReview";
 import deleteReview from "@/libs/deleteReview";
+import addNotification from "@/libs/addNotification";
 
 export default function ItemPage({ params }: { params: { id: number } }) {
     const { data: session } = useSession();
@@ -140,8 +141,10 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                 setNewReview("");
                 setNewRating(0);
                 fetchReviews();
+                addNotification( session.user.token, session.user._id, `You have sent review to ${hotel.name}`, "success", "Sent Review Success")
             } else {
                 toast.error(`${result.message}`);
+                addNotification( session.user.token, session.user._id, `You have failed to sent review because ${result.message}`, "fail", "Sent Review Failed")
             }
         } catch (error) {
             console.error(error);
@@ -186,8 +189,10 @@ export default function ItemPage({ params }: { params: { id: number } }) {
                 setEditMode(false);
                 setEditReviewId("");
                 fetchReviews();
+                addNotification( session.user.token, session.user._id, `You have updated review to ${hotel.name}`, "success", "Update Review Success")
             } else {
                 toast.error(`${result.message}`);
+                addNotification( session.user.token, session.user._id, `You have failed to update review because ${result.message}`, "fail", "Update Review Failed")
             }
         } catch (error) {
             console.error(error);
@@ -211,8 +216,10 @@ export default function ItemPage({ params }: { params: { id: number } }) {
             if (result.success) {
                 toast.success("Review deleted successfully!");
                 fetchReviews();
+                addNotification( session.user.token, session.user._id, `You have deleted review to ${hotel.name}`, "success", "Delete Review Success")
             } else {
                 toast.error(`${result.message}`);
+                addNotification( session.user.token, session.user._id, `You have failed to delete review because ${result.message}`, "fail", "Delete Review Failed")
             }
         } catch (error) {
             console.error(error);
@@ -237,7 +244,12 @@ export default function ItemPage({ params }: { params: { id: number } }) {
             );
             if (result.success) {
                 toast.success("Booking successful!");
-            } else toast.error(`${result.message}`);
+            //tokenId text type typeaction
+                addNotification( session.user.token, session.user._id, `You have booked ${hotel.name} แต่จะไม่ขอบคุณหรอก เชอะ!`, "success", "BookingSuccess")
+            } else {
+                toast.error(`${result.message}`);
+                addNotification( session.user.token, session.user._id, `You have failed booking because ${result.message}`, "fail", "BookingFailed")
+            }
             console.log(result);
         } catch (error) {
             console.error(error);

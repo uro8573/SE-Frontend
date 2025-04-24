@@ -32,6 +32,7 @@ export interface HotelJson {
 }
 
 export interface Review {
+    type: string
     _id: string,
     user: {
         _id: string,
@@ -93,3 +94,13 @@ export interface userJson {
     data: userProfile
 }
 
+export interface notification{
+    _id: string,
+    user:userProfile ,
+    text: string,
+    isRead: boolean,
+    message: string,
+    type: string,
+    createdAt: Date,
+    typeAction: string,
+}

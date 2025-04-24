@@ -6,57 +6,30 @@ import getBookings from '../../../../../libs/getBookings'
 import { BookingItem } from '../../../../../../interfaces'
 import { useState, useEffect } from 'react'
 import { useSession } from "next-auth/react"
+import { notification } from "../../../../../../interfaces"
+import getNotifications from "@/libs/getNotifications"
+import  updateNotification  from "@/libs/updateNotification"
 
 export default function Dashboard() {
   const { data: session } = useSession();
-  const [bookings, setBookings] = useState<BookingItem[]>([]);
-  const [bookingCount, setBookingCount] = useState<number>(0);
+  const [notifications, setNotifications] = useState<notification[]>([]);
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        if (!session?.user?.token) throw new Error("User token is undefined");
+        const response = await getNotifications(session.user.token);
+        console.log("sussusamongus",response);
+        setNotifications(response.data);
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการโหลดการจอง:", error);
+      }
+    };
 
-  const mockDataNoti = [
-    {
-      id: '1',
-      title: 'Booking Confirmed',
-      message: 'Your booking at The Grand Hotel has been confirmed.',
-      type: 'success',
-      read: false,
-      timestamp: '2025-04-22T10:45:00Z',
-    },
-    {
-      id: '2',
-      title: 'Payment Received',
-      message: 'We have received your payment for the stay at Beach Resort.',
-      type: 'info',
-      read: true,
-      timestamp: '2025-04-21T14:20:00Z',
-    },
-    {
-      id: '3',
-      title: 'Booking Cancelled',
-      message: 'Your booking at City Inn has been cancelled as per your request.',
-      type: 'warning',
-      read: false,
-      timestamp: '2025-04-20T09:00:00Z',
-    },
-    {
-      id: '4',
-      title: 'New Promotion!',
-      message: 'Enjoy 30% off on your next booking with code SUMMER30.',
-      type: 'promo',
-      read: true,
-      timestamp: '2025-04-19T08:00:00Z',
-    },
-    {
-      id: '5',
-      title: 'Profile Update Required',
-      message: 'Please update your profile to continue using our services.',
-      type: 'alert',
-      read: false,
-      timestamp: '2025-04-18T12:15:00Z',
-    },
-  ];
-
+    fetchBookings();
+  }, [session]);
+  
+ 
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
-  const [notifications, setNotifications] = useState(mockDataNoti);
 
   const toggleDetail = (id: string) => {
     setExpandedIds(prev => {
@@ -69,29 +42,16 @@ export default function Dashboard() {
       }
       return updated;
     });
-    setNotifications((prev) =>
-      prev.map((noti) =>
-        noti.id === id ? { ...noti, read: true } : noti
-      )
-    );
+    if (!session?.user?.token) {
+      console.error("User token is undefined");
+      return;
+    }
+    //updateNotification(session.user.token, id)
   };
 
   
 
-  useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        if (!session?.user?.token) throw new Error("User token is undefined");
-        const response = await getBookings(session.user.token);
-        setBookingCount(response.count);
-        setBookings(response.data);
-      } catch (error) {
-        console.error("เกิดข้อผิดพลาดในการโหลดการจอง:", error);
-      }
-    };
-
-    fetchBookings();
-  }, [session]);
+  
 
   
   return (
@@ -141,7 +101,7 @@ export default function Dashboard() {
           {/* Main Content */}
           <div className="flex-1">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-medium">{mockDataNoti.length} Notifications</h2>
+              <h2 className="text-lg font-medium">{notifications.length} Notifications</h2>
               <div className="flex items-center">
                 <span className="text-sm mr-2">Sort By:</span>
                 <button className="flex items-center text-sm">
@@ -152,15 +112,15 @@ export default function Dashboard() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {mockDataNoti.length === 0 ? (
+              {notifications.length === 0 ? (
                 <p>ยังไม่มีการแจ้งเตือน</p>
               ) : (
                 notifications.map((noti) => {
-                  const isExpanded = expandedIds.has(noti.id);
+                  const isExpanded = expandedIds.has(noti._id);
       
                   return (
                     <div
-                      key={noti.id}
+                      key={noti._id}
                       className={`border-l-4 rounded-md p-4 shadow-sm ${
                         noti.type === 'success'
                           ? 'border-green-500 bg-green-50'
@@ -175,12 +135,12 @@ export default function Dashboard() {
                     >
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
-                          <h4 className="font-semibold text-base">{noti.title}</h4>
+                          <h4 className="font-semibold text-base">{noti.typeAction}</h4>
                           {isExpanded ? (
                             <>
-                              <p className="text-sm text-gray-600 mt-1">{noti.message}</p>
+                              <p className="text-sm text-gray-600 mt-1">{noti.text}</p>
                               <button
-                                onClick={() => toggleDetail(noti.id)}
+                                onClick={() => toggleDetail(noti._id)}
                                 className="text-sm text-blue-600 mt-1 hover:underline"
                               >
                                 Hide detail
@@ -188,7 +148,7 @@ export default function Dashboard() {
                             </>
                           ) : (
                             <button
-                              onClick={() => toggleDetail(noti.id)}
+                              onClick={() => toggleDetail(noti._id)}
                               className="text-sm text-blue-600 mt-1 hover:underline"
                             >
                               Show detail
@@ -196,7 +156,7 @@ export default function Dashboard() {
                           )}
                         </div>
 
-                        {!noti.read && (
+                        {!noti.isRead && (
                           <span className="ml-2 mt-1 inline-block bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
                             new
                           </span>
@@ -204,7 +164,7 @@ export default function Dashboard() {
                       </div>
 
                       <div className="text-xs text-gray-500 mt-2">
-                        {new Date(noti.timestamp).toLocaleString('th-TH', {
+                        {new Date(noti.createdAt).toLocaleString('th-TH', {
                           dateStyle: 'short',
                           timeStyle: 'short',
                         })}
