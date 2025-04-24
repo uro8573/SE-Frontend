@@ -13,6 +13,9 @@ import  updateNotification  from "@/libs/updateNotification"
 export default function Dashboard() {
   const { data: session } = useSession();
   const [notifications, setNotifications] = useState<notification[]>([]);
+
+  const [unRead, setUnRead] = useState< Set<string> >();
+
   useEffect(() => {
     const fetchBookings = async () => {
       try {
@@ -31,7 +34,7 @@ export default function Dashboard() {
  
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
-  const toggleDetail = (id: string) => {
+  const toggleDetail = async (id: string) => {
     setExpandedIds(prev => {
       const updated = new Set(prev);
       if (updated.has(id)) {
@@ -46,8 +49,30 @@ export default function Dashboard() {
       console.error("User token is undefined");
       return;
     }
-    //updateNotification(session.user.token, id)
+
+    if(!unRead?.has(id)) return;
+
+    const newUnReadState = new Set<string>(unRead);
+    
+    newUnReadState.delete(id);
+    setUnRead(newUnReadState);
+    
+    await updateNotification(session.user.token, id);
+
   };
+
+  // Optimization for unread reminder faster dissapear.
+  if(!unRead && notifications.length > 0) {
+
+    const initialUnRead = new Set<string>();
+    for(var i = 0; i < notifications.length; ++i) {
+      if(notifications[i].isRead) continue;
+      initialUnRead.add(notifications[i]._id);
+    }
+    setUnRead(initialUnRead);
+
+  }
+  // ------------------------------------------------ //
 
   
 
@@ -140,7 +165,7 @@ export default function Dashboard() {
                             <>
                               <p className="text-sm text-gray-600 mt-1">{noti.text}</p>
                               <button
-                                onClick={() => toggleDetail(noti._id)}
+                                onClick={async() => await toggleDetail(noti._id)}
                                 className="text-sm text-blue-600 mt-1 hover:underline"
                               >
                                 Hide detail
@@ -148,7 +173,7 @@ export default function Dashboard() {
                             </>
                           ) : (
                             <button
-                              onClick={() => toggleDetail(noti._id)}
+                              onClick={async() => await toggleDetail(noti._id)}
                               className="text-sm text-blue-600 mt-1 hover:underline"
                             >
                               Show detail
@@ -156,7 +181,7 @@ export default function Dashboard() {
                           )}
                         </div>
 
-                        {!noti.isRead && (
+                        {unRead?.has(noti._id) && (
                           <span className="ml-2 mt-1 inline-block bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
                             new
                           </span>
