@@ -3,9 +3,11 @@
 
 import { useEffect, useState } from 'react';
 import TopMenuItem from './TopMenuItem';
+import TopMenuAuth from './TopMenuAuth';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import TopMenuItemAuth from './TopMenuItemAuth';
 
 export default function TopMenuClient({ session }: { session: any }) {
     const pathname = usePathname();
@@ -30,7 +32,7 @@ export default function TopMenuClient({ session }: { session: any }) {
         fixed z-50 w-full px-8 pt-[26px] pb-[10px]
         flex flex-col items-center
         transition-all duration-500 ease-in-out
-        ${isTransparent ? 'bg-transparent' : 'bg-white shadow-sm'}
+        ${isTransparent ? 'bg-transparent' : 'bg-white'}
         ${isTransparent ? 'text-white' : 'text-black'}
     `;
 
@@ -64,13 +66,16 @@ export default function TopMenuClient({ session }: { session: any }) {
                     <TopMenuItem title="Manage" pageRef="/manage/history/reservations" isTransparent={isTransparent}/>
                     <TopMenuItem title="Notification" pageRef="/manage/history/notifications" isTransparent={isTransparent}/>
                 </div>
-                <div className="w-full flex flex-row gap-[1.5rem] justify-end items-center">
+                <div className="relative w-full flex flex-row gap-[1.5rem] justify-end items-center">
                     {session?.user.role ? (
-                        <TopMenuItem title="Sign Out" pageRef="/signout" isTransparent={isTransparent}/>
+                        <>
+                            <TopMenuItemAuth title="N" pageRef="/manage/history/notifications" isTransparent={isTransparent} isSignup={false}/>
+                            <TopMenuItem title="Sign Out" pageRef="/signout" isTransparent={isTransparent}/>
+                        </>
                     ) : (
                         <>
-                            <TopMenuItem title="Sign In" pageRef="/signin" isTransparent={isTransparent}/>
-                            <TopMenuItem title="Register" pageRef="/signup" isTransparent={isTransparent}/>
+                            <TopMenuItemAuth title="Sign In" pageRef="/signin" isTransparent={isTransparent} isSignup={false}/>
+                            <TopMenuItemAuth title="Register" pageRef="/signup" isTransparent={isTransparent} isSignup={true}/>
                         </>
                     )}
                 </div>

@@ -1,11 +1,19 @@
 import Link from "next/link"
 import { ChevronDown, Edit, Star } from "lucide-react"
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/(withoutnavbar)/api/auth/[...nextauth]/authOptions";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 
 export default async function Dashboard() {
 
   const session = await getServerSession(authOptions);
+
+  if(!session?.user.token){
+    return (
+      <>
+        <div className='w-full h-[80vh] text-h3-heading text-primary-dark flex justify-center items-center'>Please log in to management.</div>
+      </>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col text-black">

@@ -124,7 +124,7 @@ export function RegisterForm() {
 
                 <PasswordInput
                     forgotPasswordLink="#"
-                    forgotPasswordText=""
+                    forgotPasswordText=""   
                     password={password}
                     onChange={setPassword}
                 />

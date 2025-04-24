@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Banner() {
@@ -19,9 +20,11 @@ export default function Banner() {
                 </p>
 
                 <div className="flex items-center justify-center">
-                    <button className="w-full bg-primary-orange text-ui-label-semi-bold text-primary-dark py-4 px-16 rounded-full">
-                        Explore More
-                    </button>
+                    <Link href="/search">
+                        <button className="w-full bg-primary-orange text-ui-label-semi-bold text-primary-dark py-4 px-16 rounded-full" >
+                            Explore More
+                        </button>
+                    </Link>
                 </div>
             </div>
         </section>

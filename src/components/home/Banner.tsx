@@ -27,7 +27,7 @@ export default function Banner() {
                     </div>
 
                     {/* Divider */}
-                    <div className="hidden lg:block w-[4px] h-[56px] bg-ct-light-grey rounded-full" />
+                    <div className="hidden lg:block w-0.5 h-[56px] bg-ct-light-grey rounded-full" />
 
                     {/* Check In */}
                     <div className="flex flex-col gap-2.5 justify-center items-start w-full lg:w-[160px]">
@@ -40,7 +40,7 @@ export default function Banner() {
                     </div>
 
                     {/* Divider */}
-                    <div className="hidden lg:block w-[4px] h-[56px] bg-ct-light-grey rounded-full" />
+                    <div className="hidden lg:block w-0.5 h-[56px] bg-ct-light-grey rounded-full" />
 
                     {/* Check Out */}
                     <div className="flex flex-col gap-2.5 justify-center items-start w-full lg:w-[160px]">
@@ -53,7 +53,7 @@ export default function Banner() {
                     </div>
 
                     {/* Divider */}
-                    <div className="hidden lg:block w-[4px] h-[56px] bg-ct-light-grey rounded-full" />
+                    <div className="hidden lg:block w-0.5 h-[56px] bg-ct-light-grey rounded-full" />
 
                     {/* Guest */}
                     <div className="flex flex-col gap-2.5 justify-center items-start w-full lg:w-[160px]">
