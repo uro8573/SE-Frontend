@@ -27,9 +27,15 @@ export default function FooterHome() {
                 <div className="flex flex-row gap-[6rem]">
                     <div className="flex flex-col gap-[1rem]">
                         <h4 className="text-h4-heading">Page</h4>
-                        <p className="text-p3-paragraphy-small text-ct-dark-grey">Home</p>
-                        <p className="text-p3-paragraphy-small text-ct-dark-grey">Search</p>
-                        <p className="text-p3-paragraphy-small text-ct-dark-grey">Manage</p>
+                        <Link href="/">
+                            <p className="text-p3-paragraphy-small text-ct-dark-grey">Home</p>
+                        </Link>
+                        <Link href="/search">
+                            <p className="text-p3-paragraphy-small text-ct-dark-grey">Search</p>
+                        </Link>
+                        <Link href="/manage/current-reservations">
+                            <p className="text-p3-paragraphy-small text-ct-dark-grey">Manage</p>
+                        </Link>
                         <p className="text-p3-paragraphy-small text-ct-dark-grey">About us</p>
                     </div>
 
