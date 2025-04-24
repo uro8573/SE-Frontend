@@ -46,26 +46,24 @@ export default function Search() {
         [hotelId: string]: number;
     }>({});
 
-    if (!session?.user.token) {
-      return (
-        <>
-          <div className='w-full h-[80vh] text-h3-heading text-primary-dark flex justify-center items-center'>Please log in to view hotels.</div>
-        </>
-      );
-    }
+    // if (!session?.user.token) {
+    //   return (
+    //     <>
+    //       <div className='w-full h-[80vh] text-h3-heading text-primary-dark flex justify-center items-center'>Please log in to view hotels.</div>
+    //     </>
+    //   );
+    // }
 
     useEffect(() => {
         const fetchHotels = async () => {
             try {
-                if (!session?.user.token)
-                    throw new Error("User token is undefined");
 
                 const response = await getHotels();
                 if (!response) throw new Error("Failed to fetch data");
                 const fetchedHotels = response.data;
                 
                 const reviewPromises = fetchedHotels.map((hotel) =>
-                    getReviewWithHotelID(session.user.token, hotel.id),
+                    getReviewWithHotelID(hotel.id),
                 );
 
                 const reviewResults = await Promise.all(reviewPromises);
