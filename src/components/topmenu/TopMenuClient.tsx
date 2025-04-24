@@ -61,7 +61,8 @@ export default function TopMenuClient({ session }: { session: any }) {
                 <div className="w-full flex flex-row gap-[1.5rem] justify-center items-center">
                     <TopMenuItem title="Home" pageRef="/" isTransparent={isTransparent}/>
                     <TopMenuItem title="Search" pageRef="/search" isTransparent={isTransparent}/>
-                    <TopMenuItem title="Manage" pageRef="/manage/current-reservations" isTransparent={isTransparent}/>
+                    <TopMenuItem title="Manage" pageRef="/manage/history/reservations" isTransparent={isTransparent}/>
+                    <TopMenuItem title="Notification" pageRef="/manage/history/notifications" isTransparent={isTransparent}/>
                 </div>
                 <div className="w-full flex flex-row gap-[1.5rem] justify-end items-center">
                     {session?.user.role ? (
