@@ -185,6 +185,8 @@ export default function Dashboard() {
                         dateStyle: 'short',
                         timeStyle: 'short',
                       })}
+
+                      <p> By {noti.user.email} </p>
                     </div>
                   </div>
                 ))
@@ -219,7 +221,7 @@ export default function Dashboard() {
                     timeStyle: 'short',
                   })}
 
-                  <p> {selectedNotification.user.email} </p>
+                  
                 </span>
               </div>
             </div>
