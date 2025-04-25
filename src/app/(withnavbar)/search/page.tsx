@@ -46,17 +46,19 @@ export default function Search() {
         [hotelId: string]: number;
     }>({});
 
-    // if (!session?.user.token) {
-    //   return (
-    //     <>
-    //       <div className='w-full h-[80vh] text-h3-heading text-primary-dark flex justify-center items-center'>Please log in to view hotels.</div>
-    //     </>
-    //   );
-    // }
+    if (!session?.user.token) {
+      return (
+        <>
+          <div className='w-full h-[80vh] text-h3-heading text-primary-dark flex justify-center items-center'>Please log in to view hotels.</div>
+        </>
+      );
+    }
 
     useEffect(() => {
         const fetchHotels = async () => {
             try {
+                if (!session?.user.token)
+                    throw new Error("User token is undefined");
 
                 const response = await getHotels();
                 if (!response) throw new Error("Failed to fetch data");
@@ -570,64 +572,57 @@ export default function Search() {
                                         href={`/hotel/${hotel.id}`}
                                         key={hotel.id}
                                     >
-                                        <div className="border border-gray-200 rounded-lg overflow-hidden">
-                                            <div className="relative h-48">
+                                        <article className="h-[45vh] flex flex-col rounded-2xl overflow-hidden space-y-4 p-3 bg-primary-orange">
+                                            {/* Hotel Image */}
+                                            <div className="relative aspect-[3/2] rounded-2xl overflow-hidden">
                                                 <Image
-                                                    src={hotel.picture}
-                                                    alt={hotel.name}
-                                                    fill
-                                                    className="object-cover"
+                                                src={hotel.picture}
+                                                alt={hotel.name}
+                                                fill
+                                                className="object-cover"
                                                 />
                                             </div>
-                                            <div className="p-4">
-                                                <h3 className="font-bold text-lg mb-1 text-black">
-                                                    {hotel.name}
-                                                </h3>
-                                                <p className="text-sm text-gray-600 mb-2">
-                                                    {hotel.description}
-                                                </p>
-                                                <div className="flex items-center gap-1 mb-2">
-                                                    <MapPin className="w-4 h-4 text-gray-500" />
-                                                    <span className="text-sm text-black">
-                                                        {hotel.region},{" "}
-                                                        {hotel.address}
-                                                    </span>
+
+                                            {/* Hotel Name */}
+                                            <h3 className="text-h4-heading text-primary-dark">
+                                                {hotel.name}
+                                            </h3>
+
+                                            {/* Hotel Description */}
+                                            <p className="text-p3-paragraphy-small text-ct-dark-grey">
+                                                {hotel.description}
+                                            </p>
+
+                                            {/* Address */}
+                                            <div className="flex items-center gap-1">
+                                                <img src="/res/svg/PinLocation.svg" alt="location icon" />
+                                                <span className="text-p3-paragraphy-small text-ct-light-dark">
+                                                    {hotel.address}, {hotel.region}
+                                                </span>
+                                            </div>
+
+                                            {/* Room Info + Price */}
+                                            <div className="flex justify-between items-center">
+                                                <div className="flex items-center gap-2">
+                                                <img src="/res/svg/Bed.svg" alt="bed icon" />
+                                                <span className="text-p3-paragraphy-small text-ct-light-dark">
+                                                    {hotel.guests}
+                                                </span>
+                                                <img src="/res/svg/Shower.svg" alt="shower icon" />
+                                                <span className="text-p3-paragraphy-small text-ct-light-dark">
+                                                    1
+                                                </span>
+                                                <img src="/res/svg/Size.svg" alt="size icon" />
+                                                <span className="text-p3-paragraphy-small text-ct-light-dark">
+                                                    {hotel.size}
+                                                </span>
                                                 </div>
-                                                <div className="flex justify-between items-center">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="flex items-center gap-1">
-                                                            <Users className="w-4 h-4 text-gray-500" />
-                                                            <span className="text-xs text-black">
-                                                                {hotel.guests}
-                                                            </span>
-                                                        </div>
-                                                        <div className="flex items-center gap-1">
-                                                            <Maximize className="w-4 h-4 text-gray-500" />
-                                                            <span className="text-xs text-black">
-                                                                {hotel.size}
-                                                            </span>
-                                                        </div>
-                                                        <div className="flex items-center gap-1">
-                                                            <Star className="w-4 h-4 text-yellow-400" />
-                                                            <span className="text-xs text-black">
-                                                                {hotel.userRatingCount ===
-                                                                0
-                                                                    ? 0
-                                                                    : (
-                                                                          hotel.ratingSum /
-                                                                          hotel.userRatingCount
-                                                                      ).toFixed(
-                                                                          1,
-                                                                      )}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="font-bold text-lg text-black">
-                                                        ${hotel.dailyRate}
-                                                    </div>
+                                                <div className="text-h4-heading text-primary-dark">
+                                                    ${hotel.dailyRate}
                                                 </div>
                                             </div>
-                                        </div>
+                                        </article>
+
                                     </Link>
                                 ))
                             )}

@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import TopMenuItem from './TopMenuItem';
-import TopMenuAuth from './TopMenuAuth';
+import TopMenuIcon from './TopMenuIcon';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -63,21 +63,13 @@ export default function TopMenuClient({ session }: { session: any }) {
                 <div className="w-full flex flex-row gap-[1.5rem] justify-center items-center">
                     <TopMenuItem title="Home" pageRef="/" isTransparent={isTransparent}/>
                     <TopMenuItem title="Search" pageRef="/search" isTransparent={isTransparent}/>
-
-                    {
-                        session ? (
-                            <>
-                                <TopMenuItem title="Manage" pageRef="/manage/history/reservations" isTransparent={isTransparent}/>
-                                <TopMenuItem title="Notification" pageRef="/manage/history/notifications" isTransparent={isTransparent}/>
-                            </>
-                        ) : ''
-                    }
+                    <TopMenuItem title="Manage" pageRef="/manage/history/reservations" isTransparent={isTransparent}/>
                 </div>
                 <div className="relative w-full flex flex-row gap-[1.5rem] justify-end items-center">
                     {session?.user.role ? (
                         <>
-                            <TopMenuItemAuth title="N" pageRef="/manage/history/notifications" isTransparent={isTransparent} isSignup={false}/>
-                            <TopMenuItem title="Sign Out" pageRef="/signout" isTransparent={isTransparent}/>
+                            <TopMenuIcon imgPath="" pageRef="/manage/history/notifications" isTransparent={isTransparent} isSignup={false}/>
+                            <TopMenuItemAuth title="Sign Out" pageRef="/signout" isTransparent={isTransparent} isSignup={false}/>
                         </>
                     ) : (
                         <>

@@ -49,7 +49,7 @@ export default function ItemPage({ params }: { params: { id: string } }) { // pa
         setHotel(bookingData.hotel); // Set hotel data from booking
 
         // Now that we have hotel data, fetch reviews for this hotel
-        const reviewsResponse = await getReviewWithHotelID(session.user.token, bookingData.hotel.id);
+        const reviewsResponse = await getReviewWithHotelID(bookingData.hotel.id);
         const reviewsData = reviewsResponse.data;
         setReview(reviewsData);
 
