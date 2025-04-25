@@ -41,17 +41,7 @@ export default function Dashboard() {
           {/* Sidebar */}
           <div className="w-full md:w-64">
             <nav className="space-y-1">
-              <div>
-                <button className="w-full flex items-center justify-between p-3 rounded-md hover:bg-gray-100">
-                  <span className="font-medium">Current</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                <div className="pl-6 py-1">
-                  <Link href="/manage/current-reservations" className="block py-1.5 text-gray-600">
-                    Reservations
-                  </Link>
-                </div>
-              </div>
+              
 
               {/* <div>
                 <button className="w-full flex items-center justify-between p-3 rounded-md hover:bg-gray-100">
