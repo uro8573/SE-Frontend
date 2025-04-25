@@ -23,6 +23,7 @@ export default function Dashboard() {
         if (!session?.user?.token) throw new Error("User token is undefined");
         const response = await getNotifications(session.user.token);
         setNotifications(response.data);
+        console.log("Notifications:", response.data);
       } catch (error) {
         console.error("เกิดข้อผิดพลาดในการโหลดการแจ้งเตือน:", error);
       } finally {
@@ -167,7 +168,7 @@ export default function Dashboard() {
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <h4 className="font-semibold text-base">{noti.typeAction}</h4>
-                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">{noti.text}</p>
+                        
                         <button className="text-sm text-blue-600 mt-1 cursor-pointer hover:underline" onClick={() => openNotificationDetail(noti)}>
                           View details
                         </button>
@@ -211,15 +212,23 @@ export default function Dashboard() {
             <div className="p-5">
               <p className="text-gray-700 mb-4">{selectedNotification.text}</p>
               
-              <div className="flex justify-between items-center text-sm text-gray-500 mt-4">
-                <span>Notification ID: {selectedNotification._id.substring(0, 8)}...</span>
+              <div className="flex flex-wrap items-center text-sm text-gray-600 mt-4 gap-x-4 gap-y-1">
                 <span>
+                  <strong className="font-medium text-gray-700">Send to:</strong> {selectedNotification.user.email}
+                </span>
+                <span>
+                  <strong className="font-medium text-gray-700">Notification ID:</strong> {selectedNotification._id.substring(0, 8)}...
+                </span>
+                <span>
+                  <strong className="font-medium text-gray-700">Sent at:</strong>{' '}
                   {new Date(selectedNotification.createdAt).toLocaleString('th-TH', {
                     dateStyle: 'medium',
                     timeStyle: 'short',
                   })}
                 </span>
               </div>
+
+
             </div>
             
             <div className="bg-gray-50 py-3 px-5 flex justify-end">
