@@ -218,6 +218,8 @@ export default function Dashboard() {
                     dateStyle: 'medium',
                     timeStyle: 'short',
                   })}
+
+                  <p> {selectedNotification.user.email} </p>
                 </span>
               </div>
             </div>
