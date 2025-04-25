@@ -172,14 +172,13 @@ export default function Dashboard() {
                 notifications.map((noti) => (
                   <div
                     key={noti._id}
-                    className={`border-l-4 rounded-md p-4 shadow-sm cursor-pointer transition-all hover:shadow-md ${getNotificationStyles(noti.type)}`}
-                    onClick={() => openNotificationDetail(noti)}
+                    className={`border-l-4 rounded-md p-4 shadow-sm transition-all hover:shadow-md ${getNotificationStyles(noti.type)}`}
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <h4 className="font-semibold text-base">{noti.typeAction}</h4>
                         <p className="text-sm text-gray-600 mt-1 line-clamp-2">{noti.text}</p>
-                        <button className="text-sm text-blue-600 mt-1 hover:underline">
+                        <button className="text-sm text-blue-600 mt-1 cursor-pointer hover:underline" onClick={() => openNotificationDetail(noti)}>
                           View details
                         </button>
                       </div>
