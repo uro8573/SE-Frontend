@@ -3,7 +3,9 @@ import Image from "next/image";
 import { Button, Input, Rating } from "@mui/material";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 import getHotel from "@/libs/getHotel";
+import getUserProfile from "@/libs/getUserProfile";
 import { useSession } from "next-auth/react";
 import { ToastContainer, toast } from "react-toastify";
 import {
@@ -27,6 +29,7 @@ import addNotification from "@/libs/addNotification";
 
 export default function ItemPage({ params }: { params: { id: number } }) {
     const { data: session } = useSession();
+    const router = useRouter();
 
     const [hotel, setHotel] = useState<Hotel>();
     const [item, setItem] = useState<HotelItem | null>(null);
@@ -225,6 +228,16 @@ export default function ItemPage({ params }: { params: { id: number } }) {
     const handleBooking = async () => {
         if (!session?.user?.token || !hotel?.id) {
             toast.error("You must be signed in to book.");
+            return;
+        }
+        
+        const userProfile = await getUserProfile(session?.user?.token);
+        
+        console.log(userProfile);
+
+        if (!userProfile.data.isVerify) {
+            toast.error("You must be verified before reserving a hotel.");
+            router.push('/verify'); // ใช้ push() แทน
             return;
         }
 

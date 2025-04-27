@@ -13,6 +13,8 @@ export default function Dashboard() {
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [bookingCount, setBookingCount] = useState<number>(0);
 
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
     const fetchBookings = async () => {
       try {
@@ -23,6 +25,8 @@ export default function Dashboard() {
         setBookings(response.data);
       } catch (error) {
         console.error("เกิดข้อผิดพลาดในการโหลดการจอง:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -92,8 +96,10 @@ export default function Dashboard() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {bookings.length === 0 ? (
+              {bookings.length === 0 && loading ? (
                 <p>กำลังโหลดข้อมูลการจอง...</p>
+              ) : bookings.length === 0 && !loading ? (
+                <p>ไม่มีข้อมูล</p>
               ) : (
                 bookings.map((booking) => {
                   const checkInDate = new Date(booking.checkInDate);

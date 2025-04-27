@@ -86,7 +86,8 @@ export interface userProfile {
     email: string,
     tel: string,
     role: string,
-    createdAt: string
+    isVerify: string,
+    createdAt: string,
 }
 
 export interface userJson {

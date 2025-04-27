@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 
 export default function TopMenuItem({ title, pageRef, isTransparent }: { title: string; pageRef: string; isTransparent:Boolean }) {
     const pathname = usePathname()
-    const isActive = pathname.toLowerCase() === pageRef.toLowerCase()
+    const isActive = `/${pathname.toLowerCase().split('/')[1]}` === `/${pageRef.toLowerCase().split('/')[1]}`
 
     return (
         <Link
