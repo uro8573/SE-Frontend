@@ -5,12 +5,14 @@ import type React from "react";
 import { useState } from "react";
 import Link from "next/link";
 import LoginInput from "@/components/auth/LoginInput";
+import TelephonInput from "@/components/auth/TelephoneInput";
 import { PasswordInput } from "@/components/auth/passwordInput";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import userRegister from "@/libs/userRegister";
 import { Alert, Slide, SlideProps, Snackbar } from "@mui/material";
 import { AlertCircle, CheckCircle } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 export function RegisterForm() {
     const [email, setEmail] = useState("");
@@ -42,20 +44,31 @@ export function RegisterForm() {
         setError("");
         setIsLoading(true);
         console.log("Registering...");
-
+    
         try {
             const res = await userRegister(email, password, name, telephone);
-
+    
             if (res?.error) {
                 showAlert("error", "Register failed! Input is incorrect.");
                 setError("Input is incorrect.");
             } else {
-                showAlert("success", "Register successful! Redirecting...");
-
-                setTimeout(() => {
-                    router.push("/");
-                    router.refresh();
-                }, 2000);
+                // สมัครสำเร็จ → Login ต่อ
+                const loginRes = await signIn("credentials", {
+                    redirect: false, // ห้าม redirect อัตโนมัติ
+                    email: email,
+                    password: password,
+                });
+    
+                if (loginRes?.ok) {
+                    showAlert("success", "Register successful! Redirecting...");
+                    setTimeout(() => {
+                        router.push("/verify"); // << เปลี่ยนเป็น /verify
+                        router.refresh();
+                    }, 2000);
+                } else {
+                    showAlert("error", "Login failed after registration.");
+                    setError("Login failed after registration.");
+                }
             }
         } catch (err) {
             showAlert("error", "Please check your Input");
@@ -110,7 +123,7 @@ export function RegisterForm() {
                         placeholder="Full Name"
                         onChange={setName}
                     />
-                    <LoginInput
+                    <TelephonInput
                         id="telephone"
                         input={telephone}
                         label="Telephone"

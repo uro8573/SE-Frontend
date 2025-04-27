@@ -33,6 +33,7 @@ export default function Dashboard() {
   const [editingId, setEditingId] = useState<string>("");
   const [editedComment, setEditingComment] = useState<string>("");
   const [editedRating, setEditedRating] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
   
 
 
@@ -48,6 +49,8 @@ export default function Dashboard() {
         setReviewCount(respond.count);
       } catch (err) {
         console.error("เกิดข้อผิดพลาดในการโหลดรีวิว : ", err)
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -182,8 +185,10 @@ export default function Dashboard() {
             </div>
 
             <div className="space-y-4">
-              {reviews.length === 0 ? (
+              {reviews.length === 0 && loading ? (
                 <p>กำลังโหลดข้อมูลรีวิว...</p>
+              ) : reviews.length === 0 && !loading ? (
+                <p>ไม่มีข้อมูล</p>
               ) : (
                 reviews.map((review) => (
                     <div
@@ -215,6 +220,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                       {/* Conditional rendering for editing or displaying the review */}
+
                       {editingId === review._id ? (
                         <div className="space-y-2">
                           <textarea
@@ -254,11 +260,17 @@ export default function Dashboard() {
                           <p className="text-sm text-gray-600">{comment.get(review._id)}</p>
                         </>
                       )}
+
                     </div>
                   </div>
                 ))
-              )}
+              )
+              
+              }
             </div>
+
+
+            
           </div>
         </div>
         <ToastContainer/>

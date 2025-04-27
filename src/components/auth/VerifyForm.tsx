@@ -1,35 +1,32 @@
-"use client";
+'use client';
 
 import type React from "react";
-
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import VerifyInput from "./VerifyInput";
-import { PasswordInput } from "@/components/auth/passwordInput";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import userRegister from "@/libs/userRegister";
 import { Alert, Slide, SlideProps, Snackbar } from "@mui/material";
 import { AlertCircle, CheckCircle } from "lucide-react";
+import verifyAccount from "@/libs/verifyAccount";
+import { useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 export function VerifyForm() {
-    const [email, setEmail] = useState("");
-    const [telephone, setTelephone] = useState("");
-    const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
+
+    const { data: session} = useSession();
+
+    const [codes, setCodes] = useState(["", "", "", "", "", ""]);
     const router = useRouter();
 
-    const [error, setError] = useState("");
-    const [openAlert, setOpenAlert] = useState(false);
-    const [alertSeverity, setAlertSeverity] = useState<"success" | "error">(
-        "success",
-    );
-    const [alertMessage, setAlertMessage] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
-    const handleCloseAlert = () => {
-        setOpenAlert(false);
-    };
+    const [openAlert, setOpenAlert] = useState(false);
+    const [alertSeverity, setAlertSeverity] = useState<"success" | "error">("success");
+    const [alertMessage, setAlertMessage] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false); // ป้องกันกดหลายรอบ
+
+    const handleCloseAlert = () => setOpenAlert(false);
 
     const showAlert = (severity: "success" | "error", message: string) => {
         setAlertSeverity(severity);
@@ -37,34 +34,58 @@ export function VerifyForm() {
         setOpenAlert(true);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError("");
-        setIsLoading(true);
-        console.log("Registering...");
+    const handleChange = (index: number, value: string) => {
+        if (!/^[0-9]?$/.test(value)) return; // รับแค่ตัวเลข หรือว่าง
+        const newCodes = [...codes];
+        newCodes[index] = value;
+        setCodes(newCodes);
 
-        try {
-            const res = await userRegister(email, password, name, telephone);
+        if (value && index < inputRefs.current.length - 1) {
+            inputRefs.current[index + 1]?.focus();
+        }
 
-            if (res?.error) {
-                showAlert("error", "Register failed! Input is incorrect.");
-                setError("Input is incorrect.");
-            } else {
-                showAlert("success", "Register successful! Redirecting...");
-
-                setTimeout(() => {
-                    router.push("/");
-                    router.refresh();
-                }, 2000);
-            }
-        } catch (err) {
-            showAlert("error", "Please check your Input");
-            console.error("Register error:", err);
-            setError("Something went wrong. Please try again.");
-        } finally {
-            setIsLoading(false);
+        const joinedCode = newCodes.join('');
+        if (joinedCode.length === 6 && newCodes.every((c) => c !== "")) {
+            handleVerify(joinedCode);
         }
     };
+
+    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Backspace" && !codes[index] && index > 0) {
+            inputRefs.current[index - 1]?.focus();
+        }
+    };
+
+    const handleVerify = async (fullCode: string) => {
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+
+        try {
+            const token = session?.user.token
+            if (!token) {
+                showAlert("error", "No token found, please login again.");
+                return;
+            }
+
+            const res = await verifyAccount(token, fullCode);
+
+            if (res?.success) {
+                showAlert("success", "Account verified! Redirecting...");
+                setTimeout(() => {
+                    router.push("/"); // หรือไปหน้าที่ต้องการหลัง verify
+                    router.refresh();
+                }, 2000);
+            } else {
+                showAlert("error", res?.message || "Verification failed!");
+            }
+        } catch (err) {
+            console.error("Verification error:", err);
+            showAlert("error", "An error occurred. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+    
 
     function SlideTransition(props: SlideProps) {
         return <Slide {...props} direction="down" />;
@@ -92,27 +113,28 @@ export function VerifyForm() {
                         borderRadius: "8px",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                         fontWeight: 500,
-                        "& .MuiAlert-icon": {
-                            fontSize: "1.25rem",
-                        },
+                        "& .MuiAlert-icon": { fontSize: "1.25rem" },
                     }}
                 >
                     {alertMessage}
                 </Alert>
             </Snackbar>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form className="space-y-6">
                 <div className="flex flex-row space-x-[16px]">
-                    <VerifyInput id="name" input={name} onChange={setName} />
-                    <VerifyInput id="name" input={name} onChange={setName} />
-                    <VerifyInput id="name" input={name} onChange={setName} />
-                    <VerifyInput id="name" input={name} onChange={setName} />
-                    <VerifyInput id="name" input={name} onChange={setName} />
-                    <VerifyInput id="name" input={name} onChange={setName} />
+                    {codes.map((code, index) => (
+                        <VerifyInput
+                            key={index}
+                            id={`verify-${index}`}
+                            input={code}
+                            onChange={(val: string) => handleChange(index, val)}
+                            inputRef={(el: HTMLInputElement) => (inputRefs.current[index] = el)}
+                            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(index, e)}
+                        />
+                    ))}
                 </div>
             </form>
 
-            {/* Register Link */}
             <div className="text-center text-p3-paragraphy-small text-primary-dark">
                 Didn't receive the verification code?{" "}
                 <Link

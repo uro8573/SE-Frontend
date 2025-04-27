@@ -28,6 +28,7 @@ export const authOptions:AuthOptions = {
                 name: userProfile.data.name,
                 role: userProfile.data.role,
                 token: user.token, // ถ้าคุณอยากใช้ต่อภายหลัง
+                isVerify: userProfile.data.isVerify,
               };
 
               
@@ -44,6 +45,7 @@ export const authOptions:AuthOptions = {
               name: string;
               role: string;
               token: string;
+              isVerify: string;
           };
   
           token.id = customUser.id;
@@ -51,6 +53,7 @@ export const authOptions:AuthOptions = {
           token.name = customUser.name;
           token.role = customUser.role;
           token.token = customUser.token;
+          token.isVerify = customUser.isVerify;
       }
   
       return token;
@@ -62,6 +65,7 @@ export const authOptions:AuthOptions = {
             name: token.name as string,
             role: token.role as string,
             token: token.token as string,
+            isVerify: token.isVerify as string,
         };
         return session;
       }

@@ -572,7 +572,7 @@ export default function Search() {
                                         href={`/hotel/${hotel.id}`}
                                         key={hotel.id}
                                     >
-                                        <article className="h-[45vh] flex flex-col rounded-2xl overflow-hidden space-y-4 p-3 bg-primary-orange">
+                                        <article className="h-[45vh] flex flex-col rounded-2xl overflow-hidden space-y-4 p-3 bg-ct-white">
                                             {/* Hotel Image */}
                                             <div className="relative aspect-[3/2] rounded-2xl overflow-hidden">
                                                 <Image

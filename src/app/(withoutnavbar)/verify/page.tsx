@@ -13,7 +13,7 @@ export default function SignUp() {
                 <div className="flex w-full flex-col justify-center items-center px-6 py-12 md:w-1/2 md:px-12 lg:px-16 xl:px-24">
                     <div className="w-full max-w-md flex flex-col gap-8">
                         <div className="flex flex-col gap-2">
-                            <h1 className="text-h3-heading text-primary-dark">Create an Account</h1>
+                            <h1 className="text-h3-heading text-primary-dark">Verify an Account</h1>
                             <p className="text-p3-paragraphy-small text-primary-dark">Register your TungTEE888 account</p>
                         </div>
                         <VerifyForm />
