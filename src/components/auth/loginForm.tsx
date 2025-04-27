@@ -105,7 +105,7 @@ export default function LoginForm() {
 
             <form onSubmit={handleLogin} className="space-y-8">
                 <div className="space-y-4">
-                    <EmailInput input={email} onChange={setEmail} />
+                    <EmailInput input={email} onChange={setEmail} type="email"/>
                     <PasswordInput
                         forgotPasswordLink="#"
                         onChange={setPassword}

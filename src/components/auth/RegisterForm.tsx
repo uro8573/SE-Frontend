@@ -121,6 +121,7 @@ export function RegisterForm() {
                         input={name}
                         label="Name"
                         placeholder="Full Name"
+                        type="name"
                         onChange={setName}
                     />
                     <TelephonInput

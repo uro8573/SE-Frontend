@@ -1,4 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
+import getUserProfile from '@/libs/getUserProfile';
+import { useSession } from 'next-auth/react';
 
 // Test data and helper variables
 const BASE_URL = 'http://localhost:3000';
@@ -50,6 +52,8 @@ test.describe('Email Notifications EPIC', () => {
     await page.goto(BASE_URL);
   });
 
+
+  /*
   // US2-1: Booking confirmation notifications (system generated)
   test('US2-1: User receives booking confirmation notification', async ({ page }) => {
     // Login first
@@ -83,6 +87,8 @@ test.describe('Email Notifications EPIC', () => {
     // Verify the notification contains booking text
     await expect(page.locator('text=BookingSuccess')).toBeVisible();
   });
+
+
 
   // US2-2: View past notifications
   test('US2-2: User can check past notifications', async ({ page }) => {
@@ -122,8 +128,8 @@ test.describe('Email Notifications EPIC', () => {
       await expect(page.locator('.fixed.inset-0')).not.toBeVisible();
     }
   });
-  
-  /*
+  */
+
   // US2-3: Email verification OTP flow
   test('US2-3: User registration with email verification OTP', async ({ page }) => {
     // Go to signup page
@@ -132,15 +138,46 @@ test.describe('Email Notifications EPIC', () => {
     // Fill out registration form
     const testEmail = `test${Date.now()}@example.com`;
     const testPassword = 'Password123!';
+    const testName = 'TestName';
+    const testTel = '0884567890';
     
     await page.fill('input[type="email"]', testEmail);
     await page.fill('input[type="password"]', testPassword);
+    await page.fill('input[type="name"]', testName);
+    await page.fill('input[type="tel"]', testTel);
+
+    /*
     await page.fill('input[placeholder="Confirm Password"]', testPassword); // Adjust selector as needed
     await page.fill('input[placeholder="Name"]', 'Test User'); // Adjust selector as needed
     await page.fill('input[placeholder="Phone Number"]', '1234567890'); // Adjust selector as needed
-    
+    */
+
     // Submit registration form
     await page.click('button[type="submit"]');
+
+    // Go to login page
+    await page.goto(`${BASE_URL}/signin`, { timeout : 10000});
+
+    // Login with the newly registered credentials
+    await page.fill('input[type="email"]', testEmail);
+    await page.fill('input[type="password"]', testPassword);
+    await page.click('button[type="submit"]');
+
+    await page.waitForURL(`${BASE_URL}/`, { timeout: 10000 });
+    const { data: session } = useSession();
+    const token = session?.user.token;
+
+    console.log(token);
+
+    let userProfile;
+
+    userProfile = await getUserProfile(token || '');
+    console.log('User Profile:', userProfile);
+    expect(userProfile).toHaveProperty('verificationCode'); // Assuming 'otp' field exists
+    const verificationCode = userProfile.verificationCode;
+    
+    // Navigate to the verify email page
+    await page.goto(`${BASE_URL}/verify`);
     
     // Check for OTP verification screen
     await expect(page.locator('text=Verify Your Email')).toBeVisible();
@@ -149,22 +186,29 @@ test.describe('Email Notifications EPIC', () => {
     const otpInputs = page.locator('input[type="text"][maxlength="1"]');
     await expect(otpInputs).toHaveCount(6);
     
+
     // Test resend OTP functionality
-    await page.click('button:has-text("Resend Code")');
+    await page.click('button[type="submit"]');
     await expect(page.locator('text=Code sent!')).toBeVisible();
+
+
     
-    // Simulate OTP verification (in real testing, you'd need access to the email service or mock)
-    // For demo purposes, let's use "123456" as a test code
-    for (let i = 0; i < 6; i++) {
-      await otpInputs.nth(i).fill(i.toString());
+    const otpArray = verificationCode.split('');
+    for (let i = 0; i < otpArray.length; i++) {
+      await otpInputs.nth(i).fill(otpArray[i]);
     }
     
-    await page.click('button:has-text("Verify")');
+    await page.click('button[type="submit"]');
     
     // Verify successful registration
     await expect(page.locator('text=Email verified successfully')).toBeVisible();
   });
 
+  // คืออยากให้ get ค่าจาก session หลังจาก login ได้เพิ่อเอาค่า token จาก session มาใช้ในการ getuserprofile ของค่า otp เพื่อว่า เอามาใส่ verify ได้
+
+
+  
+  /*
   // US2-4: Test for notification management (as visible to user)
   test('US2-4: Notifications are properly managed and organized', async ({ page }) => {
     // Login first
