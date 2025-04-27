@@ -240,7 +240,12 @@ export default function ItemPage({ params }: { params: { id: number } }) {
             if (result.success) {
                 toast.success("Booking successful!");
             //tokenId text type typeaction
-                addNotification( session.user.token, session.user._id, `You have booked ${hotel.name} แต่จะไม่ขอบคุณหรอก เชอะ!`, "success", "BookingSuccess")
+                try {
+                    addNotification( session.user.token, session.user._id, `You have booked ${hotel.name} แต่จะไม่ขอบคุณหรอก เชอะ!`, "success", "BookingSuccess")
+                }catch (error) {
+                    console.error(error);
+                }
+                
             } else {
                 toast.error(`${result.message}`);
                 addNotification( session.user.token, session.user._id, `You have failed booking because ${result.message}`, "fail", "BookingFailed")

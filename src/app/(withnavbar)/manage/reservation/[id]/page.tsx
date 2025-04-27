@@ -48,7 +48,7 @@ export default function ItemPage({ params }: { params: { id: number } }) {
   
         if (!session?.user.token) throw new Error("User token is undefined");
   
-        const response2 = await getReviewWithHotelID(session.user.token, hotelData.id);
+        const response2 = await getReviewWithHotelID( hotelData.id);
         const reviewsData = response2.data;
   
         setReview(reviewsData);
