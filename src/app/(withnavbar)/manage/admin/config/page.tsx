@@ -10,10 +10,11 @@ import { useSession } from "next-auth/react"
 import SideBar from "@/components/manage/sidebar"
 import getAdminConfig from "@/libs/getAdminConfig"
 import updateAdminConfig from "@/libs/updateAdminConfig"
+import { Config } from "../../../../../../interfaces"
 
 export default function Dashboard() {
   const { data: session } = useSession();
-  const [config, setConfig] = useState(null);
+  const [config, setConfig] = useState<Config>();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [notiPeriod, setNotiPeriod] = useState<number>(-1);
@@ -57,7 +58,7 @@ export default function Dashboard() {
   }
 
   if(!loading && notiPeriod == -1) {
-    setNotiPeriod(config.noti_period);
+    setNotiPeriod(config?.noti_period || 0);
   }
 
   return (
@@ -89,7 +90,12 @@ export default function Dashboard() {
                     <TextField type="number" label={`Notification Period : day(s)`} variant="standard" value={notiPeriod} onChange={(e) => setNotiPeriod(parseInt(e.target.value))}/>
                     <button 
                     className="my-5 w-1/3 bg-lime-400 text-ui-label-semi-bold text-primary-dark py-3 rounded-full duration-300 hover:bg-lime-500"
-                    onClick={updateConfig} >
+                    onClick={(e) => {
+                      e.preventDefault();
+                      updateConfig();
+                    }} 
+                    type="submit"
+                    >
                         Save
                     </button>
                   </div>
