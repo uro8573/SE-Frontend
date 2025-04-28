@@ -36,7 +36,7 @@ afterAll(() => {
 });
 
 describe('User Authentication Tests', () => {
-  it('userLogIn must return correct results', async () => {
+  it('[TC001] userLogIn must return correct results', async () => {
     // Mock successful login response with the provided JSON
     const mockLoginResponse = {
       ok: true,
@@ -72,7 +72,7 @@ describe('User Authentication Tests', () => {
     expect(loginResult.token).toBeTruthy();
   });
   
-  it('userLogIn should throw error when response is not ok', async () => {
+  it('[TC002] userLogIn should throw error when response is not ok', async () => {
     const mockFailedResponse = {
       ok: false
     };
@@ -81,7 +81,7 @@ describe('User Authentication Tests', () => {
     await expect(userLogIn('wrong@email.com', 'wrongpass')).rejects.toThrow('Failed to fetch user');
   });
   
-  it('getUserProfile must return correct results', async () => {
+  it('[TC003] getUserProfile must return correct results', async () => {
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGM2ZDg4YjZlNDVjNDVkYmY3YTlmOSIsImlhdCI6MTc0NTcyMTI2NCwiZXhwIjoxNzQ4MzEzMjY0fQ.OZYmzGVOe0mIQ2nC3fRjMPH9VQmxo-4TyaemSyths4s";
     
     // Mock successful profile response with the provided JSON
@@ -125,7 +125,7 @@ describe('User Authentication Tests', () => {
     expect(profileData.role).toMatch(/user/i);
   });
   
-  it('getUserProfile should throw error when response is not ok', async () => {
+  it('[TC004] getUserProfile should throw error when response is not ok', async () => {
     const mockFailedResponse = {
       ok: false
     };
@@ -139,7 +139,7 @@ describe('Notification Functions Tests', () => {
   const token = 'test-token-123';
   const userId = 'user123';
   
-  it('addNotification should send correct data and return response', async () => {
+  it('[TC2-2-01] addNotification should send correct data and return response', async () => {
     const mockResponse = {
       json: jest.fn().mockResolvedValue({ id: 'notif123', created: true })
     };
@@ -168,7 +168,7 @@ describe('Notification Functions Tests', () => {
     expect(result).toEqual({ id: 'notif123', created: true });
   });
   
-  it('getNotifications should fetch and return notifications', async () => {
+  it('[TC006] getNotifications should fetch and return notifications', async () => {
     const mockResponse = {
       ok: true,
       json: jest.fn().mockResolvedValue({ 
@@ -195,7 +195,7 @@ describe('Notification Functions Tests', () => {
     expect(result.data).toHaveLength(1);
   });
   
-  it('getNotifications should throw error when response is not ok', async () => {
+  it('[TC007] getNotifications should throw error when response is not ok', async () => {
     const mockFailedResponse = {
       ok: false
     };
@@ -204,7 +204,7 @@ describe('Notification Functions Tests', () => {
     await expect(getNotifications(token)).rejects.toThrow('Failed to fetch notifications');
   });
   
-  it('updateNotification should mark notification as read', async () => {
+  it('[TC008] updateNotification should mark notification as read', async () => {
     const notificationId = 'notif123';
     const mockResponse = {
       ok: true,
@@ -234,7 +234,7 @@ describe('Notification Functions Tests', () => {
     expect(result.isRead).toBe(true);
   });
   
-  it('updateNotification should throw error when response is not ok', async () => {
+  it('[TC009] updateNotification should throw error when response is not ok', async () => {
     const mockFailedResponse = {
       ok: false,
       status: 404,
@@ -250,7 +250,7 @@ describe('Rating and Review Functions Tests', () => {
   const token = 'test-token-123';
   const hotelId = 'hotel123';
   
-  it('addRating should send rating data and return response', async () => {
+  it('[TC1-1-01] addRating should send rating data and return response', async () => {
     const mockResponse = {
       ok: true,
       json: jest.fn().mockResolvedValue({ 
@@ -279,7 +279,7 @@ describe('Rating and Review Functions Tests', () => {
     expect(result.id).toBe(hotelId);
   });
   
-  it('addRating should throw error when response is not ok', async () => {
+  it('[TC011] addRating should throw error when response is not ok', async () => {
     const mockFailedResponse = {
       ok: false
     };
@@ -288,7 +288,7 @@ describe('Rating and Review Functions Tests', () => {
     await expect(addRating(hotelId, 5, token)).rejects.toThrow('Failed to add hotel rating');
   });
   
-  it('createReview should send review data and return response', async () => {
+  it('[TC012] createReview should send review data and return response', async () => {
     const mockResponse = {
       json: jest.fn().mockResolvedValue({ 
         id: 'review123', 
@@ -319,7 +319,7 @@ describe('Rating and Review Functions Tests', () => {
     expect(result.comment).toBe('Great hotel');
   });
   
-  it('updateReview should modify review data and return response', async () => {
+  it('[TC1-3-01] updateReview should modify review data and return response', async () => {
     const reviewId = 'review123';
     const mockResponse = {
       json: jest.fn().mockResolvedValue({ 
@@ -350,7 +350,7 @@ describe('Rating and Review Functions Tests', () => {
     expect(result.comment).toBe('Updated comment');
   });
   
-  it('deleteReview should remove review and return response', async () => {
+  it('[TC1-4-01] deleteReview should remove review and return response', async () => {
     const reviewId = 'review123';
     const mockResponse = {
       json: jest.fn().mockResolvedValue({ 
@@ -377,7 +377,7 @@ describe('Rating and Review Functions Tests', () => {
   });
   
   // Fix: For the tests that timeout
-  it('getReviews should fetch and return user reviews', async () => {
+  it('[TC1-2-01] getReviews should fetch and return user reviews', async () => {
     // Create a mock for the getReviews function that resolves immediately
     const mockResponse = {
       ok: true,
@@ -409,7 +409,7 @@ describe('Rating and Review Functions Tests', () => {
     expect(result.data).toHaveLength(1);
   }, 15000);  // Increased timeout to 15 seconds
   
-  it('getReviews should throw error when response is not ok', async () => {
+  it('[TC1-2-02] getReviews should throw error when response is not ok', async () => {
     const mockFailedResponse = {
       ok: false
     };
@@ -418,7 +418,7 @@ describe('Rating and Review Functions Tests', () => {
     await expect(getReviews(token)).rejects.toThrow('Failed to fetch reviews');
   }, 15000);  // Increased timeout to 15 seconds
   
-  it('getReviewWithHotelID should fetch and return hotel reviews', async () => {
+  it('[TC017] getReviewWithHotelID should fetch and return hotel reviews', async () => {
     const hotelId = 123;
     const mockResponse = {
       ok: true,
@@ -439,7 +439,7 @@ describe('Rating and Review Functions Tests', () => {
     expect(result.data).toHaveLength(1);
   }, 15000);  // Increased timeout to 15 seconds
   
-  it('getReviewWithHotelID should throw error when response is not ok', async () => {
+  it('[TC018] getReviewWithHotelID should throw error when response is not ok', async () => {
     const mockFailedResponse = {
       ok: false
     };

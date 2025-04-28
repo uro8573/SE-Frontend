@@ -19,7 +19,7 @@ import Rating from '@mui/material/Rating'
 
 import updateReview from "@/libs/updateReview"
 import deleteReview from "@/libs/deleteReview"
-
+import SideBar from "@/components/manage/sidebar"
 
 export default function Dashboard() {
 
@@ -131,44 +131,7 @@ export default function Dashboard() {
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar */}
-          <div className="w-full md:w-64">
-            <nav className="space-y-1">
-             
-
-              {/* <div>
-                <button className="w-full flex items-center justify-between p-3 rounded-md">
-                  <span className="font-medium">History</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                <div className="pl-6 py-1">
-                  <Link href="/manage/history/reservations" className="block py-1.5 text-gray-600">
-                    Reservations
-                  </Link>
-                  <Link href="/manage/history/reviews" className="block py-1.5 text-gray-600">
-                    Reviews
-                  </Link>
-                </div>
-              </div> */}
-
-              <div>
-                <button className="w-full flex items-center justify-between p-3 rounded-md bg-gray-100">
-                  <span className="font-medium">History</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                <div className="pl-6 py-1">
-                  <Link href="/manage/history/reservations" className="block py-1.5 text-gray-600">
-                    Reservations
-                  </Link>
-                  <Link href="/manage/history/reviews" className="block py-1.5 font-medium">
-                    Reviews
-                  </Link>
-                  <Link href="/manage/history/notifications" className="block py-1.5 text-gray-600">
-                    Notifications
-                </Link>
-                </div>
-              </div>
-            </nav>
-          </div>
+          <SideBar/>
 
 
           {/* Main Content */}
