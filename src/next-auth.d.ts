@@ -9,6 +9,7 @@ declare module "next-auth" {
             role: string,
             token: string,
             isVerify: string,
+            verificationCode : string
         }
     }
 }

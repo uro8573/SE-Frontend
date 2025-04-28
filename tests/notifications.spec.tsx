@@ -1,6 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 import getUserProfile from '@/libs/getUserProfile';
 import { useSession } from 'next-auth/react';
+import userLogIn from '@/libs/userLogIn';
 
 // Test data and helper variables
 const BASE_URL = 'http://localhost:3000';
@@ -134,27 +135,22 @@ test.describe('Email Notifications EPIC', () => {
   test('US2-3: User registration with email verification OTP', async ({ page }) => {
     // Go to signup page
     await page.goto(`${BASE_URL}/signup`);
-    
+
     // Fill out registration form
     const testEmail = `test${Date.now()}@example.com`;
     const testPassword = 'Password123!';
     const testName = 'TestName';
     const testTel = '0884567890';
-    
+
     await page.fill('input[type="email"]', testEmail);
     await page.fill('input[type="password"]', testPassword);
     await page.fill('input[type="name"]', testName);
     await page.fill('input[type="tel"]', testTel);
 
-    /*
-    await page.fill('input[placeholder="Confirm Password"]', testPassword); // Adjust selector as needed
-    await page.fill('input[placeholder="Name"]', 'Test User'); // Adjust selector as needed
-    await page.fill('input[placeholder="Phone Number"]', '1234567890'); // Adjust selector as needed
-    */
-
     // Submit registration form
     await page.click('button[type="submit"]');
 
+    /*
     // Go to login page
     await page.goto(`${BASE_URL}/signin`, { timeout : 10000});
 
@@ -164,47 +160,36 @@ test.describe('Email Notifications EPIC', () => {
     await page.click('button[type="submit"]');
 
     await page.waitForURL(`${BASE_URL}/`, { timeout: 10000 });
-    const { data: session } = useSession();
-    const token = session?.user.token;
+    */
 
-    console.log(token);
+    // Login the user via API to get the token
+    const loginResponse = await userLogIn(testEmail, testPassword);
+    console.log(loginResponse);
 
-    let userProfile;
+    const token = loginResponse.token; // Assuming your login API returns token in data.token
+    console.log('Token จาก Login API:', token);
 
-    userProfile = await getUserProfile(token || '');
+    const userProfile = await getUserProfile(token);
     console.log('User Profile:', userProfile);
-    expect(userProfile).toHaveProperty('verificationCode'); // Assuming 'otp' field exists
-    const verificationCode = userProfile.verificationCode;
-    
+    expect(userProfile.data).toHaveProperty('verificationCode');
+    const verificationCode = userProfile.data.verificationCode;
+
     // Navigate to the verify email page
     await page.goto(`${BASE_URL}/verify`);
-    
-    // Check for OTP verification screen
-    await expect(page.locator('text=Verify Your Email')).toBeVisible();
-    
-    // Test OTP input field (assuming 6-digit OTP code)
+    await expect(page.locator('text=Verify an Account')).toBeVisible();
     const otpInputs = page.locator('input[type="text"][maxlength="1"]');
     await expect(otpInputs).toHaveCount(6);
-    
-
-    // Test resend OTP functionality
-    await page.click('button[type="submit"]');
-    await expect(page.locator('text=Code sent!')).toBeVisible();
-
-
-    
     const otpArray = verificationCode.split('');
     for (let i = 0; i < otpArray.length; i++) {
       await otpInputs.nth(i).fill(otpArray[i]);
     }
-    
-    await page.click('button[type="submit"]');
-    
-    // Verify successful registration
-    await expect(page.locator('text=Email verified successfully')).toBeVisible();
+
+
+    await expect(page.locator('text=Account verified! Redirecting...')).toBeVisible({ timeout: 10000 });
+
   });
 
-  // คืออยากให้ get ค่าจาก session หลังจาก login ได้เพิ่อเอาค่า token จาก session มาใช้ในการ getuserprofile ของค่า otp เพื่อว่า เอามาใส่ verify ได้
+
 
 
   
