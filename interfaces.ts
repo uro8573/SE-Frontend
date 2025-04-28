@@ -20,6 +20,10 @@ export interface Hotel {
     ratingSum: number
 }
 
+export interface Config {
+    noti_period : number
+}
+
 export interface HotelItem {
     data: Hotel
 }
