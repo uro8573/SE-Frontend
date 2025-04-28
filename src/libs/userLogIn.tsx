@@ -1,6 +1,8 @@
 export default async function userLogIn(userEmail: string, userPassword: string) {
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`, {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`;
+    console.log('Fetching User Profile from:', url);
+    const response = await fetch(url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
