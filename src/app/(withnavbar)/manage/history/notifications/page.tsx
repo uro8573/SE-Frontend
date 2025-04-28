@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react"
 import { notification } from "../../../../../../interfaces"
 import getNotifications from "@/libs/getNotifications"
 import updateNotification from "@/libs/updateNotification"
+import SideBar from "@/components/manage/sidebar"
 
 export default function Dashboard() {
   const { data: session } = useSession();
@@ -107,29 +108,7 @@ export default function Dashboard() {
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar */}
-          <div className="w-full md:w-64">
-            <nav className="space-y-1">
-              
-
-              <div>
-                <button className="w-full flex items-center justify-between p-3 rounded-md bg-gray-100">
-                  <span className="font-medium">History</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                <div className="pl-6 py-1">
-                  <Link href="/manage/history/reservations" className="block py-1.5 text-gray-600">
-                    Reservations
-                  </Link>
-                  <Link href="/manage/history/reviews" className="block py-1.5 text-gray-600">
-                    Reviews
-                  </Link>
-                  <Link href="/manage/history/notifications" className="block py-1.5 font-medium">
-                    Notifications
-                  </Link>
-                </div>
-              </div>
-            </nav>
-          </div>
+          <SideBar/>
 
           {/* Main Content */}
           <div className="flex-1">
@@ -187,7 +166,7 @@ export default function Dashboard() {
                         timeStyle: 'short',
                       })}
 
-                      <p> By {noti.user.email} </p>
+                      <p> By {noti.user && noti.user.email ? noti.user.email : "null"} </p>
                     </div>
                   </div>
                 ))
@@ -216,7 +195,7 @@ export default function Dashboard() {
               
               <div className="flex flex-wrap items-center text-sm text-gray-600 mt-4 gap-x-4 gap-y-1">
                 <span>
-                  <strong className="font-medium text-gray-700">Send to:</strong> {selectedNotification.user.email}
+                  <strong className="font-medium text-gray-700">Send to:</strong> {selectedNotification.user && selectedNotification.user.email ? selectedNotification.user.email : "null"}
                 </span>
                 <span>
                   <strong className="font-medium text-gray-700">Notification ID:</strong> {selectedNotification._id.substring(0, 8)}...
