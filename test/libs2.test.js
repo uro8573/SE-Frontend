@@ -117,7 +117,7 @@ describe('Notification Functions Tests', () => {
     notificationId = response.body.data._id;
   });
   
-  it('should get all notifications for the user', async () => {
+  it('[TC2-2-01] should get all notifications for the user', async () => {
     const response = await request(BASE_URL)
       .get('/api/v1/notifications')
       .set('Authorization', `Bearer ${authToken}`)
@@ -221,7 +221,7 @@ describe('Booking Functions Tests', () => {
 });
 
 describe('Rating and Review Functions Tests (With Completed Booking)', () => {
-  it('should create a review after having a completed booking', async () => {
+  it('[TC1-1-01]should create a review after having a completed booking', async () => {
     if (!hotelId || !completedBookingId) {
       console.warn('No hotel ID or completed booking ID available for review test');
       return;
@@ -246,7 +246,7 @@ describe('Rating and Review Functions Tests (With Completed Booking)', () => {
     reviewId = response.body.data._id;
   });
   
-  it('should get reviews for the authenticated user', async () => {
+  it('[TC1-2-01]should get reviews for the authenticated user', async () => {
     if (!reviewId) {
       console.warn('No review ID available, skipping test');
       return;
@@ -295,7 +295,7 @@ describe('Rating and Review Functions Tests (With Completed Booking)', () => {
     }
   });
   
-  it('should update a review', async () => {
+  it('[TC1-3-01] should update a review', async () => {
     if (!reviewId) {
       console.warn('No review ID available for update test');
       return;
@@ -318,7 +318,7 @@ describe('Rating and Review Functions Tests (With Completed Booking)', () => {
     expect(response.body.data).toHaveProperty('rating', 5);
   });
   
-  it('should delete a review', async () => {
+  it('[TC1-4-01] should delete a review', async () => {
     if (!reviewId) {
       console.warn('No review ID available for delete test');
       return;
