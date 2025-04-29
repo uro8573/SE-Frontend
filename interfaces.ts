@@ -68,6 +68,7 @@ export interface BookingItem {
     checkInDate: string,
     checkOutDate: string,
     user: string,
+    isConfirmed : boolean,
     hotel: {
       _id: string,
       name: string,

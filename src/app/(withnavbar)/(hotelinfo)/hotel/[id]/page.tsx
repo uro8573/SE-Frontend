@@ -41,6 +41,14 @@ export default function ItemPage({ params }: { params: { id: number } }) {
     const [newReview, setNewReview] = useState("");
     const [newRating, setNewRating] = useState<number>(0);
 
+    const today = new Date();
+    const twoDaysLater = new Date(today);
+    twoDaysLater.setDate(today.getDate() + 2);
+
+    // รูปแบบวันที่ให้เหมือนกับที่คุณใช้งาน (YYYY-MM-DD)
+    const todayFormatted = today.toISOString().slice(0, 10);
+    const twoDaysLaterFormatted = twoDaysLater.toISOString().slice(0, 10);
+
     // State for editing reviews
     const [editMode, setEditMode] = useState(false);
     const [editReviewId, setEditReviewId] = useState<string>("");
@@ -49,8 +57,8 @@ export default function ItemPage({ params }: { params: { id: number } }) {
 
     const [guestCount, setGuestCount] = useState(2);
     const [roomCount, setRoomCount] = useState(1);
-    const [checkInDate, setCheckInDate] = useState("2024-12-22");
-    const [checkOutDate, setCheckOutDate] = useState("2024-12-24");
+    const [checkInDate, setCheckInDate] = useState(todayFormatted);
+    const [checkOutDate, setCheckOutDate] = useState(twoDaysLaterFormatted);
 
     const fetchReviews = async () => {
         if (!session?.user.token || !hotel?.id) return;
@@ -230,17 +238,39 @@ export default function ItemPage({ params }: { params: { id: number } }) {
             toast.error("You must be signed in to book.");
             return;
         }
-        
+    
         const userProfile = await getUserProfile(session?.user?.token);
-        
+    
         console.log(userProfile);
-
+    
         if (!userProfile.data.isVerify) {
             toast.error("You must be verified before reserving a hotel.");
             router.push('/verify'); // ใช้ push() แทน
             return;
         }
-
+    
+        // เพิ่มการตรวจสอบวันที่เช็คอินต้องไม่ก่อนหน้าวันนี้
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // ตั้งเวลาเป็น 00:00:00 เพื่อเปรียบเทียบแค่วันที่
+        const checkInDateObj = new Date(checkInDate);
+        checkInDateObj.setHours(0, 0, 0, 0);
+    
+        if (checkInDateObj < today) {
+            toast.error("Check-in date must be today or in the future.");
+            addNotification(session.user.token, session.user._id, "Booking failed: Check-in date must be today or in the future.", "fail", "BookingFailed");
+            return;
+        }
+    
+        // เพิ่มการตรวจสอบวันที่เช็คเอาท์ต้องไม่ก่อนหน้าเช็คอิน
+        const checkOutDateObj = new Date(checkOutDate);
+        checkOutDateObj.setHours(0, 0, 0, 0);
+    
+        if (checkOutDateObj <= checkInDateObj) {
+            toast.error("Check-out date must be after check-in date.");
+            addNotification(session.user.token, session.user._id, "Booking failed: Check-out date must be after check-in date.", "fail", "BookingFailed");
+            return;
+        }
+    
         try {
             const result = await addBooking(
                 params.id.toString(),
@@ -252,16 +282,16 @@ export default function ItemPage({ params }: { params: { id: number } }) {
             );
             if (result.success) {
                 toast.success("Booking successful!");
-            //tokenId text type typeaction
+                //tokenId text type typeaction
                 try {
-                    addNotification( session.user.token, session.user._id, `You have booked ${hotel.name} แต่จะไม่ขอบคุณหรอก เชอะ!`, "success", "BookingSuccess")
-                }catch (error) {
+                    addNotification(session.user.token, session.user._id, `You have booked ${hotel.name} แต่จะไม่ขอบคุณหรอก เชอะ!`, "success", "BookingSuccess")
+                } catch (error) {
                     console.error(error);
                 }
-                
+    
             } else {
                 toast.error(`${result.message}`);
-                addNotification( session.user.token, session.user._id, `You have failed booking because ${result.message}`, "fail", "BookingFailed")
+                addNotification(session.user.token, session.user._id, `You have failed booking because ${result.message}`, "fail", "BookingFailed")
             }
             console.log(result);
         } catch (error) {
