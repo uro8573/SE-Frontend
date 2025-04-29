@@ -164,7 +164,7 @@ describe('Notification Functions Tests', () => {
 });
 
 describe('Rating and Review Functions Tests (Without Completed Booking)', () => {
-  it('should fail to create a review without a completed booking', async () => {
+  it(' [TC1-1-02] should fail to create a review without a completed booking', async () => {
     if (!hotelId) {
       console.warn('No hotel ID available for review test');
       return;
