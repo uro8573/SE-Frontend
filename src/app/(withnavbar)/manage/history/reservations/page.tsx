@@ -8,13 +8,24 @@ import { BookingItem } from '../../../../../../interfaces'
 import { useState, useEffect } from 'react'
 import { useSession } from "next-auth/react"
 import SideBar from "@/components/manage/sidebar"
+import { useRouter } from "next/router"
 
 export default function Dashboard() {
-  const { data: session } = useSession();
+  const { data: session,status } = useSession();
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [bookingCount, setBookingCount] = useState<number>(0);
 
   const [loading, setLoading] = useState<boolean>(true);
+
+
+  if (!session?.user.token) {
+    return (
+      <>
+        <div className='w-full h-[80vh] text-h3-heading text-primary-dark flex justify-center items-center'>Please log in to the Manage page</div>
+      </>
+    );
+  }
+
 
   useEffect(() => {
     const fetchBookings = async () => {
