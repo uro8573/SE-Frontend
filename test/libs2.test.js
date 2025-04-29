@@ -6,6 +6,7 @@ import getUserProfile from '@/libs/getUserProfile';
 import getHotels from '@/libs/getHotels';
 import addBooking from '@/libs/addBooking';
 import deleteBooking from '@/libs/deleteBooking';
+import getConfirmedBooking from '@/libs/getConfirmedBooking';
 
 dotenv.config();
 
@@ -27,7 +28,7 @@ console.log('API URL:', API_URL);
 console.log('BASE URL:', BASE_URL);
 
 const TEST_USER = {
-  email: 'test1745644935@example.com',
+  email: 'test1745849505@example.com',
   password: 'password123',
 };
 
@@ -36,7 +37,6 @@ let userId;
 let hotelId;
 let hotel_Id;
 let bookingId;
-let completedBookingId;
 let notificationId;
 let reviewId;
 
@@ -187,19 +187,19 @@ describe('Rating and Review Functions Tests (Without Completed Booking)', () => 
 });
 
 describe('Booking Functions Tests', () => {
-  it('should create a new future booking', async () => {
+  it('should create a new booking', async () => {
     if (!hotelId) {
       console.warn('No hotel ID available for booking test');
       return;
     }
     
     const checkInDate = new Date();
-    checkInDate.setDate(checkInDate.getDate() + 7);
+    checkInDate.setDate(checkInDate.getDate() - 7);
     
     const checkOutDate = new Date();
-    checkOutDate.setDate(checkOutDate.getDate() + 10);
+    checkOutDate.setDate(checkOutDate.getDate() - 10);
     
-    console.log('Creating future booking...');
+    console.log('Creating booking...');
     
     const response = await addBooking(
       hotelId,
@@ -210,7 +210,7 @@ describe('Booking Functions Tests', () => {
       checkOutDate.toISOString().split('T')[0]
     );
     
-    console.log('Future booking response:', response);
+    console.log('Booking response:', response);
     
     expect(response).toHaveProperty('success', true);
     expect(response).toHaveProperty('data');
@@ -218,11 +218,38 @@ describe('Booking Functions Tests', () => {
     
     bookingId = response.data._id;
   }, 120000);
+
+  it('confirms the booking', async () => {
+    if (!bookingId) {
+      console.warn('No booking ID available to confirm');
+      return;
+    }
+
+    const bookingDetails = await request(BASE_URL)
+      .get(`/api/v1/bookings/${bookingId}`)
+      .set('Authorization', `Bearer ${authToken}`)
+      .set('Content-Type', 'application/json');
+    
+    if (!bookingDetails.body.data || !bookingDetails.body.data.confirmationToken) {
+      console.error('Missing confirmation token in booking details');
+      throw new Error('Missing confirmation token');
+    }
+    
+    const confirmationToken = bookingDetails.body.data.confirmationToken;
+    
+    // Now confirm the booking with the correct token
+    const response = await getConfirmedBooking(bookingId, confirmationToken);
+    
+    console.log('Confirm booking response:', response);
+    
+    expect(response).toHaveProperty('success', true);
+    expect(response).toHaveProperty('message', "การจองของคุณได้รับการยืนยันเรียบร้อยแล้ว!");
+  }, 120000);
 });
 
 describe('Rating and Review Functions Tests (With Completed Booking)', () => {
-  it('[TC1-1-01]should create a review after having a completed booking', async () => {
-    if (!hotelId || !completedBookingId) {
+  it('should create a review after having a completed booking', async () => {
+    if (!hotelId || !bookingId) {
       console.warn('No hotel ID or completed booking ID available for review test');
       return;
     }
@@ -232,7 +259,7 @@ describe('Rating and Review Functions Tests (With Completed Booking)', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .set('Content-Type', 'application/json')
       .send({
-        rating: 5,
+        rating: 4,
         comment: 'Excellent stay! This review should succeed with a completed booking.'
       });
     
@@ -241,7 +268,7 @@ describe('Rating and Review Functions Tests (With Completed Booking)', () => {
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('success', true);
     expect(response.body).toHaveProperty('data');
-    expect(response.body.data).toHaveProperty('rating', 5);
+    expect(response.body.data).toHaveProperty('rating', 4);
     
     reviewId = response.body.data._id;
   });
@@ -339,15 +366,6 @@ afterAll(async () => {
   if (bookingId) {
     try {
       const deleteResponse = await deleteBooking(bookingId, authToken);
-      console.log('Future booking cleanup result:', deleteResponse.success);
-    } catch (error) {
-      console.warn('Failed to clean up future booking:', error);
-    }
-  }
-  
-  if (completedBookingId) {
-    try {
-      const deleteResponse = await deleteBooking(completedBookingId, authToken);
       console.log('Completed booking cleanup result:', deleteResponse.success);
     } catch (error) {
       console.warn('Failed to clean up completed booking:', error);
