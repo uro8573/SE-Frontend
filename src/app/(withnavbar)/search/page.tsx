@@ -283,7 +283,7 @@ export default function Search() {
                     </div>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-6">
+                <div className="w-full flex flex-col lg:flex-row gap-6">
                     {/* Filters */}
                     <div className="w-full lg:w-1/4 max-w-xs bg-ct-white p-4 rounded-2xl space-y-6">
                         <div className="flex justify-between items-center">

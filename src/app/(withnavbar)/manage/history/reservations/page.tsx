@@ -22,8 +22,8 @@ export default function Dashboard() {
         if (!session?.user?.token) throw new Error("User token is undefined");
 
         const response = await getBookings(session.user.token);
-        setBookingCount(response.count);
-        setBookings(response.data);
+        setBookingCount(response.data.filter((booking: BookingItem) => booking.isConfirmed == true).length);
+        setBookings(response.data.filter((booking: BookingItem) => booking.isConfirmed == true));
       } catch (error) {
         console.error("เกิดข้อผิดพลาดในการโหลดการจอง:", error);
       } finally {
@@ -63,7 +63,7 @@ export default function Dashboard() {
               {bookings.length === 0 && loading ? (
                 <p>กำลังโหลดข้อมูลการจอง...</p>
               ) : bookings.length === 0 && !loading ? (
-                <p>ไม่มีข้อมูล</p>
+                <p>ไม่มีข้อมูลการจองที่ได้รับการยืนยัน</p>
               ) : (
                 bookings.map((booking) => {
                   const checkInDate = new Date(booking.checkInDate);
@@ -98,17 +98,23 @@ export default function Dashboard() {
                           </div>
                           <div className="flex items-center">
                             <Calendar className="h-4 w-4 text-gray-500 mr-1" />
-                            <span className="text-sm text-gray-600">{booking.checkInDate}</span>
+                            <span className="text-sm text-gray-600">{new Date(booking.checkInDate).toLocaleDateString()}</span>
                           </div>
-                          {isEditable && (
-                            <Link href={`/manage/${booking._id}`} className="block py-1.5 text-black-600 font-medium">
-                              <div className="flex items-center">
-                                <Pencil className="h-4 w-4 text-gray-500 mr-1" />
-                              </div>
-                            </Link>
-                          )}
+                          
                         </div>
-                        <div className="text-sm text-gray-500 mt-2">Check-Out: {booking.checkOutDate}</div>
+                        <div className="flex items-center justify-between mt-2">
+                            <div className="text-sm text-gray-500">
+                                Check-Out: {new Date(booking.checkOutDate).toLocaleDateString()}
+                            </div>
+                            {isEditable && (
+                                <Link href={`/manage/${booking._id}`} className="block py-1.5 text-black-600 font-medium">
+                                    <div className="flex items-center">
+                                        <Pencil className="h-4 w-4 text-gray-500" />
+                                    </div>
+                                </Link>
+                            )}
+                        </div>
+                        
                       </div>
                     </div>
                   );

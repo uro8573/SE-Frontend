@@ -31,8 +31,17 @@ export default function ItemPage({ params }: { params: { id: string } }) { // pa
   const [newRating, setNewRating] = useState<number>(0);
   const [guestCount, setGuestCount] = useState(2);
   const [roomCount, setRoomCount] = useState(1);
-  const [checkInDate, setCheckInDate] = useState("2024-12-22");
-  const [checkOutDate, setCheckOutDate] = useState("2024-12-24");
+
+  const today = new Date();
+  const twoDaysLater = new Date(today);
+  twoDaysLater.setDate(today.getDate() + 2);
+
+  // รูปแบบวันที่ให้เหมือนกับที่คุณใช้งาน (YYYY-MM-DD)
+  const todayFormatted = today.toISOString().slice(0, 10);
+  const twoDaysLaterFormatted = twoDaysLater.toISOString().slice(0, 10);
+
+  const [checkInDate, setCheckInDate] = useState(todayFormatted);
+  const [checkOutDate, setCheckOutDate] = useState(twoDaysLaterFormatted);
 
   useEffect(() => {
     const fetchBookingAndHotel = async () => {
@@ -72,69 +81,91 @@ export default function ItemPage({ params }: { params: { id: string } }) { // pa
     return <div className="flex justify-center items-center h-screen text-black">Loading...</div>;
   }
 
-    const handleUpdate = async () => {
-      if (!session?.user?.token || !hotel?.id) {
-        toast.error("You must be signed in to book.");
-        return;
-      }
-  
-      try {
-        // alert("Session: "session.user._id,)
 
+
+  const handleUpdate = async () => {
+    if (!session?.user?.token || !hotel?.id) {
+        toast.error("You must be signed in to edit booking.");
+        return;
+    }
+
+    // เพิ่มการตรวจสอบวันที่เช็คอินต้องไม่ก่อนหน้าวันนี้
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // ตั้งเวลาเป็น 00:00:00 เพื่อเปรียบเทียบแค่วันที่
+    const checkInDateObj = new Date(checkInDate);
+    checkInDateObj.setHours(0, 0, 0, 0);
+
+    if (checkInDateObj < today) {
+        toast.error("Check-in date must be today or in the future.");
+        return;
+    }
+
+    // เพิ่มการตรวจสอบวันที่เช็คเอาท์ต้องไม่ก่อนหน้าเช็คอิน
+    const checkOutDateObj = new Date(checkOutDate);
+    checkOutDateObj.setHours(0, 0, 0, 0);
+
+    if (checkOutDateObj <= checkInDateObj) {
+        toast.error("Check-out date must be after check-in date.");
+        return;
+    }
+
+    try {
         const result = await updateBooking(
-          params.id.toString(),
-          session.user.token,
-          guestCount,
-          roomCount.toString(),
-          checkInDate,
-          checkOutDate
+            params.id.toString(),
+            session.user.token,
+            guestCount,
+            roomCount.toString(),
+            checkInDate,
+            checkOutDate
         );
-        if(result.success) {
-          toast.success("Edit Booking successful!");
-        } else toast.error(`${result.message}`);
+        if (result.success) {
+            toast.success("Edit Booking successful!");
+        } else {
+            toast.error(`${result.message}`);
+        }
         console.log(result);
-      } catch (error) {
+    } catch (error) {
         console.error(error);
         toast.error("Edit Booking failed!");
-      }
-    };
+    }
+};
 
-    const handleDelete = async () => {
-      if (!session?.user?.token || !hotel?.id) {
-        toast.error("You must be signed in to book.");
-        return;
-      }
-  
-      try {
-          Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-          }).then(async (result) => {
-            if (result.isConfirmed) {
-              const result = await deleteBooking(
-                params.id.toString(),
-                session.user.token,
-              );
-              if(result.success) {
-                toast.success("Delete Booking successful!");
-                setTimeout(() => {
-                  window.location.pathname = "/manage/current-reservations";
-                }, 3000);
-              } else toast.error(`${result.message}`);
-              console.log(result);
-            }
-          });
 
-      } catch (error) {
-        console.error(error);
-        toast.error("Delete Booking failed!");
-      }
-    };
+  const handleDelete = async () => {
+    if (!session?.user?.token || !hotel?.id) {
+      toast.error("You must be signed in to book.");
+      return;
+    }
+
+    try {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            const result = await deleteBooking(
+              params.id.toString(),
+              session.user.token,
+            );
+            if(result.success) {
+              toast.success("Delete Booking successful!");
+              setTimeout(() => {
+                window.location.pathname = "/manage/current-reservations";
+              }, 3000);
+            } else toast.error(`${result.message}`);
+            console.log(result);
+          }
+        });
+    } catch (error) {
+      console.error(error);
+      toast.error("Delete Booking failed!");
+    }
+  };
 
     
 
